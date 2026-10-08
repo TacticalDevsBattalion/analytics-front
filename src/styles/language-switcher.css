@@ -1,0 +1,70 @@
+/* v1.4.1 — restore UA / EN language switcher */
+.language-switcher {
+  min-height:34px;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:0 8px;
+  border:1px solid var(--border-2);
+  border-radius:var(--radius-md);
+  background:var(--bg-1);
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+  flex:0 0 auto;
+}
+
+.language-switcher__icon {
+  margin-right:2px;
+  color:var(--text-3);
+}
+
+.language-switcher button {
+  min-width:28px;
+  height:26px;
+  padding:0 7px;
+  border:0;
+  border-radius:var(--radius-sm);
+  background:transparent;
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+  font-weight:700;
+  line-height:1;
+  cursor:pointer;
+  box-shadow:none;
+  appearance:none;
+  -webkit-appearance:none;
+}
+
+.language-switcher button:hover {
+  background:var(--bg-3);
+  color:var(--text-1);
+}
+
+.language-switcher button.active {
+  background:var(--bg-sel);
+  color:var(--text-1);
+}
+
+.language-switcher button:focus-visible {
+  outline:2px solid rgba(85,158,255,.62);
+  outline-offset:1px;
+}
+
+@media (max-width:720px) {
+  .language-switcher {
+    min-height:32px;
+    padding-inline:6px;
+  }
+
+  .language-switcher__icon {
+    display:none;
+  }
+
+  .language-switcher button {
+    min-width:27px;
+    height:25px;
+    padding-inline:6px;
+  }
+}
+
+

@@ -1,0 +1,194 @@
+/* v1.4 — slightly narrower KPI cards + collapsed flight departments */
+
+/* Make the KPI strip a little more compact without changing the 6-column layout. */
+.kpi-grid {
+  gap:10px;
+}
+
+.kpi-card {
+  min-height:94px;
+  padding:10px 12px 11px;
+}
+
+.kpi-card--split {
+  min-height:106px;
+}
+
+.kpi-card__top {
+  gap:7px;
+}
+
+.kpi-card__icon {
+  width:31px;
+  height:31px;
+  flex-basis:31px;
+  border-radius:var(--radius-sm);
+}
+
+.kpi-card__icon svg {
+  width:19px;
+  height:19px;
+}
+
+.kpi-card__label {
+  font-size:var(--fs-xs);
+}
+
+.kpi-card__value {
+  margin-top:8px;
+  font-size:clamp(22px,1.3vw,27px);
+}
+
+.kpi-card--split .kpi-card__value {
+  font-size:clamp(24px,1.4vw,29px);
+}
+
+.kpi-card__primary-label {
+  margin-top:5px;
+  font-size:var(--fs-xs);
+}
+
+.kpi-card__secondary {
+  margin-top:5px;
+  padding-top:5px;
+}
+
+.kpi-card__secondary span {
+  font-size:var(--fs-xs);
+}
+
+.kpi-card__secondary strong {
+  font-size:var(--fs-md);
+}
+
+.kpi-card__drill-hint {
+  font-size:var(--fs-xs);
+}
+
+/* Flight breakdown: show only department/device-type totals at first. */
+.kpi-breakdown__group {
+  transition:border-color .14s ease, background .14s ease;
+}
+
+.kpi-breakdown__group-toggle {
+  width:100%;
+  border:0;
+  cursor:pointer;
+  font:inherit;
+  text-align:left;
+  appearance:none;
+}
+
+.kpi-breakdown__group-toggle:hover {
+  background:var(--bg-3);
+}
+
+.kpi-breakdown__group-toggle:focus-visible {
+  outline:2px solid rgba(85,158,255,.62);
+  outline-offset:-2px;
+}
+
+.kpi-breakdown__group-title {
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.kpi-breakdown__group-title > span {
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.kpi-breakdown__group-chevron {
+  flex:0 0 auto;
+  color:var(--text-3);
+  transform:rotate(-90deg);
+  transition:transform .15s ease,color .15s ease;
+}
+
+.kpi-breakdown__group--expanded .kpi-breakdown__group-chevron {
+  transform:rotate(0deg);
+  color:#8fbcff;
+}
+
+.kpi-breakdown__group--expanded {
+  border-color:var(--border-3);
+}
+
+.kpi-breakdown__group--expanded .kpi-breakdown__group-head {
+  border-bottom:1px solid var(--border-2);
+}
+
+.kpi-breakdown__group:not(.kpi-breakdown__group--expanded)
+  .kpi-breakdown__group-head {
+  border-bottom:0;
+}
+
+/* Slightly denser collapsed department rows. */
+.kpi-breakdown__group-head {
+  min-height:36px;
+  padding:7px 9px;
+}
+
+.kpi-breakdown__group-head span {
+  font-size:var(--fs-sm);
+}
+
+.kpi-breakdown__group-head strong {
+  font-size:var(--fs-md);
+}
+
+/* Child mission rows become visible only after clicking a department. */
+.kpi-breakdown__group-items {
+  padding:4px 9px 6px;
+}
+
+.kpi-breakdown__group-row {
+  min-height:30px;
+}
+
+@media (max-width:720px) {
+  .kpi-grid {
+    gap:8px;
+  }
+
+  .kpi-card {
+    min-height:92px;
+    padding:10px 11px 11px;
+  }
+
+  .kpi-card--split {
+    min-height:104px;
+  }
+
+  .kpi-card__icon {
+    width:30px;
+    height:30px;
+    flex-basis:30px;
+  }
+
+  .kpi-card__value {
+    font-size:24px;
+  }
+
+  .kpi-card--split .kpi-card__value {
+    font-size:27px;
+  }
+
+  .kpi-breakdown__group-head {
+    min-height:39px;
+  }
+
+  .kpi-breakdown__group-head span {
+    font-size:var(--fs-sm);
+  }
+
+  .kpi-breakdown__group-head strong {
+    font-size:14px;
+  }
+}
+
+

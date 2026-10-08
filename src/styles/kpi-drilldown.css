@@ -1,0 +1,692 @@
+/* v1.1 universal KPI drill-down */
+.kpi-card--interactive {
+  cursor:pointer;
+  overflow:visible;
+}
+
+.kpi-card--interactive:focus-visible {
+  outline:2px solid rgba(var(--accent-rgb),.65);
+  outline-offset:2px;
+}
+
+.kpi-card__drill-hint {
+  position:absolute;
+  z-index:2;
+  right:11px;
+  bottom:8px;
+  max-width:calc(100% - 22px);
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+  line-height:1.1;
+  opacity:0;
+  transform:translateY(2px);
+  transition:opacity .15s ease,transform .15s ease;
+  pointer-events:none;
+}
+
+.kpi-card--interactive:hover .kpi-card__drill-hint,
+.kpi-card--interactive:focus-visible .kpi-card__drill-hint {
+  opacity:1;
+  transform:none;
+}
+
+.kpi-breakdown {
+  border:1px solid var(--border-3);
+  background:var(--bg-1);
+  box-shadow:0 22px 65px rgba(0,0,0,.55);
+}
+
+.kpi-breakdown--popover {
+  position:absolute;
+  z-index:180;
+  top:calc(100% + 8px);
+  left:0;
+  width:min(330px,calc(100vw - 36px));
+  max-height:430px;
+  padding:11px;
+  border-radius:var(--radius-lg);
+  overflow:auto;
+  cursor:default;
+}
+
+.kpi-grid > .kpi-card:nth-child(n+5) .kpi-breakdown--popover {
+  left:auto;
+  right:0;
+}
+
+.kpi-breakdown__head {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:2px 2px 10px;
+  border-bottom:1px solid var(--border-1);
+}
+
+.kpi-breakdown__head strong,
+.kpi-breakdown__head span {
+  display:block;
+}
+
+.kpi-breakdown__head strong {
+  color:var(--text-1);
+  font-size:var(--fs-sm);
+  line-height:1.3;
+}
+
+.kpi-breakdown__head span {
+  margin-top:3px;
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+}
+
+.kpi-breakdown__rows {
+  display:grid;
+  gap:10px;
+  padding-top:10px;
+}
+
+.kpi-breakdown__row {
+  display:grid;
+  gap:5px;
+}
+
+.kpi-breakdown__meta {
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.kpi-breakdown__meta span {
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--text-2);
+  font-size:var(--fs-xs);
+}
+
+.kpi-breakdown__meta strong {
+  flex:0 0 auto;
+  color:var(--text-1);
+  font-size:var(--fs-sm);
+  font-weight:750;
+  font-variant-numeric:tabular-nums;
+}
+
+.kpi-breakdown__track {
+  height:4px;
+  overflow:hidden;
+  border-radius:999px;
+  background:var(--bg-3);
+}
+
+.kpi-breakdown__track > span {
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:var(--accent,#4a9bff);
+  opacity:.78;
+}
+
+.kpi-breakdown-backdrop {
+  position:fixed;
+  z-index:320;
+  inset:0;
+  border:0;
+  background:rgba(2,8,13,.60);
+  backdrop-filter:blur(2px);
+}
+
+.kpi-breakdown--sheet {
+  position:fixed;
+  z-index:330;
+  left:50%;
+  bottom:max(12px,env(safe-area-inset-bottom));
+  width:min(560px,calc(100vw - 24px));
+  max-height:min(76dvh,650px);
+  padding:14px;
+  border-radius:var(--radius-lg);
+  overflow:auto;
+  transform:translateX(-50%);
+}
+
+.kpi-breakdown__close {
+  width:32px;
+  height:32px;
+  flex:0 0 32px;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--border-3);
+  border-radius:var(--radius-md);
+  background:var(--bg-3);
+  color:var(--text-3);
+  cursor:pointer;
+}
+
+@media (hover:none), (pointer:coarse) {
+  .kpi-card__drill-hint {
+    opacity:1;
+    transform:none;
+  }
+}
+
+@media (max-width:720px) {
+  .kpi-card__drill-hint {
+    display:none;
+  }
+
+  .kpi-breakdown--sheet {
+    left:0;
+    right:0;
+    bottom:0;
+    width:100%;
+    max-height:82dvh;
+    padding:17px 14px calc(14px + env(safe-area-inset-bottom));
+    border-left:0;
+    border-right:0;
+    border-bottom:0;
+    border-radius:17px 17px 0 0;
+    transform:none;
+  }
+
+  .kpi-breakdown--sheet::before {
+    content:"";
+    display:block;
+    width:38px;
+    height:4px;
+    margin:-8px auto 11px;
+    border-radius:999px;
+    background:#294256;
+  }
+
+  .kpi-breakdown__rows {
+    gap:12px;
+  }
+
+  .kpi-breakdown__meta span {
+    font-size:var(--fs-sm);
+  }
+
+  .kpi-breakdown__meta strong {
+    font-size:var(--fs-sm);
+  }
+}
+
+/* v1.1.1 KPI drill-down stacking fix */
+.kpi-grid {
+  position: relative;
+  overflow: visible;
+  isolation: isolate;
+}
+
+.kpi-card {
+  z-index: 1;
+  overflow: visible;
+}
+
+.kpi-card--interactive:hover,
+.kpi-card--interactive:focus-within,
+.kpi-card--expanded {
+  z-index: 250;
+}
+
+.kpi-card--interactive:hover {
+  transform: translateY(-2px);
+}
+
+.kpi-breakdown--popover {
+  z-index: 500;
+  isolation: isolate;
+}
+
+/* Keep decorative layers behind the drill-down */
+.kpi-card::before,
+.kpi-card::after {
+  z-index: 0;
+}
+
+.kpi-card__top,
+.kpi-card__value,
+.kpi-card__primary-label,
+.kpi-card__secondary,
+.kpi-card__delta,
+.kpi-card__drill-hint {
+  position: relative;
+  z-index: 2;
+}
+
+/* v1.1.2 KPI drill-down portal fix */
+.kpi-breakdown--portal-popover {
+  position: fixed !important;
+  z-index: 2147483000 !important;
+  max-height: min(430px, calc(100vh - 24px));
+  padding: 11px;
+  border-radius:var(--radius-lg);
+  overflow: auto;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.kpi-breakdown--portal-popover.kpi-breakdown--top {
+  transform:none;
+}
+
+.kpi-breakdown-backdrop {
+  z-index: 2147482990 !important;
+}
+
+.kpi-breakdown--sheet {
+  z-index: 2147483000 !important;
+}
+
+/* MapLibre / chart canvases must stay below portal UI */
+.maplibregl-map,
+.maplibregl-canvas-container,
+.maplibregl-control-container,
+.recharts-wrapper,
+.recharts-surface {
+  z-index: auto !important;
+}
+
+/* v1.2 nested flight KPI breakdown */
+.kpi-breakdown__groups {
+  display:grid;
+  gap:9px;
+  padding-top:10px;
+}
+
+.kpi-breakdown__group {
+  overflow:hidden;
+  border:1px solid var(--border-2);
+  border-radius:var(--radius-md);
+  background:var(--bg-2);
+}
+
+.kpi-breakdown__group-head {
+  min-height:34px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:7px 9px;
+  border-bottom:1px solid var(--border-1);
+  background:var(--bg-3);
+}
+
+.kpi-breakdown__group-head span {
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--text-1);
+  font-size:var(--fs-xs);
+  font-weight:700;
+}
+
+.kpi-breakdown__group-head strong {
+  color:var(--text-1);
+  font-size:var(--fs-sm);
+  font-weight:800;
+  font-variant-numeric:tabular-nums;
+}
+
+.kpi-breakdown__group-items {
+  display:grid;
+  padding:4px 9px 6px;
+}
+
+.kpi-breakdown__group-row {
+  min-height:27px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  border-bottom:1px solid rgba(33,57,75,.55);
+}
+
+.kpi-breakdown__group-row:last-child {
+  border-bottom:0;
+}
+
+.kpi-breakdown__group-row span {
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--text-2);
+  font-size:var(--fs-xs);
+}
+
+.kpi-breakdown__group-row strong {
+  color:var(--text-1);
+  font-size:var(--fs-xs);
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+
+.kpi-breakdown--portal-popover {
+  width:min(370px,calc(100vw - 24px));
+}
+
+@media (max-width:720px) {
+  .kpi-breakdown__group-head {
+    min-height:40px;
+  }
+
+  .kpi-breakdown__group-head span {
+    font-size:var(--fs-sm);
+  }
+
+  .kpi-breakdown__group-head strong {
+    font-size:var(--fs-md);
+  }
+
+  .kpi-breakdown__group-row {
+    min-height:32px;
+  }
+
+  .kpi-breakdown__group-row span,
+  .kpi-breakdown__group-row strong {
+    font-size:var(--fs-sm);
+  }
+}
+
+/* v1.2.1 desktop KPI popover hover + scroll fix */
+.kpi-breakdown--portal-popover {
+  pointer-events:auto !important;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+}
+
+.kpi-breakdown--portal-popover::-webkit-scrollbar {
+  width:8px;
+}
+
+.kpi-breakdown--portal-popover::-webkit-scrollbar-thumb {
+  border-radius:999px;
+  background:#29465c;
+}
+
+.kpi-breakdown--portal-popover::-webkit-scrollbar-track {
+  background:transparent;
+}
+
+/* v1.2.2 compact KPI cards + larger drill-down typography */
+
+/* Slightly smaller KPI cards */
+.kpi-card {
+  min-height:104px;
+  padding:12px 14px 13px;
+}
+
+.kpi-card--split {
+  min-height:116px;
+}
+
+.kpi-card__top {
+  gap:8px;
+}
+
+.kpi-card__icon {
+  width:34px;
+  height:34px;
+  flex-basis:34px;
+  border-radius:var(--radius-md);
+}
+
+.kpi-card__label {
+  font-size:var(--fs-xs);
+}
+
+.kpi-card__value {
+  margin-top:10px;
+  font-size:clamp(23px,1.4vw,29px);
+}
+
+.kpi-card--split .kpi-card__value {
+  font-size:clamp(26px,1.55vw,31px);
+}
+
+.kpi-card__primary-label {
+  margin-top:7px;
+  font-size:var(--fs-xs);
+}
+
+.kpi-card__secondary {
+  margin-top:7px;
+  padding-top:6px;
+}
+
+.kpi-card__secondary span {
+  font-size:var(--fs-xs);
+}
+
+.kpi-card__secondary strong {
+  font-size:14px;
+}
+
+/* More readable desktop popover */
+.kpi-breakdown--portal-popover {
+  max-width:calc(100vw - 24px);
+  padding:13px !important;
+}
+
+.kpi-breakdown__head strong {
+  font-size:var(--fs-md);
+  line-height:1.35;
+}
+
+.kpi-breakdown__head span {
+  margin-top:4px;
+  font-size:var(--fs-xs);
+}
+
+.kpi-breakdown__meta span {
+  font-size:var(--fs-sm);
+}
+
+.kpi-breakdown__meta strong {
+  font-size:var(--fs-md);
+}
+
+.kpi-breakdown__track {
+  height:5px;
+}
+
+/* Device group header */
+.kpi-breakdown__group-head {
+  min-height:40px;
+  padding:8px 10px;
+}
+
+.kpi-breakdown__group-head span {
+  font-size:var(--fs-sm);
+}
+
+.kpi-breakdown__group-head strong {
+  font-size:14px;
+}
+
+/* Task rows inside device group */
+.kpi-breakdown__group-items {
+  padding:5px 10px 7px;
+}
+
+.kpi-breakdown__group-row {
+  min-height:33px;
+}
+
+.kpi-breakdown__group-row span {
+  font-size:var(--fs-sm);
+}
+
+.kpi-breakdown__group-row strong {
+  font-size:var(--fs-sm);
+}
+
+/* Flat lists: effective, detected, efficiency, etc. */
+.kpi-breakdown__rows {
+  gap:12px;
+  padding-top:12px;
+}
+
+.kpi-breakdown__row {
+  gap:6px;
+}
+
+/* Keep phone/tablet comfortable without making cards too tall */
+@media (max-width:720px) {
+  .kpi-card {
+    min-height:100px;
+    padding:11px 12px 12px;
+  }
+
+  .kpi-card--split {
+    min-height:112px;
+  }
+
+  .kpi-card__value {
+    font-size:26px;
+  }
+
+  .kpi-card--split .kpi-card__value {
+    font-size:29px;
+  }
+
+  .kpi-breakdown__head strong {
+    font-size:15px;
+  }
+
+  .kpi-breakdown__head span {
+    font-size:var(--fs-sm);
+  }
+
+  .kpi-breakdown__group-head span {
+    font-size:var(--fs-md);
+  }
+
+  .kpi-breakdown__group-head strong {
+    font-size:15px;
+  }
+
+  .kpi-breakdown__group-row {
+    min-height:38px;
+  }
+
+  .kpi-breakdown__group-row span {
+    font-size:var(--fs-md);
+  }
+
+  .kpi-breakdown__group-row strong {
+    font-size:14px;
+  }
+
+  .kpi-breakdown__meta span {
+    font-size:var(--fs-md);
+  }
+
+  .kpi-breakdown__meta strong {
+    font-size:14px;
+  }
+}
+
+/* v1.2.3 iPhone standalone PWA safe-area fix */
+html,
+body,
+#root {
+  min-height:100%;
+}
+
+body {
+  min-height:100dvh;
+}
+
+.app-shell {
+  min-height:100dvh;
+}
+
+/* Installed iOS/Android Web-App */
+@media (display-mode: standalone) {
+  body {
+    min-height:100dvh;
+    padding:0;
+  }
+
+  .app-shell {
+    min-height:100dvh;
+  }
+
+  .main-area {
+    padding-left:max(12px, env(safe-area-inset-left));
+    padding-right:max(12px, env(safe-area-inset-right));
+    padding-bottom:calc(12px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Phone navigation must stay below iPhone status bar / Dynamic Island */
+@media (display-mode: standalone) and (max-width:720px) {
+  .sidebar {
+    padding-top:calc(10px + env(safe-area-inset-top));
+    padding-left:max(8px, env(safe-area-inset-left));
+    padding-right:max(8px, env(safe-area-inset-right));
+  }
+
+  .main-area {
+    padding-top:12px;
+    padding-bottom:calc(16px + env(safe-area-inset-bottom));
+  }
+
+  .filter-panel-shell {
+    max-height:calc(100dvh - env(safe-area-inset-top));
+  }
+
+  .filter-panel-header {
+    padding-left:max(12px, env(safe-area-inset-left));
+    padding-right:max(12px, env(safe-area-inset-right));
+  }
+
+  .filter-panel-footer {
+    padding-left:max(12px, env(safe-area-inset-left));
+    padding-right:max(12px, env(safe-area-inset-right));
+    padding-bottom:calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .kpi-breakdown--sheet {
+    padding-bottom:calc(16px + env(safe-area-inset-bottom));
+  }
+}
+
+/* iOS fallback: standalone mode can be detected differently in older WebKit */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width:720px) {
+    .sidebar {
+      padding-top:max(10px, env(safe-area-inset-top));
+    }
+
+    .main-area {
+      padding-bottom:calc(12px + env(safe-area-inset-bottom));
+    }
+  }
+}
+
+
+
+/* v1.3 KPI bounds / overflow fix
+   - keep decorative ::after glow inside each KPI card
+   - portal drill-down remains independent of card clipping
+   - prevent horizontal page/table expansion */
+.kpi-card,
+.kpi-card--interactive {
+  overflow:hidden;
+}
+
+/* Inline geometry from KpiCards.tsx owns width/max-height. */
+.kpi-breakdown--portal-popover {
+  box-sizing:border-box;
+  max-width:calc(100vw - 24px);
+  overscroll-behavior:contain;
+}
+
+

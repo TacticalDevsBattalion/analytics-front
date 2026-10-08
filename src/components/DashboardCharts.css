@@ -1,0 +1,101 @@
+.dashboard-chart {
+  width: 100%;
+  min-width: 0;
+}
+
+.dashboard-chart__canvas {
+  width: 100%;
+  min-width: 0;
+  height: 285px;
+}
+
+.dashboard-chart__summary {
+  margin: 0 0 10px;
+  color:var(--text-muted, var(--text-2));
+  font-size:var(--fs-sm);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.dashboard-chart__empty {
+  min-height: 160px;
+  display: grid;
+  place-content: center;
+  padding: 20px;
+  text-align: center;
+  color:var(--text-muted, var(--text-2));
+  font-size:var(--fs-md);
+}
+
+.dashboard-chart__data {
+  margin-top: 8px;
+  border-top:1px solid var(--border, var(--border-3));
+  padding-top: 8px;
+  color:var(--text-muted, var(--text-2));
+  font-size:var(--fs-sm);
+}
+
+.dashboard-chart__data > summary {
+  cursor: pointer;
+  padding: 5px 3px;
+  width: fit-content;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.dashboard-chart__data > summary:focus-visible,
+.dashboard-chart__table-wrap:focus-visible {
+  outline: 2px solid #59b8dd;
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.dashboard-chart__table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+  margin-top: 8px;
+}
+
+.dashboard-chart__table {
+  border-collapse: collapse;
+  width: 100%;
+  color:var(--text, var(--text-1));
+  font-size:var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard-chart__table caption {
+  text-align: left;
+  padding: 0 0 8px;
+  color:var(--text-muted, var(--text-2));
+}
+
+.dashboard-chart__table th,
+.dashboard-chart__table td {
+  padding: 8px 10px;
+  border-bottom:1px solid var(--border, var(--border-3));
+  text-align: right;
+}
+
+.dashboard-chart__table th:first-child,
+.dashboard-chart__table td:first-child {
+  text-align: left;
+  max-width: 300px;
+  overflow-wrap: anywhere;
+}
+
+.dashboard-chart__table thead th {
+  color:var(--text-muted, var(--text-2));
+  font-weight: 600;
+}
+
+@media (max-width: 540px) {
+  .dashboard-chart__canvas {
+    height: 270px;
+  }
+
+  .dashboard-chart__table th,
+  .dashboard-chart__table td {
+    padding: 7px 8px;
+  }
+}

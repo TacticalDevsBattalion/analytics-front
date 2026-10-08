@@ -1,0 +1,58 @@
+/* v0.8 KPI personnel / total split */
+.kpi-card--split {
+  min-height:132px;
+}
+
+.kpi-card__primary-label {
+  position:relative;
+  z-index:1;
+  margin-top:10px;
+  color:var(--accent);
+  font-size:var(--fs-xs);
+  font-weight:750;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.kpi-card--split .kpi-card__value {
+  margin-top:3px;
+  font-size:clamp(28px,1.7vw,34px);
+}
+
+.kpi-card__secondary {
+  position:relative;
+  z-index:1;
+  margin-top:9px;
+  padding-top:7px;
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:10px;
+  border-top:1px solid rgba(var(--accent-rgb),.13);
+}
+
+.kpi-card__secondary span {
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+  font-weight:600;
+  letter-spacing:.045em;
+  text-transform:uppercase;
+}
+
+.kpi-card__secondary strong {
+  color:var(--text-2);
+  font-size:15px;
+  font-weight:700;
+  line-height:1;
+  font-variant-numeric:tabular-nums;
+}
+
+html[data-density="compact"] .kpi-card__primary-label {
+  margin-top:7px;
+}
+
+html[data-density="compact"] .kpi-card__secondary {
+  margin-top:6px;
+  padding-top:5px;
+}
+

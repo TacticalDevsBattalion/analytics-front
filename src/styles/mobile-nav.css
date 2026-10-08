@@ -1,0 +1,43 @@
+/* Phone navigation: bottom tab bar (four sections + "More") instead of a scrolling strip on top.
+   Hidden on wider screens, where the sidebar is used. */
+.mobile-tabbar { display: none; }
+
+@media (max-width: 720px) {
+  .sidebar { display: none; }
+
+  .mobile-tabbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 300;
+    display: flex; align-items: stretch; gap: 2px;
+    padding: 4px max(4px, env(safe-area-inset-right)) calc(4px + env(safe-area-inset-bottom)) max(4px, env(safe-area-inset-left));
+    border-top: 1px solid var(--border-2);
+    background: var(--bg-overlay);
+    backdrop-filter: blur(10px);
+  }
+  .mobile-tabbar > button,
+  .mobile-tabbar__more-wrap { flex: 1 1 0; min-width: 0; }
+  .mobile-tabbar button {
+    width: 100%; min-height: var(--tap); padding: 4px 2px;
+    display: grid; justify-items: center; align-content: center; gap: 2px;
+    border: 0; border-radius: var(--radius-md); background: transparent;
+    color: var(--text-2); font-size: var(--fs-xs); line-height: 1.1; cursor: pointer;
+  }
+  .mobile-tabbar button > span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mobile-tabbar button.active { color: var(--text-1); background: var(--bg-sel); }
+  .mobile-tabbar__more-wrap { position: relative; }
+  .mobile-tabbar__menu {
+    position: absolute; right: 0; bottom: calc(100% + 8px); min-width: 200px;
+    display: grid; gap: 2px; padding: 6px;
+    border: 1px solid var(--border-3); border-radius: var(--radius-lg);
+    background: var(--bg-1); box-shadow: 0 16px 40px rgba(0, 0, 0, .5);
+  }
+  .mobile-tabbar__menu button {
+    grid-auto-flow: column; justify-content: start; justify-items: start; gap: 10px;
+    padding: 0 12px; font-size: var(--fs-md);
+  }
+
+  /* The sidebar used to carry the iPhone safe-area inset; now the content does. */
+  .app-shell .main-area {
+    padding-top: calc(12px + env(safe-area-inset-top));
+    padding-bottom: calc(var(--tap) + 24px + env(safe-area-inset-bottom));
+  }
+}

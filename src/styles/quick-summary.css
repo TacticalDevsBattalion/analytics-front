@@ -1,0 +1,102 @@
+/* Quick summary v1.1 — no internal scroll, compact and readable */
+.quick-average-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(138px,1fr));
+  gap:6px;
+  padding:9px 10px 10px;
+  max-height:none;
+  overflow:visible;
+}
+
+.quick-average-item {
+  min-width:0;
+  min-height:50px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:
+    "label value"
+    "unit unit";
+  align-items:center;
+  gap:2px 8px;
+  padding:7px 8px;
+  border:1px solid var(--border-2);
+  border-radius:var(--radius-sm);
+  background:var(--bg-2);
+}
+
+.quick-average-item > span {
+  grid-area:label;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--text-2);
+  font-size:var(--fs-xs);
+  line-height:1.2;
+}
+
+.quick-average-item > strong {
+  grid-area:value;
+  color:var(--text-1);
+  font-size:16px;
+  line-height:1;
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+
+.quick-average-item > small {
+  grid-area:unit;
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+  line-height:1.15;
+  letter-spacing:.01em;
+}
+
+.quick-average-empty {
+  min-height:70px;
+  display:grid;
+  place-items:center;
+  padding:12px;
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+  text-align:center;
+}
+
+/* The mini-panel must grow with the content instead of creating an inner scroller. */
+.mini-panel {
+  overflow:visible;
+}
+
+@media (min-width:1500px) {
+  .quick-average-grid {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+}
+
+@media (max-width:1180px) {
+  .quick-average-grid {
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+}
+
+@media (max-width:900px) {
+  .quick-average-grid {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+}
+
+@media (max-width:620px) {
+  .quick-average-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
+@media (max-width:390px) {
+  .quick-average-grid {
+    grid-template-columns:1fr;
+  }
+}
+
+
+
+

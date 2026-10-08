@@ -1,0 +1,7607 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Analytics API",
+    "version": "0.7.0"
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "getHealth",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/source/status": {
+      "get": {
+        "summary": "Source Status",
+        "operationId": "getSourceStatus",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SourceStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/filters/options": {
+      "get": {
+        "summary": "Filter Options",
+        "operationId": "getFilterOptions",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterOptions"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/source/schema": {
+      "get": {
+        "summary": "Source Schema",
+        "operationId": "getSourceSchema",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics/overview": {
+      "post": {
+        "summary": "Overview",
+        "operationId": "getAnalyticsOverview",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Metric"
+                  },
+                  "type": "array",
+                  "title": "Response Getanalyticsoverview"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics/kpi-options": {
+      "get": {
+        "summary": "Kpi Options",
+        "operationId": "getKpiOptions",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KpiOptions"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics/kpi-preview": {
+      "post": {
+        "summary": "Kpi Preview",
+        "operationId": "previewPurposeKpi",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KpiPreviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KpiPreviewResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics/comparison": {
+      "post": {
+        "summary": "Compare Analytics",
+        "operationId": "getAnalyticsComparison",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ComparisonRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComparisonResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics/timeline": {
+      "post": {
+        "summary": "Timeline",
+        "operationId": "getAnalyticsTimeline",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TimelinePoint"
+                  },
+                  "type": "array",
+                  "title": "Response Getanalyticstimeline"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics/events": {
+      "post": {
+        "summary": "Events",
+        "operationId": "getAnalyticsEvents",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/EventRow"
+                  },
+                  "type": "array",
+                  "title": "Response Getanalyticsevents"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics/map": {
+      "post": {
+        "summary": "Map Data",
+        "operationId": "getAnalyticsMap",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeoFeatureCollection"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cache/status": {
+      "get": {
+        "summary": "Cache Status",
+        "operationId": "getCacheStatus",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cache/clear": {
+      "post": {
+        "summary": "Clear Cache",
+        "operationId": "clearCache",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Namespace"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/app-configuration": {
+      "get": {
+        "summary": "Public Configuration",
+        "operationId": "public_configuration_api_app_configuration_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicConfiguration"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/app-configuration": {
+      "get": {
+        "summary": "Administrator Configuration",
+        "operationId": "administrator_configuration_api_admin_app_configuration_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdministrationSnapshot"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/app-configuration/draft": {
+      "put": {
+        "summary": "Save Configuration Draft",
+        "operationId": "save_configuration_draft_api_admin_app_configuration_draft_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdministrationSnapshot"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Save Configuration Draft",
+        "operationId": "save_configuration_draft_api_admin_app_configuration_draft_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdministrationSnapshot"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/app-configuration/preview": {
+      "post": {
+        "summary": "Preview Configuration",
+        "operationId": "preview_configuration_api_admin_app_configuration_preview_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreviewResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/app-configuration/publish": {
+      "post": {
+        "summary": "Publish Configuration",
+        "operationId": "publish_configuration_api_admin_app_configuration_publish_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublishRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdministrationSnapshot"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/app-configuration/rollback": {
+      "post": {
+        "summary": "Rollback Configuration",
+        "operationId": "rollback_configuration_api_admin_app_configuration_rollback_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RollbackRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdministrationSnapshot"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/session": {
+      "get": {
+        "summary": "Auth Session",
+        "operationId": "auth_session_api_auth_session_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "Auth Login",
+        "operationId": "auth_login_api_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "summary": "Auth Logout",
+        "operationId": "auth_logout_api_auth_logout_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/dashboard": {
+      "get": {
+        "summary": "Personal Dashboard",
+        "operationId": "personal_dashboard_api_me_dashboard_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Save Personal Dashboard",
+        "operationId": "save_personal_dashboard_api_me_dashboard_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DashboardUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/users": {
+      "get": {
+        "summary": "Account List",
+        "operationId": "account_list_api_admin_users_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Account",
+        "operationId": "create_account_api_admin_users_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicUser"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/users/{user_id}": {
+      "patch": {
+        "summary": "Update Account",
+        "operationId": "update_account_api_admin_users__user_id__patch",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicUser"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/provider": {
+      "get": {
+        "summary": "Authentication Provider",
+        "operationId": "getAuthenticationProvider",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/keycloak/login": {
+      "get": {
+        "summary": "Login",
+        "operationId": "beginKeycloakLogin",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/keycloak/callback": {
+      "get": {
+        "summary": "Callback",
+        "operationId": "completeKeycloakLogin",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Code"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "State"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/metadata": {
+      "get": {
+        "summary": "Metadata",
+        "operationId": "getBiMetadata",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/catalog": {
+      "get": {
+        "summary": "Semantic Catalog",
+        "operationId": "getAnalyticsCatalog",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/catalog/options": {
+      "post": {
+        "summary": "Semantic Options",
+        "operationId": "getAnalyticsCatalogOptions",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DateRange"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/query": {
+      "post": {
+        "summary": "Query",
+        "operationId": "queryBiAnalytics",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/query/batch": {
+      "post": {
+        "summary": "Batch",
+        "operationId": "batchQueryBiAnalytics",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchQueryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/comparison": {
+      "post": {
+        "summary": "Comparison",
+        "operationId": "compareBiAnalytics",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BiComparisonRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/kpi/missions": {
+      "post": {
+        "summary": "Mission Kpi",
+        "operationId": "queryMissionKpi",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MissionKpiRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/hierarchy": {
+      "get": {
+        "summary": "Hierarchy",
+        "operationId": "getBiHierarchy",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/cache/status": {
+      "get": {
+        "summary": "Cache Status",
+        "operationId": "getAnalyticsCacheStatus",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/cache/invalidate": {
+      "post": {
+        "summary": "Cache Invalidate",
+        "operationId": "invalidateAnalyticsCache",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CacheInvalidation"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/cache/warm": {
+      "post": {
+        "summary": "Cache Warm",
+        "operationId": "warmAnalyticsCache",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CacheWarmRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/cache/jobs/{job_id}": {
+      "get": {
+        "summary": "Cache Job",
+        "operationId": "getAnalyticsCacheJob",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/dashboards": {
+      "get": {
+        "summary": "Dashboards",
+        "operationId": "listBiDashboards",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "DASHBOARD",
+                    "STATISTICS",
+                    "COMPARISON"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Type"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DashboardDefinition"
+                  },
+                  "title": "Response Listbidashboards"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/dashboards/{dashboard_id}": {
+      "get": {
+        "summary": "Dashboard",
+        "operationId": "getBiDashboard",
+        "parameters": [
+          {
+            "name": "dashboard_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Dashboard Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardDefinition"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/dashboards/{dashboard_id}/widgets": {
+      "post": {
+        "summary": "Save Personal Widget",
+        "operationId": "savePersonalBiWidget",
+        "parameters": [
+          {
+            "name": "dashboard_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Dashboard Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WidgetDefinition"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WidgetDefinition"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/dashboards/{dashboard_id}/widgets/{widget_id}": {
+      "delete": {
+        "summary": "Delete Personal Widget",
+        "operationId": "deletePersonalBiWidget",
+        "parameters": [
+          {
+            "name": "dashboard_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Dashboard Id"
+            }
+          },
+          {
+            "name": "widget_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Widget Id"
+            }
+          },
+          {
+            "name": "expected_revision",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Expected Revision"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/dashboards/{dashboard_id}/query": {
+      "post": {
+        "summary": "Dashboard Query",
+        "operationId": "queryBiDashboard",
+        "parameters": [
+          {
+            "name": "dashboard_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Dashboard Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DashboardQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/dashboards/{dashboard_id}/overrides": {
+      "get": {
+        "summary": "Overrides",
+        "operationId": "getBiDashboardOverrides",
+        "parameters": [
+          {
+            "name": "dashboard_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Dashboard Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Save Overrides",
+        "operationId": "saveBiDashboardOverrides",
+        "parameters": [
+          {
+            "name": "dashboard_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Dashboard Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OverrideUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/bi/users": {
+      "get": {
+        "summary": "Users",
+        "operationId": "listBiUsers",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/bi/preview": {
+      "post": {
+        "summary": "Preview Definition",
+        "operationId": "previewBiDefinition",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DefinitionPreview"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/bi/{entity}": {
+      "get": {
+        "summary": "List Definitions",
+        "operationId": "listBiDefinitions",
+        "parameters": [
+          {
+            "name": "entity",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Entity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/DashboardDefinition"
+                      },
+                      {
+                        "$ref": "#/components/schemas/WidgetDefinition"
+                      },
+                      {
+                        "$ref": "#/components/schemas/MetricDefinition"
+                      },
+                      {
+                        "$ref": "#/components/schemas/KpiDefinition"
+                      },
+                      {
+                        "$ref": "#/components/schemas/CategoryWeight"
+                      },
+                      {
+                        "$ref": "#/components/schemas/WeightSet"
+                      },
+                      {
+                        "$ref": "#/components/schemas/RoleDefinition"
+                      },
+                      {
+                        "$ref": "#/components/schemas/UserAccessDefinition"
+                      }
+                    ]
+                  },
+                  "title": "Response Listbidefinitions"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Save Definition",
+        "operationId": "saveBiDefinition",
+        "parameters": [
+          {
+            "name": "entity",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Entity"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true,
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/DashboardDefinition"
+                    },
+                    {
+                      "$ref": "#/components/schemas/WidgetDefinition"
+                    },
+                    {
+                      "$ref": "#/components/schemas/MetricDefinition"
+                    },
+                    {
+                      "$ref": "#/components/schemas/KpiDefinition"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CategoryWeight"
+                    },
+                    {
+                      "$ref": "#/components/schemas/WeightSet"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RoleDefinition"
+                    },
+                    {
+                      "$ref": "#/components/schemas/UserAccessDefinition"
+                    }
+                  ],
+                  "title": "Response Savebidefinition"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/bi/{entity}/{entity_id}": {
+      "delete": {
+        "summary": "Delete Definition",
+        "operationId": "deleteBiDefinition",
+        "parameters": [
+          {
+            "name": "entity",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Entity"
+            }
+          },
+          {
+            "name": "entity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Entity Id"
+            }
+          },
+          {
+            "name": "expected_revision",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Expected Revision"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/kpi/rules": {
+      "get": {
+        "summary": "List Rules",
+        "operationId": "list_rules_api_v1_admin_kpi_rules_get",
+        "parameters": [
+          {
+            "name": "include_versions",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Include Versions"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Publish Rule",
+        "operationId": "publish_rule_api_v1_admin_kpi_rules_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KpiPolicyRule"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KpiPolicyRule"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/kpi/simulate": {
+      "post": {
+        "summary": "Simulate",
+        "operationId": "simulate_api_v1_admin_kpi_simulate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicySimulation"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/widgets/preview": {
+      "post": {
+        "summary": "Preview Widget",
+        "operationId": "previewAnalyticsWidget",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WidgetPreview"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/pages/{page}": {
+      "get": {
+        "summary": "Get Page",
+        "operationId": "getAnalyticsPage",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "enum": [
+                "dashboard",
+                "statistics"
+              ],
+              "type": "string",
+              "title": "Page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardDefinition"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Save Page",
+        "operationId": "saveAnalyticsPage",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "enum": [
+                "dashboard",
+                "statistics"
+              ],
+              "type": "string",
+              "title": "Page"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DashboardDefinition"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardDefinition"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/pages/{page}/query": {
+      "post": {
+        "summary": "Page Query",
+        "operationId": "queryAnalyticsPage",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "enum": [
+                "dashboard",
+                "statistics"
+              ],
+              "type": "string",
+              "title": "Page"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/personal-dashboard": {
+      "get": {
+        "summary": "Get Personal",
+        "operationId": "getPersonalAnalyticsDashboard",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Personal",
+        "operationId": "savePersonalAnalyticsDashboard",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonalUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/personal-dashboard/query": {
+      "post": {
+        "summary": "Personal Query",
+        "operationId": "queryPersonalAnalyticsDashboard",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageQuery"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/personal-dashboard/widgets": {
+      "post": {
+        "summary": "Save Widget",
+        "operationId": "savePersonalAnalyticsWidget",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WidgetDefinition"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WidgetDefinition"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/personal-dashboard/widgets/{widget_id}": {
+      "delete": {
+        "summary": "Remove Widget",
+        "operationId": "deletePersonalAnalyticsWidget",
+        "parameters": [
+          {
+            "name": "widget_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Widget Id"
+            }
+          },
+          {
+            "name": "expected_revision",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Expected Revision"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/personal-dashboard/migrate": {
+      "post": {
+        "summary": "Migrate",
+        "operationId": "migratePersonalAnalyticsDashboard",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonalMigration"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/personal-dashboard/assets": {
+      "post": {
+        "summary": "Upload Asset",
+        "operationId": "uploadPersonalDashboardAsset",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/assets/{asset_id}": {
+      "get": {
+        "summary": "Get Asset",
+        "operationId": "getPersonalDashboardAsset",
+        "parameters": [
+          {
+            "name": "asset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Asset Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdministrationSnapshot": {
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "title": "Revision"
+          },
+          "config": {
+            "$ref": "#/components/schemas/ApplicationConfiguration"
+          },
+          "draft": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ApplicationConfiguration"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "draft_base_revision": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Draft Base Revision"
+          },
+          "draft_version": {
+            "type": "integer",
+            "title": "Draft Version"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/RevisionSummary"
+            },
+            "type": "array",
+            "title": "History"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "revision",
+          "config",
+          "draft",
+          "draft_base_revision",
+          "draft_version",
+          "history"
+        ],
+        "title": "AdministrationSnapshot"
+      },
+      "AppearanceConfiguration": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "subtitle": {
+            "type": "string",
+            "maxLength": 240,
+            "title": "Subtitle"
+          },
+          "density": {
+            "type": "string",
+            "enum": [
+              "compact",
+              "comfortable"
+            ],
+            "title": "Density"
+          },
+          "default_page": {
+            "type": "string",
+            "enum": [
+              "dashboard",
+              "statistics",
+              "comparison",
+              "map",
+              "table",
+              "saved",
+              "dictionaries",
+              "settings"
+            ],
+            "title": "Default Page"
+          },
+          "menu": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "dashboard",
+                "statistics",
+                "comparison",
+                "map",
+                "table",
+                "saved",
+                "dictionaries",
+                "settings"
+              ]
+            },
+            "type": "array",
+            "maxItems": 8,
+            "minItems": 1,
+            "title": "Menu"
+          },
+          "card_details": {
+            "$ref": "#/components/schemas/CardDetailsConfiguration"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "title",
+          "subtitle",
+          "density",
+          "default_page",
+          "menu"
+        ],
+        "title": "AppearanceConfiguration"
+      },
+      "ApplicationConfiguration": {
+        "properties": {
+          "filters": {
+            "$ref": "#/components/schemas/FilterConfiguration"
+          },
+          "dashboard": {
+            "$ref": "#/components/schemas/DashboardConfiguration"
+          },
+          "tables": {
+            "$ref": "#/components/schemas/TableConfiguration"
+          },
+          "appearance": {
+            "$ref": "#/components/schemas/AppearanceConfiguration"
+          },
+          "defaults": {
+            "$ref": "#/components/schemas/DefaultConfiguration"
+          },
+          "dictionaries": {
+            "$ref": "#/components/schemas/DictionaryConfiguration"
+          },
+          "kpi": {
+            "$ref": "#/components/schemas/KpiConfiguration"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "filters",
+          "dashboard",
+          "tables",
+          "appearance",
+          "defaults",
+          "dictionaries"
+        ],
+        "title": "ApplicationConfiguration"
+      },
+      "BatchQueryRequest": {
+        "properties": {
+          "queries": {
+            "items": {
+              "$ref": "#/components/schemas/QueryRequest"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "minItems": 1,
+            "title": "Queries"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "queries"
+        ],
+        "title": "BatchQueryRequest"
+      },
+      "BiComparisonRequest": {
+        "properties": {
+          "level": {
+            "type": "string",
+            "enum": [
+              "DEPARTMENT",
+              "GROUP",
+              "TEAM",
+              "CATEGORY",
+              "BBAK",
+              "CREW"
+            ],
+            "title": "Level"
+          },
+          "own_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Own Id"
+          },
+          "peer_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Peer Id"
+          },
+          "context_department_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Context Department Id"
+          },
+          "context_group_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Context Group Id"
+          },
+          "context_category": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 256,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Context Category"
+          },
+          "query": {
+            "$ref": "#/components/schemas/QueryRequest"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "level",
+          "own_id",
+          "query"
+        ],
+        "title": "BiComparisonRequest"
+      },
+      "CacheInvalidation": {
+        "properties": {
+          "target": {
+            "type": "string",
+            "enum": [
+              "PERIOD",
+              "CURRENT_PERIOD",
+              "METRIC",
+              "KPI",
+              "DICTIONARY",
+              "ALL"
+            ],
+            "title": "Target"
+          },
+          "date_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DateRange"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "key": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_]*$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Key"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "target"
+        ],
+        "title": "CacheInvalidation"
+      },
+      "CacheWarmRequest": {
+        "properties": {
+          "periods": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "CURRENT_MONTH",
+                "PREVIOUS_MONTH",
+                "LAST_HORIZON",
+                "CUSTOM"
+              ]
+            },
+            "type": "array",
+            "maxItems": 4,
+            "minItems": 1,
+            "title": "Periods"
+          },
+          "date_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DateRange"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "metric_keys": {
+            "items": {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 30,
+            "minItems": 1,
+            "title": "Metric Keys"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "CacheWarmRequest"
+      },
+      "CardDetailsConfiguration": {
+        "properties": {
+          "interaction": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "click",
+              "disabled"
+            ],
+            "title": "Interaction",
+            "default": "auto"
+          },
+          "hover_delay_ms": {
+            "type": "integer",
+            "maximum": 1500.0,
+            "minimum": 0.0,
+            "title": "Hover Delay Ms",
+            "default": 0
+          },
+          "width": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "wide"
+            ],
+            "title": "Width",
+            "default": "standard"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "CardDetailsConfiguration"
+      },
+      "CategoryWeight": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Revision",
+            "default": 0
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "weight_set_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Weight Set Id",
+            "default": "target_equivalent"
+          },
+          "category": {
+            "type": "string",
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Category"
+          },
+          "weight": {
+            "type": "number",
+            "maximum": 1000000.0,
+            "minimum": 0.0,
+            "title": "Weight",
+            "default": 1
+          },
+          "display_separately": {
+            "type": "boolean",
+            "title": "Display Separately",
+            "default": false
+          },
+          "include_in_weighted_total": {
+            "type": "boolean",
+            "title": "Include In Weighted Total",
+            "default": true
+          },
+          "include_in_general_total": {
+            "type": "boolean",
+            "title": "Include In General Total",
+            "default": true
+          },
+          "excluded_from_general_total": {
+            "type": "boolean",
+            "title": "Excluded From General Total",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "category"
+        ],
+        "title": "CategoryWeight"
+      },
+      "ChartStyles": {
+        "properties": {
+          "timeline": {
+            "type": "string",
+            "enum": [
+              "combined",
+              "bars",
+              "line",
+              "area"
+            ],
+            "title": "Timeline"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "bars",
+              "donut"
+            ],
+            "title": "Category"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "bars",
+              "donut"
+            ],
+            "title": "Purpose"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "timeline",
+          "category",
+          "purpose"
+        ],
+        "title": "ChartStyles"
+      },
+      "ComparisonPeriod": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "date_from": {
+            "type": "string",
+            "format": "date",
+            "title": "Date From"
+          },
+          "date_to": {
+            "type": "string",
+            "format": "date",
+            "title": "Date To"
+          },
+          "time_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time From"
+          },
+          "time_to": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time To"
+          },
+          "is_partial": {
+            "type": "boolean",
+            "title": "Is Partial"
+          },
+          "is_current": {
+            "type": "boolean",
+            "title": "Is Current",
+            "default": false
+          },
+          "is_future": {
+            "type": "boolean",
+            "title": "Is Future",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "date_from",
+          "date_to",
+          "is_partial"
+        ],
+        "title": "ComparisonPeriod"
+      },
+      "ComparisonRequest": {
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "periods",
+              "units",
+              "units_over_time"
+            ],
+            "title": "Mode"
+          },
+          "dimension": {
+            "type": "string",
+            "enum": [
+              "unit",
+              "bbak",
+              "rota",
+              "battalion"
+            ],
+            "title": "Dimension",
+            "default": "unit"
+          },
+          "granularity": {
+            "type": "string",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "quarter"
+            ],
+            "title": "Granularity",
+            "default": "week"
+          },
+          "filters": {
+            "$ref": "#/components/schemas/FilterRequest"
+          },
+          "comparison_filters": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FilterRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "units": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "maxItems": 6,
+                "minItems": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Units"
+          }
+        },
+        "type": "object",
+        "required": [
+          "mode",
+          "filters"
+        ],
+        "title": "ComparisonRequest"
+      },
+      "ComparisonResponse": {
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "periods",
+              "units",
+              "units_over_time"
+            ],
+            "title": "Mode"
+          },
+          "dimension": {
+            "type": "string",
+            "enum": [
+              "unit",
+              "bbak",
+              "rota",
+              "battalion"
+            ],
+            "title": "Dimension",
+            "default": "unit"
+          },
+          "granularity": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "day",
+                  "week",
+                  "month",
+                  "quarter"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Granularity"
+          },
+          "baseline_id": {
+            "type": "string",
+            "title": "Baseline Id"
+          },
+          "selections": {
+            "items": {
+              "$ref": "#/components/schemas/ComparisonSelection"
+            },
+            "type": "array",
+            "title": "Selections"
+          },
+          "periods": {
+            "items": {
+              "$ref": "#/components/schemas/ComparisonPeriod"
+            },
+            "type": "array",
+            "title": "Periods"
+          },
+          "kpi_fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kpi Fingerprint"
+          },
+          "configuration_revision": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Configuration Revision"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "mock",
+                  "clickhouse",
+                  "external",
+                  "database"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source"
+          },
+          "kpi_configuration": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/KpiConfiguration"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "mode",
+          "baseline_id",
+          "selections"
+        ],
+        "title": "ComparisonResponse"
+      },
+      "ComparisonSelection": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "filters": {
+            "$ref": "#/components/schemas/FilterRequest"
+          },
+          "metrics": {
+            "items": {
+              "$ref": "#/components/schemas/Metric"
+            },
+            "type": "array",
+            "title": "Metrics"
+          },
+          "group_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Group Id"
+          },
+          "period_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Period Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "filters",
+          "metrics"
+        ],
+        "title": "ComparisonSelection"
+      },
+      "ComponentNormalization": {
+        "properties": {
+          "min": {
+            "type": "number",
+            "title": "Min"
+          },
+          "max": {
+            "type": "number",
+            "title": "Max"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "HIGHER_IS_BETTER",
+              "LOWER_IS_BETTER"
+            ],
+            "title": "Direction",
+            "default": "HIGHER_IS_BETTER"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "min",
+          "max"
+        ],
+        "title": "ComponentNormalization"
+      },
+      "ComponentThreshold": {
+        "properties": {
+          "operator": {
+            "type": "string",
+            "enum": [
+              "gt",
+              "gte",
+              "lt",
+              "lte",
+              "eq"
+            ],
+            "title": "Operator",
+            "default": "gte"
+          },
+          "value": {
+            "type": "number",
+            "title": "Value"
+          },
+          "else_value": {
+            "type": "number",
+            "title": "Else Value",
+            "default": 0
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "title": "ComponentThreshold"
+      },
+      "CreateUserRequest": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "display_name": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Display Name"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "title": "Password",
+            "writeOnly": true
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "administrator",
+              "viewer"
+            ],
+            "title": "Role"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "username",
+          "display_name",
+          "password",
+          "role"
+        ],
+        "title": "CreateUserRequest"
+      },
+      "DashboardAssignment": {
+        "properties": {
+          "assignment_type": {
+            "type": "string",
+            "enum": [
+              "role",
+              "user",
+              "department",
+              "group"
+            ],
+            "title": "Assignment Type"
+          },
+          "assignment_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Assignment Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "assignment_type",
+          "assignment_id"
+        ],
+        "title": "DashboardAssignment"
+      },
+      "DashboardConfiguration": {
+        "properties": {
+          "metric_keys": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "flights",
+                "effective",
+                "detected",
+                "affected",
+                "destroyed",
+                "efficiency",
+                "avg_flights_per_position",
+                "weighted_efficiency"
+              ]
+            },
+            "type": "array",
+            "maxItems": 8,
+            "minItems": 1,
+            "title": "Metric Keys"
+          },
+          "blocks": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "timeline",
+                "map",
+                "events",
+                "departments",
+                "purposes",
+                "lost_devices"
+              ]
+            },
+            "type": "array",
+            "maxItems": 6,
+            "title": "Blocks"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "metric_keys",
+          "blocks"
+        ],
+        "title": "DashboardConfiguration"
+      },
+      "DashboardDefinition": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Revision",
+            "default": 0
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "title": "Slug"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 4000,
+            "title": "Description",
+            "default": ""
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "DASHBOARD",
+              "STATISTICS",
+              "COMPARISON"
+            ],
+            "title": "Type",
+            "default": "DASHBOARD"
+          },
+          "is_system": {
+            "type": "boolean",
+            "title": "Is System",
+            "default": true
+          },
+          "layout_mode": {
+            "type": "string",
+            "enum": [
+              "LOCKED",
+              "LAYOUT_EDITABLE",
+              "CUSTOMIZABLE",
+              "FREE"
+            ],
+            "title": "Layout Mode",
+            "default": "LOCKED"
+          },
+          "version": {
+            "type": "integer",
+            "const": 2,
+            "title": "Version",
+            "default": 2
+          },
+          "widgets": {
+            "items": {
+              "$ref": "#/components/schemas/WidgetDefinition"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Widgets"
+          },
+          "assignments": {
+            "items": {
+              "$ref": "#/components/schemas/DashboardAssignment"
+            },
+            "type": "array",
+            "maxItems": 1000,
+            "title": "Assignments"
+          },
+          "global_filters": {
+            "items": {
+              "$ref": "#/components/schemas/QueryFilter"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Global Filters"
+          },
+          "created_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created By"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "slug"
+        ],
+        "title": "DashboardDefinition"
+      },
+      "DashboardQuery": {
+        "properties": {
+          "date_range": {
+            "$ref": "#/components/schemas/DateRange"
+          },
+          "filters": {
+            "items": {
+              "$ref": "#/components/schemas/QueryFilter"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Filters"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "date_range"
+        ],
+        "title": "DashboardQuery"
+      },
+      "DashboardResponse": {
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "title": "Revision"
+          },
+          "preferences": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PersonalDashboardPreferences"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "revision",
+          "preferences"
+        ],
+        "title": "DashboardResponse"
+      },
+      "DashboardUpdate": {
+        "properties": {
+          "expected_revision": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Expected Revision"
+          },
+          "preferences": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PersonalDashboardPreferences"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_revision",
+          "preferences"
+        ],
+        "title": "DashboardUpdate"
+      },
+      "DataScope": {
+        "properties": {
+          "scope_type": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "DEPARTMENT",
+              "GROUP",
+              "TEAM",
+              "SELF",
+              "CUSTOM",
+              "NONE"
+            ],
+            "title": "Scope Type",
+            "default": "NONE"
+          },
+          "scope_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 5000,
+            "title": "Scope Ids"
+          },
+          "filters": {
+            "items": {
+              "$ref": "#/components/schemas/QueryFilter"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Filters"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "DataScope"
+      },
+      "DateRange": {
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date",
+            "title": "From"
+          },
+          "to": {
+            "type": "string",
+            "format": "date",
+            "title": "To"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "from",
+          "to"
+        ],
+        "title": "DateRange"
+      },
+      "DefaultConfiguration": {
+        "properties": {
+          "date_range_days": {
+            "type": "integer",
+            "maximum": 365.0,
+            "minimum": 1.0,
+            "title": "Date Range Days"
+          },
+          "comparison_mode": {
+            "type": "string",
+            "enum": [
+              "periods",
+              "units",
+              "units_over_time"
+            ],
+            "title": "Comparison Mode"
+          },
+          "comparison_granularity": {
+            "type": "string",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "quarter"
+            ],
+            "title": "Comparison Granularity"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "date_range_days",
+          "comparison_mode",
+          "comparison_granularity"
+        ],
+        "title": "DefaultConfiguration"
+      },
+      "DefinitionPreview": {
+        "properties": {
+          "entity": {
+            "type": "string",
+            "enum": [
+              "metrics",
+              "kpis"
+            ],
+            "title": "Entity"
+          },
+          "definition": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Definition"
+          },
+          "query": {
+            "$ref": "#/components/schemas/QueryRequest"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "entity",
+          "definition",
+          "query"
+        ],
+        "title": "DefinitionPreview"
+      },
+      "DictionaryConfiguration": {
+        "properties": {
+          "labels": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              "propertyNames": {
+                "maxLength": 256,
+                "minLength": 1
+              },
+              "type": "object"
+            },
+            "type": "object",
+            "maxProperties": 11,
+            "title": "Labels"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "DictionaryConfiguration"
+      },
+      "Dimension": {
+        "properties": {
+          "field": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Field"
+          },
+          "granularity": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "day",
+                  "week",
+                  "month",
+                  "quarter",
+                  "year"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Granularity"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "field"
+        ],
+        "title": "Dimension"
+      },
+      "DraftRequest": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/ApplicationConfiguration"
+          },
+          "base_revision": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Base Revision"
+          },
+          "expected_draft_version": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Expected Draft Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "config",
+          "base_revision",
+          "expected_draft_version"
+        ],
+        "title": "DraftRequest"
+      },
+      "EventRow": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "direction": {
+            "type": "string",
+            "title": "Direction"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "asset": {
+            "type": "string",
+            "title": "Asset"
+          },
+          "group": {
+            "type": "string",
+            "title": "Group"
+          },
+          "purpose": {
+            "type": "string",
+            "title": "Purpose"
+          },
+          "class_name": {
+            "type": "string",
+            "title": "Class Name"
+          },
+          "result": {
+            "type": "string",
+            "title": "Result"
+          },
+          "grid_ref": {
+            "type": "string",
+            "title": "Grid Ref"
+          },
+          "lat": {
+            "type": "number",
+            "title": "Lat"
+          },
+          "lon": {
+            "type": "number",
+            "title": "Lon"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "timestamp",
+          "direction",
+          "unit",
+          "category",
+          "asset",
+          "group",
+          "purpose",
+          "class_name",
+          "result",
+          "grid_ref",
+          "lat",
+          "lon"
+        ],
+        "title": "EventRow"
+      },
+      "FilterConfiguration": {
+        "properties": {
+          "layout": {
+            "type": "string",
+            "enum": [
+              "compact",
+              "steps"
+            ],
+            "title": "Layout"
+          },
+          "organization_dimension": {
+            "type": "string",
+            "enum": [
+              "bbak",
+              "rota",
+              "battalion",
+              "unit"
+            ],
+            "title": "Organization Dimension"
+          },
+          "fields": {
+            "items": {
+              "$ref": "#/components/schemas/FilterField"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 10,
+            "title": "Fields"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "layout",
+          "organization_dimension",
+          "fields"
+        ],
+        "title": "FilterConfiguration"
+      },
+      "FilterField": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "enum": [
+              "organization",
+              "category",
+              "purpose",
+              "direction",
+              "unit",
+              "asset",
+              "group",
+              "class_name",
+              "result",
+              "time"
+            ],
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Label"
+          },
+          "placement": {
+            "type": "string",
+            "enum": [
+              "main",
+              "extra",
+              "hidden"
+            ],
+            "title": "Placement"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "placement"
+        ],
+        "title": "FilterField"
+      },
+      "FilterIdTitleOption": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "FilterIdTitleOption"
+      },
+      "FilterOptions": {
+        "properties": {
+          "direction": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Direction"
+          },
+          "unit": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Unit"
+          },
+          "category": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Category"
+          },
+          "asset": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Asset"
+          },
+          "group": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Group"
+          },
+          "bbak": {
+            "items": {
+              "$ref": "#/components/schemas/FilterIdTitleOption"
+            },
+            "type": "array",
+            "title": "Bbak"
+          },
+          "rota": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Rota"
+          },
+          "battalion": {
+            "items": {
+              "$ref": "#/components/schemas/FilterIdTitleOption"
+            },
+            "type": "array",
+            "title": "Battalion"
+          },
+          "purpose": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Purpose"
+          },
+          "class_name": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Class Name"
+          },
+          "result": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Result"
+          }
+        },
+        "type": "object",
+        "title": "FilterOptions"
+      },
+      "FilterRequest": {
+        "properties": {
+          "date_from": {
+            "type": "string",
+            "format": "date",
+            "title": "Date From"
+          },
+          "date_to": {
+            "type": "string",
+            "format": "date",
+            "title": "Date To"
+          },
+          "time_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time From"
+          },
+          "time_to": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time To"
+          },
+          "direction": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Direction"
+          },
+          "unit": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Unit"
+          },
+          "category": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Category"
+          },
+          "asset": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Asset"
+          },
+          "group": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Group"
+          },
+          "bbak": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Bbak"
+          },
+          "rota": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Rota"
+          },
+          "battalion": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Battalion"
+          },
+          "purpose": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Purpose"
+          },
+          "class_name": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Class Name"
+          },
+          "result": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Result"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date_from",
+          "date_to"
+        ],
+        "title": "FilterRequest"
+      },
+      "GeoFeature": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "Feature",
+            "title": "Type"
+          },
+          "geometry": {
+            "$ref": "#/components/schemas/GeoPointGeometry"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/GeoFeatureProperties"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "geometry",
+          "properties"
+        ],
+        "title": "GeoFeature"
+      },
+      "GeoFeatureCollection": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "FeatureCollection",
+            "title": "Type"
+          },
+          "features": {
+            "items": {
+              "$ref": "#/components/schemas/GeoFeature"
+            },
+            "type": "array",
+            "title": "Features"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "features"
+        ],
+        "title": "GeoFeatureCollection"
+      },
+      "GeoFeatureProperties": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "result": {
+            "type": "string",
+            "title": "Result"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "asset": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asset"
+          },
+          "grid_ref": {
+            "type": "string",
+            "title": "Grid Ref"
+          },
+          "timestamp": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timestamp"
+          },
+          "purpose": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Purpose"
+          },
+          "class_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Class Name"
+          }
+        },
+        "additionalProperties": true,
+        "type": "object",
+        "required": [
+          "id",
+          "result",
+          "unit",
+          "category",
+          "grid_ref"
+        ],
+        "title": "GeoFeatureProperties"
+      },
+      "GeoPointGeometry": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "Point",
+            "title": "Type"
+          },
+          "coordinates": {
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array",
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Coordinates"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "coordinates"
+        ],
+        "title": "GeoPointGeometry"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "ok",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "HealthResponse"
+      },
+      "KpiConfiguration": {
+        "properties": {
+          "purpose_rules": {
+            "items": {
+              "$ref": "#/components/schemas/PurposeKpiRule"
+            },
+            "type": "array",
+            "maxItems": 500,
+            "title": "Purpose Rules"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "KpiConfiguration"
+      },
+      "KpiDefinition": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Revision",
+            "default": 0
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "key": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_]*$",
+            "title": "Key"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 4000,
+            "title": "Description",
+            "default": ""
+          },
+          "metrics": {
+            "items": {
+              "$ref": "#/components/schemas/MetricReference"
+            },
+            "type": "array",
+            "maxItems": 30,
+            "title": "Metrics"
+          },
+          "weights": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "maxProperties": 30,
+            "title": "Weights"
+          },
+          "formula": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Formula"
+          },
+          "normalization": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "PER_OPERATION",
+              "PER_100_OPERATIONS",
+              "PERCENT_OF_TOTAL",
+              "RATIO",
+              "MIN_MAX"
+            ],
+            "title": "Normalization",
+            "default": "NONE"
+          },
+          "normalization_metric": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Normalization Metric"
+          },
+          "minimum": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minimum"
+          },
+          "maximum": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maximum"
+          },
+          "format": {
+            "$ref": "#/components/schemas/MetricFormat"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "HIGHER_IS_BETTER",
+              "LOWER_IS_BETTER",
+              "NEUTRAL"
+            ],
+            "title": "Direction",
+            "default": "HIGHER_IS_BETTER"
+          },
+          "permissions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Permissions"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "title",
+          "formula"
+        ],
+        "title": "KpiDefinition"
+      },
+      "KpiOptions": {
+        "properties": {
+          "purposes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Purposes"
+          },
+          "results": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Results"
+          }
+        },
+        "type": "object",
+        "required": [
+          "purposes",
+          "results"
+        ],
+        "title": "KpiOptions"
+      },
+      "KpiPolicyRule": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Version",
+            "default": 0
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active",
+            "default": true
+          },
+          "valid_from": {
+            "type": "string",
+            "format": "date",
+            "title": "Valid From"
+          },
+          "valid_to": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid To"
+          },
+          "context": {
+            "$ref": "#/components/schemas/PolicyContext"
+          },
+          "components": {
+            "items": {
+              "$ref": "#/components/schemas/PolicyComponent"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Components"
+          },
+          "score_formula": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score Formula"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "valid_from",
+          "components"
+        ],
+        "title": "KpiPolicyRule"
+      },
+      "KpiPreviewRequest": {
+        "properties": {
+          "filters": {
+            "$ref": "#/components/schemas/FilterRequest"
+          },
+          "kpi": {
+            "$ref": "#/components/schemas/KpiConfiguration"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "filters",
+          "kpi"
+        ],
+        "title": "KpiPreviewRequest"
+      },
+      "KpiPreviewResponse": {
+        "properties": {
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "total_flights": {
+            "type": "integer",
+            "title": "Total Flights"
+          },
+          "successful_flights": {
+            "type": "integer",
+            "title": "Successful Flights"
+          },
+          "usefulness_points": {
+            "type": "number",
+            "title": "Usefulness Points"
+          },
+          "weighted_flights": {
+            "type": "number",
+            "title": "Weighted Flights"
+          },
+          "weighted_efficiency": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weighted Efficiency"
+          },
+          "purposes": {
+            "items": {
+              "$ref": "#/components/schemas/PurposeKpiPreview"
+            },
+            "type": "array",
+            "title": "Purposes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source",
+          "total_flights",
+          "successful_flights",
+          "usefulness_points",
+          "weighted_flights",
+          "weighted_efficiency",
+          "purposes"
+        ],
+        "title": "KpiPreviewResponse"
+      },
+      "LayoutOverrideInput": {
+        "properties": {
+          "widget_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Widget Id"
+          },
+          "layout": {
+            "$ref": "#/components/schemas/WidgetLayout"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "widget_id",
+          "layout"
+        ],
+        "title": "LayoutOverrideInput"
+      },
+      "LoginRequest": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "title": "Password",
+            "writeOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "LoginRequest"
+      },
+      "Metric": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "delta": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delta"
+          },
+          "primary_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Primary Label"
+          },
+          "secondary_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Secondary Label"
+          },
+          "secondary_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Secondary Value"
+          },
+          "breakdown_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Breakdown Title"
+          },
+          "breakdown": {
+            "items": {
+              "$ref": "#/components/schemas/MetricBreakdownItem"
+            },
+            "type": "array",
+            "title": "Breakdown"
+          },
+          "calculation_fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calculation Fingerprint"
+          },
+          "numerator": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Numerator"
+          },
+          "denominator": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Denominator"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "value"
+        ],
+        "title": "Metric"
+      },
+      "MetricBreakdownItem": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "children": {
+            "items": {
+              "$ref": "#/components/schemas/MetricBreakdownItem"
+            },
+            "type": "array",
+            "title": "Children"
+          },
+          "numerator": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Numerator"
+          },
+          "denominator": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Denominator"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "value"
+        ],
+        "title": "MetricBreakdownItem"
+      },
+      "MetricDefinition": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Revision",
+            "default": 0
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "key": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_]*$",
+            "title": "Key"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 4000,
+            "title": "Description",
+            "default": ""
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "flights",
+              "events",
+              "ammunition",
+              "lost_devices"
+            ],
+            "title": "Source",
+            "default": "flights"
+          },
+          "aggregation": {
+            "type": "string",
+            "enum": [
+              "COUNT",
+              "COUNT_DISTINCT",
+              "SUM",
+              "AVG",
+              "MIN",
+              "MAX",
+              "RATIO",
+              "FORMULA",
+              "WEIGHTED_SUM"
+            ],
+            "title": "Aggregation"
+          },
+          "field": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Field"
+          },
+          "category_field": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Category Field",
+            "default": "category"
+          },
+          "weight_set_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Weight Set Id",
+            "default": "target_equivalent"
+          },
+          "category_mode": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "GENERAL",
+              "SEPARATE"
+            ],
+            "title": "Category Mode",
+            "default": "ALL"
+          },
+          "filters": {
+            "items": {
+              "$ref": "#/components/schemas/QueryFilter"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Filters"
+          },
+          "formula": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Formula"
+          },
+          "numerator": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Numerator"
+          },
+          "denominator": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Denominator"
+          },
+          "format": {
+            "$ref": "#/components/schemas/MetricFormat"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "HIGHER_IS_BETTER",
+              "LOWER_IS_BETTER",
+              "NEUTRAL"
+            ],
+            "title": "Direction",
+            "default": "NEUTRAL"
+          },
+          "percentage_difference": {
+            "type": "string",
+            "enum": [
+              "percentage_points",
+              "relative_percent"
+            ],
+            "title": "Percentage Difference",
+            "default": "relative_percent"
+          },
+          "permissions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Permissions"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "title",
+          "aggregation"
+        ],
+        "title": "MetricDefinition"
+      },
+      "MetricFormat": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "number",
+              "percent",
+              "currency",
+              "duration"
+            ],
+            "title": "Type",
+            "default": "number"
+          },
+          "decimals": {
+            "type": "integer",
+            "maximum": 8.0,
+            "minimum": 0.0,
+            "title": "Decimals",
+            "default": 0
+          },
+          "suffix": {
+            "type": "string",
+            "maxLength": 40,
+            "title": "Suffix",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "MetricFormat"
+      },
+      "MetricReference": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Key"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "title": "MetricReference"
+      },
+      "MetricResultMetadata": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "format": {
+            "$ref": "#/components/schemas/MetricFormat"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "HIGHER_IS_BETTER",
+              "LOWER_IS_BETTER",
+              "NEUTRAL"
+            ],
+            "title": "Direction",
+            "default": "NEUTRAL"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "title"
+        ],
+        "title": "MetricResultMetadata"
+      },
+      "MissionKpiRequest": {
+        "properties": {
+          "date_range": {
+            "$ref": "#/components/schemas/DateRange"
+          },
+          "filters": {
+            "items": {
+              "$ref": "#/components/schemas/QueryFilter"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Filters"
+          },
+          "rule_mode": {
+            "type": "string",
+            "enum": [
+              "CURRENT_RULE",
+              "HISTORICAL_RULE"
+            ],
+            "title": "Rule Mode",
+            "default": "CURRENT_RULE"
+          },
+          "rule_revision": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rule Revision"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Offset",
+            "default": 0
+          },
+          "limit": {
+            "type": "integer",
+            "maximum": 1000.0,
+            "minimum": 1.0,
+            "title": "Limit",
+            "default": 100
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "date_range"
+        ],
+        "title": "MissionKpiRequest"
+      },
+      "OverrideItem": {
+        "properties": {
+          "widget_id": {
+            "type": "string",
+            "title": "Widget Id"
+          },
+          "layout": {
+            "$ref": "#/components/schemas/WidgetLayout"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "widget_id",
+          "layout"
+        ],
+        "title": "OverrideItem"
+      },
+      "OverrideUpdate": {
+        "properties": {
+          "expected_revision": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Expected Revision"
+          },
+          "overrides": {
+            "items": {
+              "$ref": "#/components/schemas/OverrideItem"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Overrides"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_revision",
+          "overrides"
+        ],
+        "title": "OverrideUpdate"
+      },
+      "PageQuery": {
+        "properties": {
+          "date_range": {
+            "$ref": "#/components/schemas/DateRange"
+          },
+          "filters": {
+            "items": {
+              "$ref": "#/components/schemas/QueryFilter"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Filters"
+          },
+          "time_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d(:[0-5]\\d)?$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time From"
+          },
+          "time_to": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d(:[0-5]\\d)?$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time To"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "date_range"
+        ],
+        "title": "PageQuery"
+      },
+      "PersonalAppearance": {
+        "properties": {
+          "background": {
+            "type": "string",
+            "pattern": "^(default|navy|graphite|forest|gradient|image|#[0-9a-fA-F]{6})$",
+            "title": "Background",
+            "default": "default"
+          },
+          "background_asset_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-f0-9]{32}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Background Asset Id"
+          },
+          "background_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Background Url"
+          },
+          "background_opacity": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Background Opacity",
+            "default": 1
+          },
+          "widget_opacity": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.2,
+            "title": "Widget Opacity",
+            "default": 1
+          },
+          "grid_spacing": {
+            "type": "integer",
+            "maximum": 32.0,
+            "minimum": 0.0,
+            "title": "Grid Spacing",
+            "default": 12
+          },
+          "density": {
+            "type": "string",
+            "pattern": "^(compact|comfortable)$",
+            "title": "Density",
+            "default": "comfortable"
+          },
+          "card_radius": {
+            "type": "integer",
+            "maximum": 40.0,
+            "minimum": 0.0,
+            "title": "Card Radius",
+            "default": 12
+          },
+          "shadow": {
+            "type": "boolean",
+            "title": "Shadow",
+            "default": true
+          },
+          "accent": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$",
+            "title": "Accent",
+            "default": "#59b8dd"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "PersonalAppearance"
+      },
+      "PersonalDashboardPreferences": {
+        "properties": {
+          "version": {
+            "type": "integer",
+            "const": 1,
+            "title": "Version"
+          },
+          "metric_keys": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "flights",
+                    "effective",
+                    "detected",
+                    "affected",
+                    "destroyed",
+                    "efficiency",
+                    "avg_flights_per_position",
+                    "weighted_efficiency"
+                  ]
+                },
+                "type": "array",
+                "maxItems": 8
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metric Keys"
+          },
+          "blocks": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "timeline",
+                    "map",
+                    "events",
+                    "departments",
+                    "purposes",
+                    "lost_devices",
+                    "timeline_line",
+                    "timeline_bar",
+                    "timeline_area",
+                    "category_chart",
+                    "purpose_chart"
+                  ]
+                },
+                "type": "array",
+                "maxItems": 11
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Blocks"
+          },
+          "background": {
+            "type": "string",
+            "enum": [
+              "default",
+              "navy",
+              "graphite",
+              "forest"
+            ],
+            "title": "Background"
+          },
+          "density": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "compact",
+                  "comfortable"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Density"
+          },
+          "chart_styles": {
+            "$ref": "#/components/schemas/ChartStyles"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "version",
+          "metric_keys",
+          "blocks",
+          "background",
+          "density",
+          "chart_styles"
+        ],
+        "title": "PersonalDashboardPreferences"
+      },
+      "PersonalMigration": {
+        "properties": {
+          "legacy_preferences": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PersonalDashboardPreferences"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "saved_views": {
+            "items": {
+              "$ref": "#/components/schemas/SavedView"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Saved Views"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "PersonalMigration"
+      },
+      "PersonalUpdate": {
+        "properties": {
+          "expected_revision": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Expected Revision"
+          },
+          "appearance": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PersonalAppearance"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "overrides": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/LayoutOverrideInput"
+                },
+                "type": "array",
+                "maxItems": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overrides"
+          },
+          "hidden_widget_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "maxItems": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hidden Widget Ids"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_revision"
+        ],
+        "title": "PersonalUpdate"
+      },
+      "PolicyComponent": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Label"
+          },
+          "metric_key": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Metric Key"
+          },
+          "formula": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Formula"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "positive",
+              "negative"
+            ],
+            "title": "Direction",
+            "default": "positive"
+          },
+          "weight": {
+            "type": "number",
+            "maximum": 1000000.0,
+            "minimum": 0.0,
+            "title": "Weight",
+            "default": 1
+          },
+          "scale": {
+            "type": "number",
+            "maximum": 1000000.0,
+            "minimum": 0.0,
+            "title": "Scale",
+            "default": 100
+          },
+          "normalization": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ComponentNormalization"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ComponentThreshold"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "zone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 256,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zone"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "label"
+        ],
+        "title": "PolicyComponent"
+      },
+      "PolicyContext": {
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 256,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "purpose": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 256,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Purpose"
+          },
+          "zone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 256,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zone"
+          },
+          "device_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 256,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device Type"
+          },
+          "bbak_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bbak Id"
+          },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 256,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "PolicyContext"
+      },
+      "PolicySimulation": {
+        "properties": {
+          "rule": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/KpiPolicyRule"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "context": {
+            "$ref": "#/components/schemas/SimulationContext"
+          },
+          "metrics": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "object",
+            "maxProperties": 100,
+            "title": "Metrics"
+          },
+          "zone_metrics": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "type": "object"
+            },
+            "type": "object",
+            "maxProperties": 100,
+            "title": "Zone Metrics"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "CURRENT_RULE",
+              "HISTORICAL_RULE"
+            ],
+            "title": "Mode",
+            "default": "CURRENT_RULE"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "context"
+        ],
+        "title": "PolicySimulation"
+      },
+      "PreviewRequest": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/ApplicationConfiguration"
+          },
+          "base_revision": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Base Revision"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "config",
+          "base_revision"
+        ],
+        "title": "PreviewRequest"
+      },
+      "PreviewResponse": {
+        "properties": {
+          "valid": {
+            "type": "boolean",
+            "title": "Valid"
+          },
+          "revision": {
+            "type": "integer",
+            "title": "Revision"
+          },
+          "config": {
+            "$ref": "#/components/schemas/ApplicationConfiguration"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "valid",
+          "revision",
+          "config"
+        ],
+        "title": "PreviewResponse"
+      },
+      "PublicConfiguration": {
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "title": "Revision"
+          },
+          "config": {
+            "$ref": "#/components/schemas/ApplicationConfiguration"
+          },
+          "administration_enabled": {
+            "type": "boolean",
+            "title": "Administration Enabled"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "revision",
+          "config",
+          "administration_enabled"
+        ],
+        "title": "PublicConfiguration"
+      },
+      "PublicUser": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "display_name": {
+            "type": "string",
+            "title": "Display Name"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "administrator",
+              "viewer"
+            ],
+            "title": "Role"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "username",
+          "display_name",
+          "role",
+          "active",
+          "created_at"
+        ],
+        "title": "PublicUser"
+      },
+      "PublishRequest": {
+        "properties": {
+          "base_revision": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Base Revision"
+          },
+          "expected_draft_version": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Expected Draft Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "base_revision",
+          "expected_draft_version"
+        ],
+        "title": "PublishRequest"
+      },
+      "PurposeKpiPreview": {
+        "properties": {
+          "purpose": {
+            "type": "string",
+            "title": "Purpose"
+          },
+          "flights": {
+            "type": "integer",
+            "title": "Flights"
+          },
+          "successful_flights": {
+            "type": "integer",
+            "title": "Successful Flights"
+          },
+          "success_rate": {
+            "type": "number",
+            "title": "Success Rate"
+          },
+          "usefulness_percent": {
+            "type": "number",
+            "title": "Usefulness Percent"
+          },
+          "coefficient": {
+            "type": "number",
+            "title": "Coefficient"
+          },
+          "usefulness_points": {
+            "type": "number",
+            "title": "Usefulness Points"
+          },
+          "weighted_flights": {
+            "type": "number",
+            "title": "Weighted Flights"
+          },
+          "weighted_efficiency": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weighted Efficiency"
+          },
+          "success_mode": {
+            "type": "string",
+            "enum": [
+              "source",
+              "results"
+            ],
+            "title": "Success Mode"
+          },
+          "successful_results": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Successful Results"
+          }
+        },
+        "type": "object",
+        "required": [
+          "purpose",
+          "flights",
+          "successful_flights",
+          "success_rate",
+          "usefulness_percent",
+          "coefficient",
+          "usefulness_points",
+          "weighted_flights",
+          "weighted_efficiency",
+          "success_mode",
+          "successful_results"
+        ],
+        "title": "PurposeKpiPreview"
+      },
+      "PurposeKpiRule": {
+        "properties": {
+          "purpose": {
+            "type": "string",
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Purpose"
+          },
+          "success_mode": {
+            "type": "string",
+            "enum": [
+              "source",
+              "results"
+            ],
+            "title": "Success Mode",
+            "default": "source"
+          },
+          "successful_results": {
+            "items": {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            "type": "array",
+            "maxItems": 500,
+            "title": "Successful Results"
+          },
+          "usefulness_percent": {
+            "type": "number",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Usefulness Percent",
+            "default": 100
+          },
+          "coefficient": {
+            "type": "number",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Coefficient",
+            "default": 1
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "purpose"
+        ],
+        "title": "PurposeKpiRule"
+      },
+      "QueryFilter": {
+        "properties": {
+          "field": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Field"
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "eq",
+              "neq",
+              "in",
+              "not_in",
+              "gt",
+              "gte",
+              "lt",
+              "lte",
+              "contains",
+              "not_contains",
+              "is_null",
+              "is_not_null",
+              "between"
+            ],
+            "title": "Operator"
+          },
+          "value": {
+            "title": "Value"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "field",
+          "operator"
+        ],
+        "title": "QueryFilter"
+      },
+      "QueryRequest": {
+        "properties": {
+          "metrics": {
+            "items": {
+              "$ref": "#/components/schemas/MetricReference"
+            },
+            "type": "array",
+            "maxItems": 30,
+            "title": "Metrics"
+          },
+          "dimensions": {
+            "items": {
+              "$ref": "#/components/schemas/Dimension"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Dimensions"
+          },
+          "filters": {
+            "items": {
+              "$ref": "#/components/schemas/QueryFilter"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Filters"
+          },
+          "date_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DateRange"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sort": {
+            "items": {
+              "$ref": "#/components/schemas/SortField"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Sort"
+          },
+          "top_n": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 10000.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Top N"
+          },
+          "data_scope": {
+            "type": "string",
+            "enum": [
+              "USER_SCOPE",
+              "GLOBAL",
+              "FIXED_SCOPE"
+            ],
+            "title": "Data Scope",
+            "default": "USER_SCOPE"
+          },
+          "fixed_scope": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DataScope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "QueryRequest"
+      },
+      "QueryResult": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "empty",
+              "error"
+            ],
+            "title": "Status",
+            "default": "success"
+          },
+          "rows": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Rows"
+          },
+          "metrics": {
+            "items": {
+              "$ref": "#/components/schemas/MetricResultMetadata"
+            },
+            "type": "array",
+            "title": "Metrics"
+          },
+          "dimensions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Dimensions"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "default": "clickhouse"
+          },
+          "total_rows": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Total Rows",
+            "default": 0
+          },
+          "separate_rows": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Separate Rows"
+          },
+          "dimension_labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Dimension Labels"
+          },
+          "payload": {
+            "title": "Payload"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "QueryResult"
+      },
+      "RevisionSummary": {
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "title": "Revision"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "initial",
+              "publish",
+              "rollback"
+            ],
+            "title": "Action"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "revision",
+          "created_at",
+          "action"
+        ],
+        "title": "RevisionSummary"
+      },
+      "RoleDefinition": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Revision",
+            "default": 0
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "key": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_.-]*$",
+            "title": "Key"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "permissions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 500,
+            "title": "Permissions"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "title"
+        ],
+        "title": "RoleDefinition"
+      },
+      "RollbackRequest": {
+        "properties": {
+          "base_revision": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Base Revision"
+          },
+          "target_revision": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Target Revision"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "base_revision",
+          "target_revision"
+        ],
+        "title": "RollbackRequest"
+      },
+      "SavedView": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "filters": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Filters"
+          },
+          "target": {
+            "type": "string",
+            "maxLength": 40,
+            "title": "Target",
+            "default": "dashboard"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "filters"
+        ],
+        "title": "SavedView"
+      },
+      "SeriesDefinition": {
+        "properties": {
+          "metric": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Metric"
+          },
+          "type": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Type",
+            "default": "bar"
+          },
+          "axis": {
+            "type": "string",
+            "enum": [
+              "left",
+              "right"
+            ],
+            "title": "Axis",
+            "default": "left"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 240
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "color": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color"
+          },
+          "stack": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stack"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "metric"
+        ],
+        "title": "SeriesDefinition"
+      },
+      "SessionResponse": {
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled"
+          },
+          "user": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SessionUser"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "enabled",
+          "user"
+        ],
+        "title": "SessionResponse"
+      },
+      "SessionUser": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "display_name": {
+            "type": "string",
+            "title": "Display Name"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "administrator",
+              "viewer"
+            ],
+            "title": "Role"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "username",
+          "display_name",
+          "role"
+        ],
+        "title": "SessionUser"
+      },
+      "SimulationContext": {
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 256
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "purpose": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 256
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Purpose"
+          },
+          "zones": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Zones"
+          },
+          "device_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 256
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device Type"
+          },
+          "bbak_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bbak Id"
+          },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 256
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "date"
+        ],
+        "title": "SimulationContext"
+      },
+      "SortField": {
+        "properties": {
+          "field": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Field"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "title": "Direction",
+            "default": "asc"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "field"
+        ],
+        "title": "SortField"
+      },
+      "SourceStatus": {
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "mock",
+              "clickhouse",
+              "external",
+              "database"
+            ],
+            "title": "Source"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "connected": {
+            "type": "boolean",
+            "title": "Connected"
+          },
+          "upstream": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Upstream"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source",
+          "label",
+          "connected",
+          "message"
+        ],
+        "title": "SourceStatus"
+      },
+      "TableConfiguration": {
+        "properties": {
+          "page_size": {
+            "type": "integer",
+            "maximum": 200.0,
+            "minimum": 5.0,
+            "title": "Page Size"
+          },
+          "columns": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "timestamp",
+                "grid_ref",
+                "direction",
+                "unit",
+                "category",
+                "asset",
+                "group",
+                "purpose",
+                "class_name",
+                "result"
+              ]
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Columns"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "page_size",
+          "columns"
+        ],
+        "title": "TableConfiguration"
+      },
+      "TimelinePoint": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "effective": {
+            "type": "integer",
+            "title": "Effective"
+          },
+          "day": {
+            "type": "integer",
+            "title": "Day",
+            "default": 0
+          },
+          "night": {
+            "type": "integer",
+            "title": "Night",
+            "default": 0
+          },
+          "day_effective": {
+            "type": "integer",
+            "title": "Day Effective",
+            "default": 0
+          },
+          "night_effective": {
+            "type": "integer",
+            "title": "Night Effective",
+            "default": 0
+          },
+          "day_efficiency": {
+            "type": "number",
+            "title": "Day Efficiency",
+            "default": 0.0
+          },
+          "night_efficiency": {
+            "type": "number",
+            "title": "Night Efficiency",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "total",
+          "effective"
+        ],
+        "title": "TimelinePoint"
+      },
+      "UpdateUserRequest": {
+        "properties": {
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "administrator",
+                  "viewer"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active"
+          },
+          "password": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "password",
+                "writeOnly": true
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Password"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "UpdateUserRequest"
+      },
+      "UserAccessDefinition": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Revision",
+            "default": 0
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "user_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "User Id"
+          },
+          "role_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Role Ids"
+          },
+          "permissions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 500,
+            "title": "Permissions"
+          },
+          "denied_permissions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 500,
+            "title": "Denied Permissions"
+          },
+          "data_scope": {
+            "$ref": "#/components/schemas/DataScope"
+          },
+          "comparison_precision": {
+            "type": "string",
+            "enum": [
+              "EXACT",
+              "ROUND_1",
+              "ROUND_5",
+              "RANGE"
+            ],
+            "title": "Comparison Precision",
+            "default": "ROUND_5"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "user_id"
+        ],
+        "title": "UserAccessDefinition"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VisualizationConfig": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Type",
+            "default": "number"
+          },
+          "series": {
+            "items": {
+              "$ref": "#/components/schemas/SeriesDefinition"
+            },
+            "type": "array",
+            "maxItems": 30,
+            "title": "Series"
+          },
+          "axes": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Axes"
+          },
+          "legend": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Legend"
+          },
+          "labels": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Labels"
+          },
+          "tooltip": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Tooltip"
+          },
+          "options": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Options"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "VisualizationConfig"
+      },
+      "WeightSet": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Revision",
+            "default": 0
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "key": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_]*$",
+            "title": "Key"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 4000,
+            "title": "Description",
+            "default": ""
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "title"
+        ],
+        "title": "WeightSet"
+      },
+      "WidgetAppearance": {
+        "properties": {
+          "background": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40,
+                "pattern": "^(#[0-9a-fA-F]{6}|transparent|default|navy|graphite|gradient)$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Background"
+          },
+          "color": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color"
+          },
+          "opacity": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.2,
+            "title": "Opacity",
+            "default": 1
+          },
+          "radius": {
+            "type": "integer",
+            "maximum": 40.0,
+            "minimum": 0.0,
+            "title": "Radius",
+            "default": 12
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "WidgetAppearance"
+      },
+      "WidgetDefinition": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Revision",
+            "default": 0
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "dashboard_id": {
+            "type": "string",
+            "maxLength": 128,
+            "title": "Dashboard Id",
+            "default": ""
+          },
+          "owner_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Id"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "widget_type": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Widget Type",
+            "default": "chart"
+          },
+          "layout": {
+            "$ref": "#/components/schemas/WidgetLayout"
+          },
+          "query": {
+            "$ref": "#/components/schemas/QueryRequest"
+          },
+          "visualization": {
+            "$ref": "#/components/schemas/VisualizationConfig"
+          },
+          "permissions": {
+            "$ref": "#/components/schemas/WidgetPermissions"
+          },
+          "data_scope": {
+            "type": "string",
+            "enum": [
+              "GLOBAL",
+              "USER_SCOPE",
+              "FIXED_SCOPE"
+            ],
+            "title": "Data Scope",
+            "default": "USER_SCOPE"
+          },
+          "fixed_filters": {
+            "items": {
+              "$ref": "#/components/schemas/QueryFilter"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Fixed Filters"
+          },
+          "inherit_global_filters": {
+            "type": "boolean",
+            "title": "Inherit Global Filters",
+            "default": true
+          },
+          "date_mode": {
+            "type": "string",
+            "enum": [
+              "INHERIT_GLOBAL_DATE",
+              "USE_FIXED_DATE"
+            ],
+            "title": "Date Mode",
+            "default": "INHERIT_GLOBAL_DATE"
+          },
+          "is_locked": {
+            "type": "boolean",
+            "title": "Is Locked",
+            "default": false
+          },
+          "widget_kind": {
+            "type": "string",
+            "enum": [
+              "SYSTEM_WIDGET",
+              "USER_WIDGET"
+            ],
+            "title": "Widget Kind",
+            "default": "SYSTEM_WIDGET"
+          },
+          "builtin": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "summary",
+                  "timeline",
+                  "map",
+                  "records",
+                  "losses",
+                  "average",
+                  "category",
+                  "purpose"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Builtin"
+          },
+          "interaction": {
+            "$ref": "#/components/schemas/WidgetInteraction"
+          },
+          "visibility": {
+            "$ref": "#/components/schemas/WidgetVisibility"
+          },
+          "appearance": {
+            "$ref": "#/components/schemas/WidgetAppearance"
+          },
+          "mandatory": {
+            "type": "boolean",
+            "title": "Mandatory",
+            "default": false
+          },
+          "movable": {
+            "type": "boolean",
+            "title": "Movable",
+            "default": true
+          },
+          "resizable": {
+            "type": "boolean",
+            "title": "Resizable",
+            "default": true
+          },
+          "removable": {
+            "type": "boolean",
+            "title": "Removable",
+            "default": true
+          },
+          "section": {
+            "type": "string",
+            "enum": [
+              "overview",
+              "effectiveness",
+              "targets",
+              "losses",
+              "resources"
+            ],
+            "title": "Section",
+            "default": "overview"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "title": "WidgetDefinition"
+      },
+      "WidgetInteraction": {
+        "properties": {
+          "click_action": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "CROSS_FILTER",
+              "DRILL_THROUGH"
+            ],
+            "title": "Click Action",
+            "default": "NONE"
+          },
+          "target_page": {
+            "type": "string",
+            "enum": [
+              "STATISTICS",
+              "DASHBOARD",
+              "MAP",
+              "TABLE"
+            ],
+            "title": "Target Page",
+            "default": "STATISTICS"
+          },
+          "target_section": {
+            "type": "string",
+            "enum": [
+              "overview",
+              "effectiveness",
+              "targets",
+              "losses",
+              "resources"
+            ],
+            "title": "Target Section",
+            "default": "overview"
+          },
+          "pass_date": {
+            "type": "boolean",
+            "title": "Pass Date",
+            "default": true
+          },
+          "pass_filters": {
+            "type": "boolean",
+            "title": "Pass Filters",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "WidgetInteraction"
+      },
+      "WidgetLayout": {
+        "properties": {
+          "x": {
+            "type": "integer",
+            "maximum": 11.0,
+            "minimum": 0.0,
+            "title": "X",
+            "default": 0
+          },
+          "y": {
+            "type": "integer",
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Y",
+            "default": 0
+          },
+          "w": {
+            "type": "integer",
+            "maximum": 12.0,
+            "minimum": 1.0,
+            "title": "W",
+            "default": 6
+          },
+          "h": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "H",
+            "default": 4
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "WidgetLayout"
+      },
+      "WidgetPermissions": {
+        "properties": {
+          "required_permissions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Required Permissions"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Roles"
+          },
+          "users": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Users"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "WidgetPermissions"
+      },
+      "WidgetPreview": {
+        "properties": {
+          "date_range": {
+            "$ref": "#/components/schemas/DateRange"
+          },
+          "filters": {
+            "items": {
+              "$ref": "#/components/schemas/QueryFilter"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Filters"
+          },
+          "time_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d(:[0-5]\\d)?$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time From"
+          },
+          "time_to": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^([01]\\d|2[0-3]):[0-5]\\d(:[0-5]\\d)?$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time To"
+          },
+          "widget": {
+            "$ref": "#/components/schemas/WidgetDefinition"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "date_range",
+          "widget"
+        ],
+        "title": "WidgetPreview"
+      },
+      "WidgetVisibility": {
+        "properties": {
+          "conditions": {
+            "items": {
+              "$ref": "#/components/schemas/QueryFilter"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Conditions"
+          },
+          "show_when_all_departments": {
+            "type": "boolean",
+            "title": "Show When All Departments",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "WidgetVisibility"
+      }
+    }
+  }
+}

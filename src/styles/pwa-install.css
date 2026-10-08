@@ -1,0 +1,118 @@
+/* v1.0 PWA install button */
+.pwa-install-button {
+  min-height:34px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:0 11px;
+  border:1px solid var(--border-3);
+  border-radius:var(--radius-md);
+  background:var(--bg-3);
+  color:var(--text-1);
+  cursor:pointer;
+  font-size:var(--fs-xs);
+  font-weight:650;
+  white-space:nowrap;
+  transition:border-color .15s ease, background .15s ease, color .15s ease;
+}
+
+.pwa-install-button:hover {
+  border-color:#4382b3;
+  background:var(--bg-sel);
+  color:var(--text-1);
+}
+
+.pwa-install-help-backdrop {
+  position:fixed;
+  z-index:400;
+  inset:0;
+  display:grid;
+  place-items:center;
+  padding:18px;
+  background:rgba(2,8,13,.62);
+  backdrop-filter:blur(3px);
+}
+
+.pwa-install-help {
+  width:min(420px,100%);
+  position:relative;
+  padding:24px 22px;
+  border:1px solid var(--border-3);
+  border-radius:var(--radius-lg);
+  background:var(--bg-1);
+  box-shadow:0 24px 70px rgba(0,0,0,.55);
+  text-align:center;
+}
+
+.pwa-install-help__close {
+  position:absolute;
+  top:10px;
+  right:10px;
+  width:32px;
+  height:32px;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--border-3);
+  border-radius:var(--radius-md);
+  background:var(--bg-3);
+  color:var(--text-2);
+  cursor:pointer;
+}
+
+.pwa-install-help__icon {
+  width:48px;
+  height:48px;
+  margin:0 auto 12px;
+  display:grid;
+  place-items:center;
+  border:1px solid #315c86;
+  border-radius:var(--radius-lg);
+  background:var(--bg-sel);
+  color:#83b9ed;
+}
+
+.pwa-install-help strong {
+  display:block;
+  color:var(--text-1);
+  font-size:15px;
+}
+
+.pwa-install-help p {
+  margin:10px 0 0;
+  color:var(--text-3);
+  font-size:var(--fs-sm);
+  line-height:1.6;
+}
+
+.pwa-install-help b {
+  color:var(--text-1);
+}
+
+@media (max-width: 720px) {
+  .pwa-install-button span {
+    display:none;
+  }
+
+  .pwa-install-button {
+    width:34px;
+    padding:0;
+  }
+}
+
+@media (max-width: 480px) {
+  .pwa-install-help-backdrop {
+    align-items:end;
+    padding:0;
+  }
+
+  .pwa-install-help {
+    width:100%;
+    border-left:0;
+    border-right:0;
+    border-bottom:0;
+    border-radius:16px 16px 0 0;
+    padding:28px 20px calc(24px + env(safe-area-inset-bottom));
+  }
+}
+

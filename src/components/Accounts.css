@@ -1,0 +1,38 @@
+.account-entry { min-height:100vh; display:grid; place-items:center; padding:24px; }
+.account-entry-card { width:min(100%,440px); padding:28px; }
+.account-entry-card h1 { margin:12px 0; font-size:24px; }
+.account-entry-card h2 { font-size:18px; }
+.account-entry-card p,.account-entry-card small { color:var(--text-2); line-height:1.7; }
+.account-entry-card form,.account-user-form { display:grid; gap:15px; }
+.account-entry-card label,.account-user-form label { display:grid; gap:7px; font-size:var(--fs-md); }
+.account-entry-card input,.account-user-form input,.account-user-form select { width:100%; min-width:0; min-height:42px; background:var(--bg-3); border:1px solid var(--border-3); border-radius:var(--radius-sm); color:var(--text-1); padding:9px 11px; }
+.account-entry-card button { min-height:42px; }
+.account-error { color:#f6b2b2!important; overflow-wrap:anywhere; }
+.account-profile-button { display:flex; align-items:center; gap:8px; border:0; color:inherit; background:transparent; cursor:pointer; text-align:left; }
+.account-profile-wrap { position:relative; }
+.account-profile { gap:9px; }
+.account-avatar { width:34px; height:34px; display:grid; place-items:center; border-radius:50%; font-size:var(--fs-sm); font-weight:700; color:var(--text-1); background:#174683; flex-shrink:0; }
+.account-profile-name strong,.account-profile-name small { display:block; }
+.account-profile-name strong { font-size:var(--fs-sm); max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.account-profile-name small { color:var(--text-2); font-size:var(--fs-xs); margin-top:3px; }
+.personal-dashboard-toolbar { display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; margin:10px 0 15px; color:var(--text-2); font-size:var(--fs-sm); }
+.personal-dashboard-toolbar button,.personal-dashboard-settings button { display:flex; gap:8px; align-items:center; padding:9px 13px; }
+.personal-dashboard-settings { margin:18px 0; padding:20px; }
+.account-password-form button { cursor:pointer; }
+.account-profile-menu { position:absolute; right:0; top:calc(100% + 10px); min-width:220px; z-index:120; border:1px solid var(--border-3); border-radius:var(--radius-md); padding:10px; background:var(--bg-3); box-shadow:0 14px 35px #0008; display:grid; gap:7px; }
+.account-profile-menu button { display:flex; align-items:center; gap:9px; border:0; padding:9px; border-radius:var(--radius-sm); color:var(--text-1); background:transparent; cursor:pointer; text-align:left; }
+.account-profile-menu button:hover { background:var(--bg-sel); }
+.account-profile-menu small { color:var(--text-2); padding:5px 9px; }
+.account-management { display:grid; gap:18px; }
+.account-user-form { padding:17px; border:1px solid var(--border-3); border-radius:var(--radius-md); grid-template-columns:repeat(2,minmax(0,1fr)); }
+.account-user-form h4,.account-user-form>p,.account-user-form>button { grid-column:1 / -1; margin:0; }
+.account-user-list { display:grid; gap:10px; }
+.account-user-card { border:1px solid var(--border-3); border-radius:var(--radius-md); padding:15px; display:grid; gap:12px; }
+.account-user-card h4 { margin:0; overflow-wrap:anywhere; }
+.account-user-card small { color:var(--text-2); }
+.account-user-actions { display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
+.account-user-actions button,.account-user-actions select { border:1px solid var(--border-3); color:var(--text-1); background:var(--bg-3); border-radius:var(--radius-sm); padding:8px 10px; }
+.account-password-form { display:flex; gap:8px; flex-wrap:wrap; }
+.account-password-form input { min-width:0; flex:1; color:var(--text-1); background:var(--bg-3); border:1px solid var(--border-3); border-radius:var(--radius-sm); padding:8px; }
+.account-notice { color:#a2d8ba; line-height:1.6; }
+@media(max-width:600px) { .account-user-form { grid-template-columns:1fr; } .account-entry { padding:14px; }.account-entry-card { padding:20px; }.account-profile-name,.account-profile>svg { display:none; }.account-profile-button { padding:0; }.account-profile-menu { max-width:calc(100vw - 30px); } }

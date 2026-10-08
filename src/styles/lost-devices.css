@@ -1,0 +1,174 @@
+/* Dashboard lost-devices list v2 */
+.losses-panel {
+  overflow:visible;
+}
+
+.losses-groups {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+  padding:10px 11px 12px;
+}
+
+.losses-group {
+  min-width:0;
+  border:1px solid var(--border-2);
+  border-radius:var(--radius-md);
+  background:var(--bg-1);
+  overflow:hidden;
+}
+
+.losses-group__head {
+  min-height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:8px 10px;
+  border-bottom:1px solid var(--border-1);
+  background:var(--bg-3);
+}
+
+.losses-group__head > div {
+  min-width:0;
+  display:grid;
+  gap:2px;
+}
+
+.losses-group__head span {
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.losses-group__head strong {
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--text-1);
+  font-size:var(--fs-sm);
+}
+
+.losses-group__head b {
+  min-width:28px;
+  height:25px;
+  display:grid;
+  place-items:center;
+  padding:0 7px;
+  border:1px solid var(--border-3);
+  border-radius:999px;
+  background:var(--bg-3);
+  color:var(--text-2);
+  font-size:var(--fs-xs);
+  font-variant-numeric:tabular-nums;
+}
+
+.losses-group__items {
+  display:grid;
+}
+
+.loss-card {
+  min-width:0;
+  padding:8px 10px 9px;
+  border-bottom:1px solid var(--border-1);
+}
+
+.loss-card:last-child {
+  border-bottom:0;
+}
+
+.loss-card__asset {
+  min-width:0;
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+}
+
+.loss-card__asset > span {
+  flex:0 0 auto;
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+}
+
+.loss-card__asset > strong {
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--text-1);
+  font-size:var(--fs-xs);
+  font-weight:650;
+}
+
+.loss-card__meta {
+  margin-top:6px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);
+  gap:8px;
+}
+
+.loss-card__meta > div {
+  min-width:0;
+  display:grid;
+  gap:2px;
+}
+
+.loss-card__meta span {
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+}
+
+.loss-card__meta strong {
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--text-2);
+  font-size:var(--fs-xs);
+  font-weight:550;
+}
+
+.losses-more {
+  padding:7px 10px;
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+  text-align:right;
+  background:var(--bg-2);
+}
+
+.losses-empty {
+  min-height:90px;
+  display:grid;
+  place-items:center;
+  padding:18px;
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+  text-align:center;
+}
+
+@media (max-width:900px) {
+  .losses-groups {
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width:520px) {
+  .losses-groups {
+    padding:8px;
+    gap:8px;
+  }
+
+  .loss-card__meta {
+    grid-template-columns:1fr;
+    gap:5px;
+  }
+
+  .loss-card__meta strong {
+    white-space:normal;
+    overflow-wrap:anywhere;
+  }
+}
+
+

@@ -1,0 +1,12 @@
+{
+  "base_url": "",
+  "endpoints": {
+    "source_status": "/api/source/status",
+    "filter_options": "/api/filters/options",
+    "overview": "/api/analytics/overview",
+    "comparison": "/api/analytics/comparison",
+    "timeline": "/api/analytics/timeline",
+    "events": "/api/analytics/events",
+    "map": "/api/analytics/map"
+  }
+}

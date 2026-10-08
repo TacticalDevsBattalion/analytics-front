@@ -1,0 +1,19 @@
+/* Top bar: compact data-source status instead of a separate row under the header. */
+.data-status {
+  height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 10px;
+  border: 1px solid var(--border-2); border-radius: 999px; background: var(--bg-2);
+  color: var(--text-2); font-size: var(--fs-xs); white-space: nowrap;
+}
+.data-status .online-dot { flex: 0 0 8px; }
+.data-status .demo-chip { margin-left: 0; padding: 1px 6px; font-size: var(--fs-xs); }
+.data-status--bad { border-color: #7a4b4f; color: var(--bad); }
+.refresh-row--bad { justify-content: flex-start; margin: 4px 0 8px; padding: 8px 12px; border: 1px solid #7a4b4f; border-radius: var(--radius-md); background: rgba(122, 75, 79, .16); color: var(--bad); font-size: var(--fs-sm); }
+
+/* Icon buttons: large enough to hit comfortably. */
+.icon-button { min-width: 36px; min-height: 36px; display: inline-grid; place-items: center; }
+@media (pointer: coarse) { .icon-button { min-width: var(--tap); min-height: var(--tap); } }
+
+@media (max-width: 720px) {
+  .data-status__text { display: none; }
+  .data-status { padding: 0 8px; }
+}

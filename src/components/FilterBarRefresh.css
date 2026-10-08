@@ -1,0 +1,152 @@
+/* Refreshed filter bar: lighter panel, readable applied-filter chips, custom filter fields.
+   Loaded after FilterBarConfiguration.css so equal-specificity rules here win. */
+
+/* ── Compact bar ─────────────────────────────────────────────── */
+.filters-section--configured .filter-compact-bar { flex-wrap: wrap; row-gap: 8px; min-height: 0; padding: 6px 0 10px; }
+.filters-section--configured .filter-panel-trigger { min-height: 38px; padding: 0 14px; border-radius:var(--radius-lg); font-size:var(--fs-sm); }
+.filters-section--configured .filter-period-chip { height: 38px; padding: 0 12px; border-radius:var(--radius-lg); font-size:var(--fs-sm); }
+.filters-section--configured .filter-panel-trigger__count { background: #1d4670; color:var(--text-1); border-color: #3b76ad; }
+
+.filter-applied { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; flex: 1 1 320px; }
+.filter-applied-chip {
+  display: inline-flex; align-items: center; gap: 6px; min-width: 0; max-width: 280px; height: 30px; padding: 0 4px 0 10px;
+  border:1px solid var(--border-3); border-radius: 999px; background:linear-gradient(180deg, var(--bg-3), var(--bg-3)); color:var(--text-1); font-size:var(--fs-sm);
+}
+.filter-applied-chip > b { flex: 0 0 auto; color:var(--text-3); font-size:var(--fs-xs); font-weight: 650; letter-spacing: .02em; }
+.filter-applied-chip > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.filter-applied-chip > button {
+  flex: 0 0 auto; display: grid; place-items: center; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%;
+  background: transparent; color:var(--text-2); cursor: pointer;
+}
+.filter-applied-chip > button:hover { background:var(--bg-sel); color:var(--text-1); }
+.filter-applied-chip > button:focus-visible, .filter-applied-more:focus-visible, .filter-applied-clear:focus-visible { outline: 2px solid #71b3ed; outline-offset: 2px; }
+.filter-applied-more, .filter-applied-clear {
+  height: 30px; padding: 0 11px; border:1px dashed var(--border-3); border-radius: 999px; background: transparent; color:var(--text-2); font-size:var(--fs-sm); cursor: pointer;
+}
+.filter-applied-more:hover, .filter-applied-clear:hover { border-color: #5b8fb9; color:var(--text-1); }
+.filter-applied-clear { margin-left: auto; border-style: solid; border-color: transparent; color:var(--text-3); }
+
+/* ── Panel ───────────────────────────────────────────────────── */
+.filters-section--configured .filter-panel-shell { border-radius:var(--radius-lg); border-color:var(--border-3); background:var(--bg-1); box-shadow: 0 10px 34px rgba(0, 0, 0, .35); }
+.filters-section--configured .filter-panel-header { min-height: 48px; padding: 10px 14px; }
+.filters-section--configured .filter-panel-scroll { padding: 12px 14px 14px; }
+.filters-section--configured .filter-configuration-section-title { margin-bottom: 6px; font-size:var(--fs-sm); letter-spacing: .04em; text-transform: uppercase; color:var(--text-3); }
+.filters-section--configured .filter-unified-basic { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; margin-top: 12px; }
+.filters-section--configured .filter-unified-details-body.filters-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+.filters-section--configured .filter-unified-details { margin-top: 12px; }
+.filters-section--configured .filter-field > span { margin-bottom: 4px; color:var(--text-2); font-size:var(--fs-sm); font-weight: 600; letter-spacing: 0; text-transform: none; }
+.filters-section--configured .multi-select__trigger,
+.filters-section--configured .filter-field select,
+.filters-section--configured .filter-custom-field input { min-height: 38px; border-radius:var(--radius-md); }
+.filters-section--configured .period-field > input { border-radius:var(--radius-md); }
+
+/* ── Custom fields ───────────────────────────────────────────── */
+.filter-custom-field input, .filter-custom-field select {
+  width: 100%; height: 38px; padding: 0 11px; border:1px solid var(--border-2); background:var(--bg-2); color:var(--text-1); font-size:var(--fs-sm);
+}
+.filter-custom-field input::placeholder { color:var(--text-3); }
+.filter-custom-field input:focus, .filter-custom-field select:focus { border-color: #397fd1; box-shadow: 0 0 0 2px rgba(57, 127, 209, .16); }
+.filter-custom-range { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 6px; }
+.filter-custom-range > i { color:var(--text-3); font-style: normal; }
+
+/* ── Footer ──────────────────────────────────────────────────── */
+.filters-section--configured .filter-panel-footer { padding: 10px 14px; border-top:1px solid var(--border-2); background:var(--bg-1); }
+.filters-section--configured .filter-apply-button { border-radius:var(--radius-md); }
+.filters-section--configured .filter-reset-button { border-radius:var(--radius-md); }
+
+@media (max-width: 720px) {
+  .filter-applied { flex-basis: 100%; }
+  .filter-applied-chip { max-width: 100%; }
+  .filter-applied-clear { margin-left: 0; }
+}
+
+/* ═══ v2: denser, flatter panel ═══════════════════════════════════
+   Doubled root class (.filters-section.filters-section--configured) keeps these
+   rules above every older filter rule regardless of stylesheet order. */
+.filters-section.filters-section--configured .filter-compact-bar { padding: 4px 0 10px; gap: 8px; }
+.filters-section.filters-section--configured .filter-panel-trigger {
+  min-height: 34px; padding: 0 14px 0 12px; border-radius: 999px; border: 1px solid #3b84d6;
+  background: linear-gradient(180deg, #246cb3, #1b5792); color:var(--text-1); font-size:var(--fs-sm); font-weight: 650;
+}
+.filters-section.filters-section--configured .filter-panel-trigger:hover,
+.filters-section.filters-section--configured .filter-panel-trigger.active { border-color: #6db0f2; background: linear-gradient(180deg, #2c7ac6, #2164a4); box-shadow: 0 0 0 3px rgba(59, 132, 214, .2); }
+.filters-section.filters-section--configured .filter-panel-trigger__count { background: #f1f8ff; color: #174a7c; border-color: transparent; min-width: 19px; height: 19px; }
+.filters-section.filters-section--configured .filter-period-chip { height: 34px; border-radius: 999px; padding: 0 14px; background:var(--bg-2); border-color:var(--border-3); color:var(--text-2); }
+
+.filters-section.filters-section--configured .filter-panel-shell {
+  border:1px solid var(--border-3); border-top: 2px solid #3b84d6; border-radius:var(--radius-lg);
+  background:linear-gradient(180deg, var(--bg-3) 0%, var(--bg-1) 100%); box-shadow: 0 12px 32px rgba(0, 0, 0, .38);
+}
+.filters-section.filters-section--configured .filter-panel-header { min-height: 38px; padding: 7px 8px 7px 14px; border-bottom:1px solid var(--border-2); background: transparent; }
+.filters-section.filters-section--configured .filter-panel-header strong { font-size:var(--fs-md); letter-spacing: .02em; }
+.filters-section.filters-section--configured .filter-panel-header span { display: none; }
+.filters-section.filters-section--configured .filter-panel-close { width: 28px; height: 28px; border-radius:var(--radius-md); }
+.filters-section.filters-section--configured .filter-panel-scroll { padding: 10px 14px 12px; column-gap: 16px; }
+
+.filters-section.filters-section--configured .filter-configuration-section-title { margin: 0 0 6px; font-size:var(--fs-xs); font-weight: 700; letter-spacing: .08em; color:var(--text-3); }
+.filters-section.filters-section--configured .filter-unified-dates,
+.filters-section.filters-section--configured .filter-unified-times { gap: 8px; }
+.filters-section.filters-section--configured .period-field > span { margin-bottom: 3px; font-size:var(--fs-xs); color:var(--text-3); }
+.filters-section.filters-section--configured .period-field > input { height: 34px; min-height: 34px; padding: 0 9px; border-radius:var(--radius-md); font-size:var(--fs-sm); }
+
+.filters-section.filters-section--configured .quick-row { gap: 5px; padding: 8px 0 4px; }
+.filters-section.filters-section--configured .quick-row button {
+  min-height: 26px; padding: 0 11px; border-radius: 999px; font-size:var(--fs-sm); border-color:var(--border-3); background:var(--bg-2); color:var(--text-2);
+}
+.filters-section.filters-section--configured .quick-row button:hover { border-color: #4a7ca8; color:var(--text-1); }
+.filters-section.filters-section--configured .quick-row button.selected { border-color: #3b84d6; background: #1b4a7c; color:var(--text-1); box-shadow: none; }
+
+.filters-section.filters-section--configured .filter-unified-basic,
+.filters-section.filters-section--configured .filter-unified-details-body.filters-grid { grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 8px; margin-top: 8px; }
+.filters-section.filters-section--configured .filter-field > span { margin-bottom: 3px; font-size:var(--fs-xs); font-weight: 650; color:var(--text-3); }
+.filters-section.filters-section--configured .multi-select__trigger,
+.filters-section.filters-section--configured .filter-field select,
+.filters-section.filters-section--configured .filter-custom-field input,
+.filters-section.filters-section--configured .filter-custom-field select { height: 34px; min-height: 34px; border-radius:var(--radius-md); font-size:var(--fs-sm); background:var(--bg-1); }
+
+.filters-section.filters-section--configured .filter-unified-details { margin-top: 8px; border-top:1px dashed var(--border-3); }
+.filters-section.filters-section--configured .filter-unified-details > summary { padding: 8px 0; font-size:var(--fs-sm); }
+.filters-section.filters-section--configured .filter-unified-hint { margin-top: 6px; font-size:var(--fs-sm); line-height: 1.5; }
+.filters-section.filters-section--configured .filter-configuration-active { margin-top: 10px; padding-top: 10px; }
+
+.filters-section.filters-section--configured .filter-panel-footer { min-height: 0; padding: 8px 14px; gap: 10px; border-top:1px solid var(--border-2); background: rgba(8, 17, 26, .7); }
+.filters-section.filters-section--configured .filter-apply-status { font-size:var(--fs-sm); }
+.filters-section.filters-section--configured .filter-apply-button { min-width: 0; height: 32px; padding: 0 16px; border-radius: 999px; font-size:var(--fs-sm); }
+.filters-section.filters-section--configured .filter-reset-button { height: 32px; padding: 0 12px; border-radius: 999px; border-color: transparent; background: transparent; color:var(--text-2); font-size:var(--fs-sm); }
+.filters-section.filters-section--configured .filter-reset-button:hover:not(:disabled) { background:var(--bg-3); border-color: transparent; color:var(--text-1); }
+
+@media (max-width: 720px) {
+  .filters-section.filters-section--configured .filter-unified-basic,
+  .filters-section.filters-section--configured .filter-unified-details-body.filters-grid { grid-template-columns: minmax(0, 1fr); }
+  .filters-section.filters-section--configured .filter-panel-scroll { padding: 8px 10px 10px; }
+}
+
+/* v3: tighter panel, date and time of day in one row */
+.filters-section.filters-section--configured .filter-panel-header { padding: 6px 12px; min-height: 0; }
+.filters-section.filters-section--configured .filter-panel-header strong { font-size:var(--fs-md); }
+.filters-section.filters-section--configured .filter-panel-close { width: 26px; height: 26px; }
+.filters-section.filters-section--configured .filter-panel-scroll { padding: 6px 12px 8px; gap: 6px; }
+.filters-section.filters-section--configured .filter-configuration-section-title { display: none; }
+.filters-section.filters-section--configured .filter-configuration-period { display: grid; gap: 6px; }
+.filters-section.filters-section--configured .filter-period-line { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.filters-section.filters-section--configured .period-field--datetime > span { display: block; margin-bottom: 3px; font-size:var(--fs-xs); font-weight: 650; color:var(--text-3); }
+.filters-section.filters-section--configured .period-field--datetime > div { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 4px; }
+.filters-section.filters-section--configured .period-field--datetime input { height: 30px; min-height: 30px; padding: 0 6px; border-radius:var(--radius-sm); font-size:var(--fs-sm); min-width: 0; }
+.filters-section.filters-section--configured .filter-panel-quick-row { margin: 0; gap: 4px; }
+.filters-section.filters-section--configured .quick-row button { min-height: 24px; padding: 0 9px; font-size:var(--fs-sm); }
+.filters-section.filters-section--configured .filter-day-mode { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.filters-section.filters-section--configured .filter-day-mode .period-mode-switch button,
+.filters-section.filters-section--configured .filter-day-mode .report-cutoff-switch button { min-height: 24px; padding: 0 9px; font-size:var(--fs-sm); }
+.filters-section.filters-section--configured .filter-unified-basic,
+.filters-section.filters-section--configured .filter-unified-details-body.filters-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; margin-top: 6px; }
+.filters-section.filters-section--configured .filter-field > span { margin-bottom: 2px; font-size:var(--fs-xs); }
+.filters-section.filters-section--configured .multi-select__trigger,
+.filters-section.filters-section--configured .filter-field select,
+.filters-section.filters-section--configured .filter-custom-field input,
+.filters-section.filters-section--configured .filter-custom-field select { height: 30px; min-height: 30px; font-size:var(--fs-sm); padding-top: 0; padding-bottom: 0; }
+.filters-section.filters-section--configured .filter-panel-footer { padding: 5px 12px; }
+.filters-section.filters-section--configured .filter-apply-button,
+.filters-section.filters-section--configured .filter-reset-button { height: 28px; }
+@media (max-width: 480px) {
+  .filters-section.filters-section--configured .filter-period-line { grid-template-columns: minmax(0, 1fr); }
+}

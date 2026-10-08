@@ -1,0 +1,20 @@
+.custom-filters { margin: 22px 0 8px; padding-top: 18px; border-top:1px solid var(--border-2); }
+.custom-filters__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.custom-filters__head h4 { margin: 0; }
+.custom-filters__head .admin-hint { margin: 6px 0 14px; max-width: 70ch; }
+.custom-filters__empty { margin: 0 0 8px; color:var(--text-3); font-size:var(--fs-sm); }
+.custom-filter { display: grid; gap: 10px; margin: 0 0 12px; padding: 12px; border:1px solid var(--border-3); border-radius:var(--radius-lg); background:var(--bg-1); min-width: 0; }
+.custom-filter__row { display: grid; grid-template-columns: minmax(150px, 1.2fr) minmax(150px, 1.2fr) minmax(130px, .9fr) minmax(130px, .9fr) auto; gap: 10px; align-items: end; }
+.custom-filter label > span { display: block; margin: 0 0 6px; color:var(--text-2); font-size:var(--fs-sm); }
+.custom-filter input, .custom-filter select, .custom-filter textarea {
+  width: 100%; min-height: 37px; padding: 8px 10px; border:1px solid var(--border-3); border-radius:var(--radius-sm); background:var(--bg-2); color:var(--text-1); font: inherit; font-size:var(--fs-sm);
+}
+.custom-filter textarea { resize: vertical; line-height: 1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.custom-filter input:focus, .custom-filter select:focus, .custom-filter textarea:focus { border-color: #397fd1; box-shadow: 0 0 0 2px rgba(57, 127, 209, .16); }
+.custom-filter__tools { display: flex; align-items: center; gap: 8px; }
+.custom-filter__delete { display: grid; place-items: center; width: 30px; height: 31px; padding: 0; border: 1px solid #5a3640; border-radius:var(--radius-sm); background: #2a141b; color: #f0a6b2; cursor: pointer; }
+.custom-filter__delete:hover { background: #3d1c26; }
+.custom-filter__options small { display: block; margin-top: 6px; color:var(--text-3); font-size:var(--fs-sm); }
+.custom-filter .admin-hint { margin: 0; }
+@media (max-width: 1000px) { .custom-filter__row { grid-template-columns: repeat(2, minmax(0, 1fr)); } .custom-filters__head { flex-direction: column; } }
+@media (max-width: 720px) { .custom-filter__row { grid-template-columns: minmax(0, 1fr); } }

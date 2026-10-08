@@ -1,0 +1,239 @@
+/* v0.7 calendar/reporting/custom period modes */
+.period-mode-row {
+  min-height:52px;
+  display:flex;
+  align-items:flex-end;
+  gap:14px;
+  padding:10px 0 4px;
+  flex-wrap:wrap;
+}
+
+.period-mode-group,
+.report-cutoff-group {
+  display:grid;
+  gap:5px;
+}
+
+.period-mode-label {
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+  font-weight:650;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+.period-mode-switch,
+.report-cutoff-switch {
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding:3px;
+  border:1px solid var(--border-2);
+  border-radius:var(--radius-md);
+  background:var(--bg-1);
+}
+
+.period-mode-switch button,
+.report-cutoff-switch button {
+  min-height:31px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:0 11px;
+  border:0;
+  border-radius:var(--radius-sm);
+  background:transparent;
+  color:var(--text-3);
+  cursor:pointer;
+  font-size:var(--fs-xs);
+  white-space:nowrap;
+  transition:background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+.period-mode-switch button:hover,
+.report-cutoff-switch button:hover {
+  background:var(--bg-3);
+  color:var(--text-1);
+}
+
+.period-mode-switch button.active,
+.report-cutoff-switch button.active {
+  background:var(--bg-sel);
+  color:var(--text-1);
+  box-shadow:inset 0 0 0 1px #28689f;
+}
+
+.report-cutoff-switch button.active {
+  background:#3b3218;
+  color:#f1d77d;
+  box-shadow:inset 0 0 0 1px #7c6525;
+}
+
+
+.period-mode-summary {
+  margin-left:auto;
+  min-height:37px;
+  display:flex;
+  align-items:center;
+  padding:0 10px;
+  border:1px solid var(--border-2);
+  border-radius:var(--radius-sm);
+  background:var(--bg-1);
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+  white-space:nowrap;
+}
+
+.period-mode-summary strong {
+  margin-left:4px;
+  color:var(--text-2);
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+
+
+.custom-period-panel {
+  margin:0 0 10px;
+  padding:10px 11px 11px;
+  border:1px solid var(--border-3);
+  border-radius:var(--radius-md);
+  background:linear-gradient(180deg,var(--bg-2) 0%,var(--bg-1) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.015);
+}
+
+.custom-period-panel.invalid {
+  border-color:#7a4b4f;
+}
+
+.custom-period-title {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:9px;
+}
+
+.custom-period-title > div {
+  display:flex;
+  align-items:center;
+  gap:9px;
+  color:#74a7d9;
+}
+
+.custom-period-title strong,
+.custom-period-title span {
+  display:block;
+}
+
+.custom-period-title strong {
+  color:var(--text-1);
+  font-size:var(--fs-sm);
+  font-weight:650;
+}
+
+.custom-period-title span {
+  margin-top:2px;
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+}
+
+
+.custom-period-fields--datetime {
+  display:grid;
+  grid-template-columns:minmax(170px,1.2fr) minmax(125px,.7fr) minmax(170px,1.2fr) minmax(125px,.7fr);
+  gap:10px;
+  align-items:end;
+}
+
+.period-field {
+  min-width:0;
+  display:grid;
+  gap:5px;
+}
+
+.period-field > span {
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+  font-weight:600;
+  letter-spacing:.045em;
+  text-transform:uppercase;
+}
+
+.period-field > input {
+  width:100%;
+  height:36px;
+  padding:0 10px;
+  border:1px solid var(--border-2);
+  border-radius:var(--radius-sm);
+  background:var(--bg-2);
+  color:var(--text-1);
+  color-scheme:dark;
+}
+
+.period-field > input:focus {
+  border-color:#397fd1;
+  box-shadow:0 0 0 2px rgba(57,127,209,.10);
+}
+
+
+.custom-period-hint {
+  margin-top:8px;
+  color:var(--text-3);
+  font-size:var(--fs-xs);
+}
+
+.custom-period-hint strong {
+  color:var(--text-2);
+}
+
+.custom-period-panel.invalid .custom-period-hint strong,
+.filter-apply-row.invalid .filter-apply-status {
+  color:#ef7b82;
+}
+
+.filter-apply-row.invalid .pending-dot {
+  background:#ef626b;
+  box-shadow:0 0 10px rgba(239,98,107,.45);
+}
+
+@media (max-width: 1180px) {
+  .period-mode-summary {
+    margin-left:0;
+  }
+
+  .custom-period-fields--datetime {
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .period-mode-row {
+    align-items:stretch;
+  }
+
+  .period-mode-group,
+  .report-cutoff-group,
+  .period-mode-summary {
+    width:100%;
+  }
+
+  .period-mode-switch,
+  .report-cutoff-switch {
+    width:100%;
+  }
+
+  .period-mode-switch button,
+  .report-cutoff-switch button {
+    flex:1 1 0;
+  }
+
+  .period-mode-summary {
+    justify-content:center;
+  }
+
+  .custom-period-fields--datetime {
+    grid-template-columns:1fr;
+  }
+}
+

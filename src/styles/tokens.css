@@ -1,0 +1,78 @@
+/*
+ * Design tokens — єдине джерело кольорів, розмірів тексту, радіусів і відступів.
+ * Усі компоненти мають посилатися на ці змінні, а не на «сирі» hex-значення.
+ * Для ECharts ті самі значення читає src/lib/chartTheme.ts.
+ */
+:root {
+  /* Поверхні (від найтемнішої до найсвітлішої) */
+  --bg-0: #07101a;        /* фон сторінки */
+  --bg-1: #0b1723;        /* панелі, сайдбар */
+  --bg-2: #0d1b28;        /* поля вводу, внутрішні блоки */
+  --bg-3: #112433;        /* hover / піднятий стан */
+  --bg-sel: #15324f;      /* вибраний елемент */
+  --bg-overlay: rgba(8, 17, 27, .94);
+
+  /* Межі */
+  --border-1: #172b3b;    /* ледь помітний роздільник */
+  --border-2: #1f354a;    /* стандартна межа */
+  --border-3: #2a4560;    /* підкреслена межа, hover */
+
+  /* Текст. Усі три значення мають контраст ≥ 5:1 на --bg-0…--bg-3 */
+  --text-1: #e6eef6;      /* основний */
+  --text-2: #b3c3d1;      /* другорядний */
+  --text-3: #8fa5b7;      /* підписи, підказки */
+
+  /* Акцент і стани */
+  --accent: #4a9bff;
+  --accent-strong: #2f7ee8;
+  --accent-soft: rgba(74, 155, 255, .14);
+  --focus-ring: #71b3ed;
+  --ok: #4fd18a;
+  --warn: #f0bd42;
+  --bad: #f0707a;
+
+  /* Типографіка: мінімум 11px, основний дрібний текст 12px */
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-md: 13px;
+
+  /* Радіуси: три рівні замість дев'яти */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Відступи */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+
+  /* Мінімальна ціль дотику */
+  --tap: 40px;
+
+  /* Сумісність зі старими іменами, які використовувались без визначення */
+  --border: var(--border-2);
+  --muted: var(--text-3);
+  --text-muted: var(--text-3);
+  --text: var(--text-1);
+  --panel: var(--bg-1);
+  --admin-border: var(--border-2);
+  --admin-muted: var(--text-3);
+  --admin-panel: var(--bg-1);
+}
+
+/* Єдиний видимий фокус для клавіатури */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Повага до системного налаштування «зменшити рух» */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

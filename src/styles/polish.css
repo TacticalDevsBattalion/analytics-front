@@ -1,0 +1,26 @@
+/* Readability, touch targets and small utilities that replaced inline styles. */
+
+/* Tables: 12px body text (was 10px), compact uppercase headers. */
+.events-table { font-size: var(--fs-sm); }
+.events-table th { font-size: var(--fs-xs); font-weight: 600; letter-spacing: .03em; }
+.pagination { font-size: var(--fs-sm); }
+
+/* Former inline styles */
+.settings-probe-row { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.ia-background-preview { max-height: 150px; max-width: 100%; object-fit: contain; }
+.ia-preview-frame { height: 260px; }
+
+/* Touch devices: controls reach a comfortable 40px hit area. */
+@media (pointer: coarse) {
+  .pagination button { width: var(--tap); height: var(--tap); }
+  .multi-select__search button { width: 36px; height: 36px; }
+  .multi-select__tools button { min-height: 36px; padding: 0 6px; }
+  .multi-select__option { min-height: var(--tap); }
+  .filters-section.filters-section--configured .quick-row button,
+  .filters-section.filters-section--configured .filter-day-mode .period-mode-switch button,
+  .filters-section.filters-section--configured .filter-day-mode .report-cutoff-switch button { min-height: 36px; }
+  .filter-applied-chip { height: 36px; }
+  .filter-applied-chip > button { width: 30px; height: 30px; }
+  .filters-section.filters-section--configured .multi-select__trigger,
+  .filters-section.filters-section--configured .filter-field select { min-height: var(--tap); }
+}

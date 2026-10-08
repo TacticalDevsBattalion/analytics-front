@@ -1,0 +1,18 @@
+/* Application styles, in cascade order. Do not reorder: later files intentionally override earlier ones. */
+@import './base.css';
+@import './multi-select.css';
+@import './layout-kpi-tables.css';
+@import './pages-interactive.css';
+@import './period-modes.css';
+@import './kpi-split.css';
+@import './filter-panel.css';
+@import './pwa-install.css';
+@import './kpi-drilldown.css';
+@import './kpi-cards-compact.css';
+@import './language-switcher.css';
+@import './quick-summary.css';
+@import './lost-devices.css';
+@import './filter-groups.css';
+@import './comparison.css';
+@import './shell-responsive.css';
+@import './kpi-final.css';

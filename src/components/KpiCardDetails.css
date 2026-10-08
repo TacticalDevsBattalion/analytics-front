@@ -1,0 +1,6 @@
+.kpi-card-details { }
+.kpi-card-details .kpi-breakdown__head { position: sticky; top: 0; z-index: 3; background:var(--bg-1); }
+.kpi-card-details .kpi-breakdown__head > div { min-width: 0; }
+.kpi-card-details .kpi-breakdown__head strong, .kpi-card-details .kpi-breakdown__head span { overflow-wrap: anywhere; }
+.kpi-card-details .kpi-breakdown__close:focus-visible { outline: 2px solid #8fc8ff; outline-offset: 2px; }
+.kpi-card-details.kpi-breakdown--sheet { overscroll-behavior: contain; }

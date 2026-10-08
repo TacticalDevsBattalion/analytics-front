@@ -1,0 +1,53 @@
+/* ═══ KPI cards — single source of truth for size, density and decoration ═══════
+   Earlier "v1.x" blocks above still style the inner parts; the card box itself
+   (height, padding, density) is controlled here through variables, so the global
+   density setting and the personal-dashboard density share one definition. */
+:root {
+  --kpi-min-h: 94px;
+  --kpi-split-min-h: 106px;
+  --kpi-pad: 10px 12px 11px;
+}
+:root[data-density="compact"],
+.ia-page[data-density="compact"] {
+  --kpi-min-h: 72px;
+  --kpi-split-min-h: 96px;
+  --kpi-pad: 8px 10px;
+}
+.ia-page[data-density="comfortable"] {
+  --kpi-min-h: 94px;
+  --kpi-split-min-h: 106px;
+  --kpi-pad: 10px 12px 11px;
+}
+@media (max-width: 720px) {
+  :root { --kpi-min-h: 92px; --kpi-split-min-h: 104px; --kpi-pad: 10px 11px 11px; }
+  :root[data-density="compact"], .ia-page[data-density="compact"] { --kpi-min-h: 72px; --kpi-split-min-h: 96px; --kpi-pad: 8px 10px; }
+}
+.kpi-card { min-height: var(--kpi-min-h); padding: var(--kpi-pad); }
+.kpi-card--split { min-height: var(--kpi-split-min-h); }
+
+/* Calmer cards: no decorative glow circle, no lift on hover — only the border reacts. */
+.kpi-card::after { display: none; }
+.kpi-card:hover { transform: none; }
+
+/* The delta badge is a corner badge. The stacking rule above made every KPI part
+   position:relative, which stretched the badge across the bottom of the card. */
+.kpi-card .kpi-card__delta {
+  position: absolute; top: 10px; right: 10px; z-index: 2;
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 2px 7px; font-size: var(--fs-xs);
+}
+
+/* Keep the label clear of the corner badge. */
+.kpi-card:has(.kpi-card__delta) .kpi-card__top { padding-right: 58px; }
+.kpi-card__delta > span { font-size: 8px; line-height: 1; }
+
+/* The cards share the row whatever their number: a lone card (zero values hidden, or
+   one KPI per dashboard widget) takes the whole cell instead of one of six fixed
+   columns, and a full set wraps by available width instead of by breakpoint. */
+.kpi-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+@media (max-width: 720px) {
+  .kpi-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+}
+@media (max-width: 430px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+}

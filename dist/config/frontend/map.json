@@ -1,0 +1,58 @@
+{
+  "panel_version": "v7-stable-esri-raster-hybrid",
+  "bounds": [
+    [
+      22.0,
+      44.0
+    ],
+    [
+      40.5,
+      52.5
+    ]
+  ],
+  "initial_view": {
+    "center": [
+      31.2,
+      48.5
+    ],
+    "zoom": 5.5,
+    "min_zoom": 3,
+    "max_zoom": 18
+  },
+  "fit": {
+    "data_padding": 58,
+    "data_max_zoom": 13,
+    "duration_ms": 450,
+    "fallback_padding": 28,
+    "fallback_max_zoom": 6.6
+  },
+  "cluster": {
+    "max_zoom": 14,
+    "radius": 46
+  },
+  "tiles": {
+    "satellite": {
+      "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      "tile_size": 256,
+      "min_zoom": 0,
+      "max_zoom": 19,
+      "attribution": "Tiles © Esri"
+    },
+    "reference": {
+      "url": "https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",
+      "tile_size": 256,
+      "min_zoom": 0,
+      "max_zoom": 19,
+      "attribution": "Reference © Esri"
+    }
+  },
+  "result_colors": {
+    "positive": "#43c27a",
+    "negative": "#ef5d67",
+    "default": "#f0bd42"
+  },
+  "result_values": {
+    "positive": "Позитивний",
+    "negative": "Негативний"
+  }
+}

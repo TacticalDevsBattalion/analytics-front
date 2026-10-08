@@ -1,0 +1,64 @@
+/* v4 — one field for date + time of day, quick periods in the closed bar,
+   marker for administrator-defined filters.
+   Loaded after FilterBarRefresh.css; uses the same doubled root class for specificity. */
+
+/* ── Period row: [from → to] [quick periods] [day mode] on one line ───────── */
+.filters-section.filters-section--configured .filter-period-row {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 16px; margin: 0;
+}
+.period-range { display: flex; align-items: flex-end; gap: 6px; min-width: 0; }
+.period-range__field { display: grid; gap: 2px; min-width: 0; }
+.period-range__field > span { font-size: var(--fs-xs); font-weight: 650; color: var(--text-3); }
+.period-range__arrow { padding-bottom: 7px; color: var(--text-3); font-style: normal; }
+.period-range input[type="date"],
+.period-range input[type="datetime-local"] {
+  height: 32px; min-height: 32px; min-width: 0; padding: 0 8px;
+  border: 1px solid var(--border-2); border-radius: var(--radius-md);
+  background: var(--bg-1); color: var(--text-1); color-scheme: dark;
+  font-size: var(--fs-sm); font-variant-numeric: tabular-nums;
+}
+.period-range input[type="datetime-local"] { width: 204px; }
+.period-range input[type="date"] { width: 138px; }
+.period-range input:hover { border-color: var(--border-3); }
+.period-range input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.period-range__reporting { display: flex; align-items: center; gap: 4px; }
+.period-range__reporting b {
+  height: 32px; display: inline-grid; place-items: center; padding: 0 9px;
+  border: 1px solid #7c6525; border-radius: var(--radius-md); background: #3b3218; color: #f1d77d;
+  font-size: var(--fs-sm); font-weight: 650; font-variant-numeric: tabular-nums;
+}
+.filters-section.filters-section--configured .filter-period-row .quick-row { padding: 0; align-self: flex-end; }
+.filters-section.filters-section--configured .filter-period-row .filter-day-mode { align-self: flex-end; }
+
+/* ── Quick periods in the closed filter bar ───────────────────────────────── */
+.filters-section.filters-section--configured .filter-bar-quick { padding: 0; margin-left: auto; gap: 4px; flex-wrap: wrap; }
+.filters-section.filters-section--configured .filter-bar-quick button { min-height: 30px; padding: 0 11px; }
+
+/* ── Administrator-defined filters carry a small accent dot ───────────────── */
+.filter-field--custom > span::after {
+  content: ""; display: inline-block; width: 6px; height: 6px; margin-left: 6px;
+  border-radius: 50%; background: var(--accent); vertical-align: middle; opacity: .9;
+}
+
+@media (max-width: 720px) {
+  .period-range { width: 100%; }
+  .period-range__field { flex: 1 1 0; }
+  .period-range input[type="datetime-local"],
+  .period-range input[type="date"] { width: 100%; height: var(--tap); min-height: var(--tap); }
+  .period-range__reporting { width: 100%; }
+  .period-range__reporting b { height: var(--tap); }
+  .period-range__arrow { padding-bottom: 12px; }
+  .filters-section.filters-section--configured .filter-bar-quick { margin-left: 0; width: 100%; }
+  .filters-section.filters-section--configured .filter-bar-quick button { flex: 1 1 auto; min-height: 36px; }
+}
+@media (max-width: 480px) {
+  .period-range { flex-direction: column; align-items: stretch; }
+  .period-range__arrow { display: none; }
+}
+
+/* Wide screens: period on top, selection below — the period row needs the full width. */
+@media (min-width: 1280px) {
+  .filters-section.filters-section--configured:not(.filters-section--steps) .filter-panel-scroll {
+    grid-template-columns: minmax(0, 1fr); row-gap: 10px;
+  }
+}
