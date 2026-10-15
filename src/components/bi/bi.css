@@ -37,6 +37,11 @@
 .bi-table td, .bi-table th { padding: 8px 10px; border-bottom: 1px solid #28405680; text-align: left; white-space: nowrap; }
 .bi-table th { color:var(--text-2); font-weight: 500; position: sticky; top: 0; background:var(--bg-2); }
 .bi-table td { color:var(--text-1); font-variant-numeric: tabular-nums; }
+/* Widget tables: tight rows, wrapped headers and right-aligned numbers keep wide metric sets on screen. */
+.bi-table--compact td, .bi-table--compact th { padding: 4px 8px; }
+.bi-table--compact th { white-space: normal; vertical-align: bottom; max-width: 9em; font-size: var(--fs-xs); line-height: 1.25; }
+.bi-table--compact .bi-num { text-align: right; }
+.bi-table--compact td:not(.bi-num) { white-space: normal; }
 .bi-text { overflow: auto; white-space: pre-wrap; font-size:var(--fs-md); line-height: 1.5; }
 .bi-text p { margin: 0 0 8px; }
 .bi-error-banner { border: 1px solid #ee938050; background: #ee938010; color: #ee9380; padding: 12px; border-radius:var(--radius-md); }

@@ -13,17 +13,26 @@ test('zero suppression is on by default and only an explicit false shows zeros',
   assert.equal(hidesZeroWidgetValues({ visualization: {} }), true)
 })
 
-test('zero row suppression keeps negatives, mixed metrics and unknown values independently of numeric dimensions', () => {
+test('zero row suppression keeps negatives and mixed metrics, hides empty rows, independently of numeric dimensions', () => {
   const rows = [
     { category: 5, a: 0, b: -0 },
+    { category: 0, a: undefined, b: undefined },
     { category: 0, a: 2, b: 0 },
     { category: 0, a: 0, b: -3 },
-    { category: 0, a: null, b: 0 },
-    { category: 0, a: undefined, b: undefined },
     { category: 0, a: '0', b: 0 },
   ]
-  assert.deepEqual(filterZeroWidgetRows(result(rows), [{ key: 'a' }, { key: 'b' }]).rows, rows.slice(1))
+  assert.deepEqual(filterZeroWidgetRows(result(rows), [{ key: 'a' }, { key: 'b' }]).rows, rows.slice(2))
   assert.deepEqual(filterZeroWidgetRows(result(rows), []).rows, rows)
+})
+
+test('a target type that was neither affected nor destroyed is hidden even though its ratios have no value', () => {
+  const metrics = ['target_affected', 'target_destroyed', 'flights_per_affected', 'flights_per_destroyed'].map(key => ({ key }))
+  const rows = [
+    { target_type: 'Танк', target_affected: 0, target_destroyed: 0, flights_per_affected: null, flights_per_destroyed: null },
+    { target_type: 'Гармата', target_affected: 2, target_destroyed: 0, flights_per_affected: 3, flights_per_destroyed: null },
+    { target_type: 'Невідомо', target_affected: null, target_destroyed: undefined, flights_per_affected: null, flights_per_destroyed: null },
+  ]
+  assert.deepEqual(filterZeroWidgetRows(result(rows), metrics).rows, [rows[1]])
 })
 
 test('display filtering includes separate categories and preserves exact server totals, context and input', () => {
@@ -38,9 +47,9 @@ test('display filtering includes separate categories and preserves exact server 
   assert.deepEqual(input, before)
 })
 
-test('zero-only series are hidden across main and separate rows while missing data never becomes zero', () => {
-  const input = { ...result([{ a: 0, b: 1, c: 0, d: null }]), separate_rows: [{ a: 0, b: 0, c: 3, d: undefined }] }
-  const metrics = ['a', 'b', 'c', 'd'].map(key => ({ key }))
-  assert.deepEqual(nonZeroWidgetMetrics(input, metrics).map(metric => metric.key), ['b', 'c', 'd'])
+test('zero-only and empty series are hidden across main and separate rows', () => {
+  const input = { ...result([{ a: 0, b: 1, c: 0, d: null, e: null }]), separate_rows: [{ a: 0, b: 0, c: 3, d: undefined, e: 2 }] }
+  const metrics = ['a', 'b', 'c', 'd', 'e'].map(key => ({ key }))
+  assert.deepEqual(nonZeroWidgetMetrics(input, metrics).map(metric => metric.key), ['b', 'c', 'e'])
   assert.deepEqual(nonZeroWidgetMetrics(result([]), metrics), metrics)
 })

@@ -8,7 +8,9 @@ export function hidesZeroWidgetValues(widget: Pick<WidgetDefinition, 'visualizat
 /** Filter presentation rows only; dimensions, server totals and the input remain intact. */
 export function filterZeroWidgetRows(result: QueryResult, metrics: Array<{ key: string }>): QueryResult {
   if (!metrics.length) return result
-  const keep = (row: Record<string, unknown>) => !metrics.every(metric => row[metric.key] === 0)
+  // A row stays only when it has a real value: ratios such as "flights per
+  // destroyed target" are empty when the count is 0, so 0 and empty both hide.
+  const keep = (row: Record<string, unknown>) => metrics.some(metric => hasWidgetValue(row[metric.key]))
   return {
     ...result,
     rows: result.rows.filter(keep),
@@ -16,10 +18,14 @@ export function filterZeroWidgetRows(result: QueryResult, metrics: Array<{ key: 
   }
 }
 
-/** Hide an entire column/series only when every reported value is a known numeric zero. */
+/** Hide an entire column/series when no row has a value other than zero or empty. */
 export function nonZeroWidgetMetrics<T extends { key: string }>(result: QueryResult, metrics: T[]): T[] {
   const rows = [...result.rows, ...(result.separate_rows ?? [])]
-  return rows.length ? metrics.filter(metric => !rows.every(row => row[metric.key] === 0)) : metrics
+  return rows.length ? metrics.filter(metric => rows.some(row => hasWidgetValue(row[metric.key]))) : metrics
+}
+
+function hasWidgetValue(value: unknown): boolean {
+  return value !== 0 && value !== null && value !== undefined
 }
 
 const dimensionTitles: Record<string, [string, string]> = {
