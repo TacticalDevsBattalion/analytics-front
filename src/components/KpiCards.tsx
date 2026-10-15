@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 
 import type { Metric, MetricBreakdownItem } from '../lib/types'
-import { filterNativeKpiBreakdown, nativeKpiCardVisible, nativeKpiHasSecondary, nativeKpiValueVisible } from '../lib/nativeKpiPresentation'
+import { filterNativeKpiBreakdown, nativeKpiValueVisible } from '../lib/nativeKpiPresentation'
 import { useAppConfiguration } from '../config/AppConfigurationContext'
 import { configurationLabel } from '../config/appConfiguration'
 import './KpiCardDetails.css'
@@ -215,7 +215,9 @@ export function KpiCards({ metrics = [], onDrill, hideZeroValues = false }: { me
   const summaryId = useId()
   const autoHover = enabled && settings.interaction === 'auto' && canHover
   const delay = Number.isInteger(settings.hover_delay_ms) && settings.hover_delay_ms >= 0 && settings.hover_delay_ms <= 1500 ? settings.hover_delay_ms : 0
-  const visibleMetrics = useMemo(() => metrics.filter(metric => nativeKpiCardVisible(metric, hideZeroValues)), [metrics, hideZeroValues])
+  // KPI cards always stay on screen with their values, zero included; zero
+  // suppression applies only to the breakdown rows inside a card.
+  const visibleMetrics = metrics
   const openMetric = useMemo(() => visibleMetrics.find(metric => metric.key === openDetails?.key) ?? null, [visibleMetrics, openDetails?.key])
   const openBreakdown = useMemo(() => filterNativeKpiBreakdown(openMetric?.breakdown ?? [], hideZeroValues), [openMetric?.breakdown, hideZeroValues])
 
@@ -358,7 +360,7 @@ export function KpiCards({ metrics = [], onDrill, hideZeroValues = false }: { me
 
   const hasOpenDetails = enabled && openMetric && (openBreakdown.length > 0 || Boolean(hideZeroValues && onDrill))
   const detailsContent = openMetric && <>
-    <div className="kpi-breakdown__head"><div><strong id={headingId}>{openMetric.breakdown_title || 'Деталізація'}</strong><span id={summaryId}>{openMetric.label}{nativeKpiValueVisible(openMetric.value, hideZeroValues) && <> · {formatValue(openMetric)}</>}</span></div><button type="button" className="kpi-breakdown__close" onClick={() => closeDetails(true)} aria-label="Закрити деталізацію"><X size={18} /></button></div>
+    <div className="kpi-breakdown__head"><div><strong id={headingId}>{openMetric.breakdown_title || 'Деталізація'}</strong><span id={summaryId}>{openMetric.label} · {formatValue(openMetric)}</span></div><button type="button" className="kpi-breakdown__close" onClick={() => closeDetails(true)} aria-label="Закрити деталізацію"><X size={18} /></button></div>
     <BreakdownRows items={openBreakdown} collapsibleGroups={openMetric.key === 'flights' || openMetric.key === 'weighted_efficiency'} hideZeroValues={hideZeroValues} />
     {onDrill && <button className="secondary kpi-details-link" type="button" onClick={() => { closeDetails(); onDrill(openMetric) }}>Детально →</button>}
   </>
@@ -369,8 +371,7 @@ export function KpiCards({ metrics = [], onDrill, hideZeroValues = false }: { me
     <section className="kpi-grid">
       {visibleMetrics.map(metric => {
         const Icon = iconMap[metric.key as keyof typeof iconMap] ?? Activity
-        const hasSecondary = hideZeroValues ? nativeKpiHasSecondary(metric) && nativeKpiValueVisible(metric.secondary_value, true) : metric.secondary_value != null && Boolean(metric.secondary_label)
-        const showPrimary = nativeKpiValueVisible(metric.value, hideZeroValues)
+        const hasSecondary = metric.secondary_value != null && Boolean(metric.secondary_label)
         const interactive = enabled && (filterNativeKpiBreakdown(metric.breakdown ?? [], hideZeroValues).length > 0 || Boolean(onDrill && (canHover || hideZeroValues)))
         const expanded = interactive && openDetails?.key === metric.key
         return <article
@@ -386,10 +387,10 @@ export function KpiCards({ metrics = [], onDrill, hideZeroValues = false }: { me
           onKeyDown={event => { if (interactive && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); activate(metric.key, true) } }}
         >
           <div className="kpi-card__top"><div className="kpi-card__icon"><Icon size={22} strokeWidth={1.8} /></div><span className="kpi-card__label">{metric.label}</span></div>
-          {showPrimary && metric.primary_label && <div className="kpi-card__primary-label">{metric.primary_label}</div>}
-          {showPrimary && <div className="kpi-card__value">{formatValue(metric)}</div>}
+          {metric.primary_label && <div className="kpi-card__primary-label">{metric.primary_label}</div>}
+          <div className="kpi-card__value">{formatValue(metric)}</div>
           {hasSecondary && <div className="kpi-card__secondary"><span>{metric.secondary_label || 'Додаткове значення'}</span><strong>{formatNumber(metric.secondary_value ?? null)}</strong></div>}
-          {metric.delta != null && nativeKpiValueVisible(metric.delta, hideZeroValues) && <div className="kpi-card__delta"><span aria-hidden="true">{metric.delta > 0 ? '▲' : metric.delta < 0 ? '▼' : '■'}</span>{metric.delta > 0 ? '+' : ''}{metric.delta}%</div>}
+          {metric.delta != null && <div className="kpi-card__delta"><span aria-hidden="true">{metric.delta > 0 ? '▲' : metric.delta < 0 ? '▼' : '■'}</span>{metric.delta > 0 ? '+' : ''}{metric.delta}%</div>}
           {interactive && <div className="kpi-card__drill-hint">{autoHover ? 'Наведи або натисни для деталізації' : 'Натисни для деталізації'}</div>}
         </article>
       })}
