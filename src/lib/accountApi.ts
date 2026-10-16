@@ -17,9 +17,9 @@ const accountMessages: Record<string, string> = {
   'Account storage is temporarily unavailable': 'Сховище облікових записів тимчасово недоступне. Спробуйте ще раз.',
   'Request origin is not allowed': 'Не вдалося підтвердити джерело запиту. Оновіть сторінку й спробуйте ще раз.',
   'Administrator authentication is required': 'Для цієї дії потрібен обліковий запис адміністратора.',
-  'Account setup must be completed in Keycloak': 'Обліковий запис потребує завершення налаштування (наприклад, зміни пароля). Увійдіть один раз через сторінку Keycloak.',
+  'Account setup must be completed in Keycloak': 'Обліковий запис ще не налаштований у Keycloak (наприклад, потрібно змінити тимчасовий пароль). Зверніться до адміністратора.',
   'Keycloak is unavailable': 'Сервіс входу тимчасово недоступний. Спробуйте пізніше.',
-  'Password sign-in is not allowed for this Keycloak client': 'Вхід за паролем вимкнено в налаштуваннях Keycloak. Увійдіть через сторінку Keycloak.',
+  'Password sign-in is not allowed for this Keycloak client': 'Вхід за паролем вимкнено в налаштуваннях клієнта Keycloak. Зверніться до адміністратора.',
   'Keycloak sign-in could not be verified': 'Не вдалося підтвердити вхід. Спробуйте ще раз.',
 }
 const LOGIN_PATHS = new Set(['auth/login', 'auth/keycloak/password'])
