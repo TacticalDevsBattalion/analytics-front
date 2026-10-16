@@ -3,7 +3,7 @@ import type { PersonalDashboardPreferences } from './dashboardPreferences'
 
 export type AppUser = { id: string; username: string; display_name: string; role: 'administrator' | 'viewer' }
 export type ManagedUser = AppUser & { active: boolean; created_at: string }
-export type AuthSession = { enabled: boolean; user: AppUser | null }
+export type AuthSession = { enabled: boolean; user: AppUser | null; logout_url?: string | null }
 export type DashboardSnapshot = { revision: number; preferences: PersonalDashboardPreferences | null }
 export class AccountApiError extends Error {
   constructor(message: string, public status: number) { super(message); this.name = 'AccountApiError' }

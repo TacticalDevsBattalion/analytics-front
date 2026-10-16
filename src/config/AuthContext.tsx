@@ -51,6 +51,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const next = await accountApi.logout()
       try { sessionStorage.removeItem('analytics-app-admin-session') } catch { /* Storage can be unavailable. */ }
+      // Keycloak keeps its own SSO session; without ending it the next sign-in is silent.
+      if (next.logout_url) { window.location.assign(next.logout_url); return }
       if (current === generation.current) await apply(next, current)
     }
     catch (reason) { if (current === generation.current) setError(reason instanceof Error ? reason.message : 'Не вдалося завершити вхід.'); throw reason }
