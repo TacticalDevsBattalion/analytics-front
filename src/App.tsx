@@ -6,7 +6,7 @@ import { FilterBar } from './components/FilterBar'
 import { ALL_COLUMNS, EventsTable, columnLabel, type ColumnKey } from './components/EventsTable'
 import { api } from './lib/api'
 import type { ComparisonFilterSettings, ComparisonRequest, EventRow, FilterOptions, FilterState, GeoFeatureCollection, IdTitleOption, SourceStatus } from './lib/types'
-import { buildComparisonRequest } from './lib/comparisonSetup'
+import { automaticComparisonRequest, buildComparisonRequest } from './lib/comparisonSetup'
 import { PwaInstallButton } from './components/PwaInstallButton'
 import { LanguageSwitcher } from './components/LanguageSwitcher'
 import { useLanguage } from './i18n/LanguageContext'
@@ -285,9 +285,10 @@ export default function App() {
   const navigate = (next: PageId) => {
     setDrillFilters([])
     if (next === 'comparison') {
-      setFilters(normalizeFilters(queryFilters))
+      const nextFilters = normalizeFilters(queryFilters)
+      setFilters(nextFilters)
       setComparisonSettings(current => ({ ...current, enabled: true }))
-      setAppliedComparisonRequest(null)
+      setAppliedComparisonRequest(comparisonTab === 'areas' ? null : automaticComparisonRequest({ ...comparisonSettings, mode: comparisonTab }, nextFilters))
     }
     window.location.hash = `/${next}`
     setPage(next)
@@ -348,7 +349,7 @@ export default function App() {
         {!pageAllowed && <article className="panel settings-card" role="status">{tr('Адміністратор ще не надав доступ до цього розділу.', 'Your administrator has not granted access to this page.')}</article>}
         <Suspense fallback={<div className="page-loading" role="status" aria-busy="true">…</div>}>
         {pageAllowed && ['dashboard', 'statistics', 'personal'].includes(page) && <IntegratedAnalyticsPage key={page} page={page as 'dashboard' | 'statistics' | 'personal'} filters={filters} inheritedFilters={drillFilters} onClearInheritedFilters={() => setDrillFilters([])} section={statisticsSection} onSectionChange={section => { setStatisticsSection(section); window.history.replaceState(null, '', `#/statistics?section=${encodeURIComponent(section)}`) }} filterBar={<FilterBar filters={filters} options={options.data} onChange={next => { setFilters(next); setDrillFilters([]) }} mode={page === 'statistics' ? 'detailed' : 'general'} customFilters />} onNavigate={(next, nextFilters, section, extra) => { setFilters(normalizeFilters(nextFilters)); setDrillFilters(extra ?? []); setStatisticsSection(section ?? 'overview'); setPage(next); window.location.hash = `/${next}${next === 'statistics' ? `?section=${encodeURIComponent(section ?? 'overview')}` : ''}` }} />}
-        {pageAllowed && page === 'comparison' && <><nav className="ia-sections" aria-label="Вид порівняння">{([['areas', 'Кафедри / ББАК / екіпажі'], ['periods', 'Періоди'], ['units_over_time', 'Підрозділи в часі']] as const).map(([key, label]) => <button key={key} className={`secondary${comparisonTab === key ? ' active' : ''}`} onClick={() => { setComparisonTab(key); if (key !== 'areas') setComparisonSettings(current => ({ ...current, enabled: true, mode: key })); setAppliedComparisonRequest(null) }}>{label}</button>)}</nav>{comparisonTab === 'areas' ? <><FilterBar filters={filters} options={options.data} onChange={setFilters} mode="detailed" customFilters /><BIComparison filters={filters} /></> : <ComparisonPage filters={filters} options={options.data} settings={{ ...comparisonSettings, enabled: true, mode: comparisonTab }} request={appliedComparisonRequest} onApply={applyAnalyticsFilters} />}</>}
+        {pageAllowed && page === 'comparison' && <><nav className="ia-sections" aria-label="Вид порівняння">{([['areas', 'Кафедри / ББАК / екіпажі'], ['periods', 'Періоди'], ['units_over_time', 'Підрозділи в часі']] as const).map(([key, label]) => <button key={key} className={`secondary${comparisonTab === key ? ' active' : ''}`} onClick={() => { setComparisonTab(key); if (key !== 'areas') setComparisonSettings(current => ({ ...current, enabled: true, mode: key })); setAppliedComparisonRequest(key === 'areas' ? null : automaticComparisonRequest({ ...comparisonSettings, mode: key }, filters)) }}>{label}</button>)}</nav>{comparisonTab === 'areas' ? <><FilterBar filters={filters} options={options.data} onChange={setFilters} mode="detailed" customFilters /><BIComparison filters={filters} /></> : <ComparisonPage filters={filters} options={options.data} settings={{ ...comparisonSettings, enabled: true, mode: comparisonTab }} request={appliedComparisonRequest} onApply={applyAnalyticsFilters} />}</>}
         {pageAllowed && page === 'map' && <MapPage filters={filters} setFilters={setFilters} options={options.data} rows={rows} geojson={mapData.data} />}
         {pageAllowed && page === 'table' && <TablePage filters={filters} setFilters={setFilters} options={options.data} rows={rows} />}
         {pageAllowed && page === 'dictionaries' && <DictionariesPage options={options.data} />}

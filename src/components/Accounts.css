@@ -36,3 +36,4 @@
 .account-password-form input { min-width:0; flex:1; color:var(--text-1); background:var(--bg-3); border:1px solid var(--border-3); border-radius:var(--radius-sm); padding:8px; }
 .account-notice { color:#a2d8ba; line-height:1.6; }
 @media(max-width:600px) { .account-user-form { grid-template-columns:1fr; } .account-entry { padding:14px; }.account-entry-card { padding:20px; }.account-profile-name,.account-profile>svg { display:none; }.account-profile-button { padding:0; }.account-profile-menu { max-width:calc(100vw - 30px); } }
+.account-provider-link { display:block; margin-top:12px; text-align:center; font-size:13px; color:var(--accent, #59b8dd); }

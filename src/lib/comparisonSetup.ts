@@ -62,6 +62,12 @@ const validationMessages: Record<Validation, string> = {
   workload: 'Choose up to 24 periods and 72 group-period combinations.',
 }
 
+// Opening the comparison page runs it immediately whenever the current filters
+// already describe a valid comparison, instead of waiting for an explicit Apply.
+export function automaticComparisonRequest(settings: ComparisonFilterSettings, filters: FilterState): ComparisonRequest | null {
+  try { return buildComparisonRequest({ ...settings, enabled: true }, filters) } catch { return null }
+}
+
 export function buildComparisonRequest(settings: ComparisonFilterSettings, filters: FilterState): ComparisonRequest | null {
   if (!settings.enabled) return null
   const validation = comparisonSetupValidation(settings, filters)

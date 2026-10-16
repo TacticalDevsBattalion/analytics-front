@@ -17,7 +17,12 @@ const accountMessages: Record<string, string> = {
   'Account storage is temporarily unavailable': 'Сховище облікових записів тимчасово недоступне. Спробуйте ще раз.',
   'Request origin is not allowed': 'Не вдалося підтвердити джерело запиту. Оновіть сторінку й спробуйте ще раз.',
   'Administrator authentication is required': 'Для цієї дії потрібен обліковий запис адміністратора.',
+  'Account setup must be completed in Keycloak': 'Обліковий запис потребує завершення налаштування (наприклад, зміни пароля). Увійдіть один раз через сторінку Keycloak.',
+  'Keycloak is unavailable': 'Сервіс входу тимчасово недоступний. Спробуйте пізніше.',
+  'Password sign-in is not allowed for this Keycloak client': 'Вхід за паролем вимкнено в налаштуваннях Keycloak. Увійдіть через сторінку Keycloak.',
+  'Keycloak sign-in could not be verified': 'Не вдалося підтвердити вхід. Спробуйте ще раз.',
 }
+const LOGIN_PATHS = new Set(['auth/login', 'auth/keycloak/password'])
 function readableAccountMessage(message: string) {
   if (accountMessages[message]) return accountMessages[message]
   if (message.includes('Password must contain 12–128 characters')) return 'Пароль має містити від 12 до 128 символів.'
@@ -34,15 +39,15 @@ async function request<T>(path: string, method = 'GET', body?: unknown, token?: 
     let detail: unknown
     try { detail = (await response.json()).detail } catch { detail = undefined }
     const message = Array.isArray(detail) ? detail.map(item => readableAccountMessage(item?.msg || '')).join('; ') : typeof detail === 'string' ? readableAccountMessage(detail) : ''
-    if (response.status === 401 && path !== 'auth/login') window.dispatchEvent(new Event('analytics-session-expired'))
-    const fallback = response.status === 401 ? path === 'auth/login' ? 'Перевірте логін і пароль.' : 'Сесію завершено або обліковий запис змінився. Увійдіть ще раз.' : response.status === 403 ? 'Недостатньо прав для цієї дії.' : response.status === 409 ? 'Дані вже змінено. Оновіть їх перед збереженням.' : response.status === 429 ? 'Забагато спроб входу. Спробуйте пізніше.' : 'Не вдалося виконати запит. Спробуйте ще раз.'
+    if (response.status === 401 && !LOGIN_PATHS.has(path)) window.dispatchEvent(new Event('analytics-session-expired'))
+    const fallback = response.status === 401 ? LOGIN_PATHS.has(path) ? 'Перевірте логін і пароль.' : 'Сесію завершено або обліковий запис змінився. Увійдіть ще раз.' : response.status === 403 ? 'Недостатньо прав для цієї дії.' : response.status === 409 ? 'Дані вже змінено. Оновіть їх перед збереженням.' : response.status === 429 ? 'Забагато спроб входу. Спробуйте пізніше.' : 'Не вдалося виконати запит. Спробуйте ще раз.'
     throw new AccountApiError(response.status === 401 || response.status === 429 ? fallback : message || fallback, response.status)
   }
   return response.json() as Promise<T>
 }
 export const accountApi = {
   session: () => request<AuthSession>('auth/session'),
-  login: (username: string, password: string) => request<AuthSession>('auth/login', 'POST', { username, password }),
+  login: (username: string, password: string, keycloak = false) => request<AuthSession>(keycloak ? 'auth/keycloak/password' : 'auth/login', 'POST', { username, password }),
   logout: () => request<AuthSession>('auth/logout', 'POST'),
   dashboard: (expectedUserId: string) => request<DashboardSnapshot>('me/dashboard', 'GET', undefined, undefined, expectedUserId),
   users: (token?: string) => request<{ users: ManagedUser[] }>('admin/users', 'GET', undefined, token),

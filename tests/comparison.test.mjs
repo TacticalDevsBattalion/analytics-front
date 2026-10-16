@@ -5,7 +5,7 @@ import test from 'node:test'
 
 const source = await readFile(new URL('../src/lib/comparison.ts', import.meta.url), 'utf8')
 const outputText = stripTypeScriptTypes(source, { mode: 'strip' })
-const { comparisonCsv, comparisonMetricRows, comparisonReference, metricDifference, temporalGroups, temporalMetricCells, temporalPeriodCount, temporalPresetRange } = await import(`data:text/javascript;base64,${Buffer.from(outputText).toString('base64')}`)
+const { comparisonCsv, comparisonHighlights, comparisonMetricRows, comparisonReference, metricDifference, temporalGroups, temporalMetricCells, temporalPeriodCount, temporalPresetRange } = await import(`data:text/javascript;base64,${Buffer.from(outputText).toString('base64')}`)
 
 test('compares counts with absolute and relative differences', () => {
   assert.deepEqual(metricDifference(150, 100), { absolute: 50, relative: 50 })
@@ -129,4 +129,22 @@ test('temporal matrix and export references use preceding period of the same gro
   const missingMatrix = temporalMetricCells(missing, comparisonMetricRows(missing)[0])
   assert.equal(missingMatrix[1].cells[0].value, null)
   assert.equal(missingMatrix[2].cells[0].absolute, null)
+})
+
+test('highlights rank the largest changes across all metrics and skip the reference', () => {
+  const metric = (key, value, unit) => ({ key, label: key, value, ...(unit ? { unit } : {}) })
+  const result = {
+    mode: 'units', baseline_id: 'a', selections: [
+      { id: 'a', label: 'A', filters: {}, metrics: [metric('flights', 100), metric('destroyed', 10), metric('efficiency', 50, '%'), metric('detected', 0), metric('affected', 5)] },
+      { id: 'b', label: 'B', filters: {}, metrics: [metric('flights', 110), metric('destroyed', 4), metric('efficiency', 80, '%'), metric('detected', 3), metric('affected', 5)] },
+    ],
+  }
+  const rows = comparisonMetricRows(result)
+  const highlights = comparisonHighlights(result, rows, result.selections)
+  // destroyed −60%, efficiency +30 pp, flights +10%, detected from zero last; unchanged metrics omitted.
+  assert.deepEqual(highlights.map(item => item.row.key), ['destroyed', 'efficiency', 'flights', 'detected'])
+  assert.ok(highlights.every(item => item.selection.id === 'b'))
+  assert.equal(highlights[1].absolute, 30)
+  assert.equal(highlights[3].relative, null)
+  assert.equal(comparisonHighlights(result, rows, result.selections, 2).length, 2)
 })

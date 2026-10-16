@@ -154,3 +154,36 @@
   .comparison-page--refined .cmp-detail-tools>button { flex:1; font-size:var(--fs-sm); }
   .comparison-page--refined .cmp-rules-list { grid-template-columns:1fr; }
 }
+
+/* Largest changes: direction is shown by sign and icon only, not good/bad colour. */
+.comparison-page--refined .cmp-highlights { margin-bottom:20px; }
+.comparison-page--refined .cmp-highlights h3 { margin:0 0 10px; font-size:var(--fs-md); font-weight:500; }
+.comparison-page--refined .cmp-highlights>div { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:9px; }
+.comparison-page--refined .cmp-highlight { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:4px 10px; text-align:left; padding:11px 13px; border:1px solid var(--border-3); border-radius:var(--radius-sm); background:var(--bg-3); color:var(--text-1); cursor:pointer; min-width:0; }
+.comparison-page--refined .cmp-highlight:hover, .comparison-page--refined .cmp-highlight:focus-visible { border-color:var(--accent); }
+.comparison-page--refined .cmp-highlight>svg { color:var(--text-2); }
+.comparison-page--refined .cmp-highlight>span { display:grid; gap:2px; min-width:0; }
+.comparison-page--refined .cmp-highlight>span strong { font-size:var(--fs-sm); font-weight:500; overflow-wrap:anywhere; }
+.comparison-page--refined .cmp-highlight>span small, .comparison-page--refined .cmp-highlight>small { color:var(--text-3); font-size:var(--fs-xs); }
+.comparison-page--refined .cmp-highlight>b { font-size:var(--fs-md); font-weight:600; font-variant-numeric:tabular-nums; }
+.comparison-page--refined .cmp-highlight>small { grid-column:2 / -1; font-variant-numeric:tabular-nums; }
+
+/* All metrics as one matrix: metrics in rows, selections in columns. */
+.comparison-page--refined .cmp-metric-matrix th, .comparison-page--refined .cmp-metric-matrix td { padding:10px 14px; }
+.comparison-page--refined .cmp-metric-matrix .cmp-value>strong { font-size:var(--fs-md); }
+.comparison-page--refined .cmp-matrix-metric { all:unset; cursor:pointer; color:inherit; line-height:1.5; }
+.comparison-page--refined .cmp-matrix-metric:hover, .comparison-page--refined .cmp-matrix-metric:focus-visible { color:var(--accent); text-decoration:underline; }
+.comparison-page--refined .cmp-matrix-selected>th { box-shadow:inset 3px 0 var(--accent), 1px 0 #28485e; }
+
+/* Choose units on the results page without opening the filter panel. */
+.comparison-page--refined .cmp-unit-picker { display:grid; gap:12px; padding:0 20px 20px; }
+.comparison-page--refined .cmp-unit-picker>p { margin:0; color:var(--text-2); font-size:var(--fs-sm); }
+.comparison-page--refined .cmp-unit-picker-chips { display:flex; flex-wrap:wrap; gap:7px; }
+.comparison-page--refined .cmp-unit-picker-chips button { padding:6px 12px; border:1px solid var(--border-3); border-radius:999px; background:var(--bg-3); color:var(--text-2); cursor:pointer; font-size:var(--fs-sm); }
+.comparison-page--refined .cmp-unit-picker-chips button[aria-pressed=true] { border-color:var(--accent); color:var(--text-1); background:rgba(var(--accent-rgb), .16); }
+.comparison-page--refined .cmp-unit-picker-chips button:disabled { opacity:.45; cursor:not-allowed; }
+.comparison-page--refined .cmp-unit-picker-apply { justify-self:start; }
+@media(max-width:720px) {
+  .comparison-page--refined .cmp-highlights>div { grid-template-columns:1fr; }
+  .comparison-page--refined .cmp-unit-picker { padding:0 13px 16px; }
+}

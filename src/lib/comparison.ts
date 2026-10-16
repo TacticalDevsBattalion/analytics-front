@@ -124,6 +124,39 @@ export function comparisonReference(result: ComparisonResponse, selection: Compa
   return result.selections.find((item) => item.group_id === selection.group_id && item.period_id === periods[index - 1].id)
 }
 
+export type ComparisonHighlight = {
+  row: ComparisonMetricRow
+  selection: ComparisonSelection
+  value: number
+  reference: number
+  absolute: number
+  relative: number | null
+  // Percentage metrics rank by percentage points; counts by relative change.
+  score: number
+}
+
+// The largest changes across every metric, so the overview answers "what moved"
+// without choosing metrics one by one. Missing data and unit mismatches are skipped.
+export function comparisonHighlights(result: ComparisonResponse, rows: ComparisonMetricRow[], selections: ComparisonSelection[], limit = 6): ComparisonHighlight[] {
+  const highlights: ComparisonHighlight[] = []
+  for (const selection of selections) {
+    if (result.mode !== 'units_over_time' && selection.id === result.baseline_id) continue
+    const reference = comparisonReference(result, selection)
+    if (!reference) continue
+    for (const row of rows) {
+      const current = row.metrics[selection.id], previous = row.metrics[reference.id]
+      if ((current?.unit ?? row.unit) !== (previous?.unit ?? row.unit)) continue
+      const { absolute, relative } = metricDifference(current?.value, previous?.value)
+      if (absolute == null || absolute === 0) continue
+      const percentage = (current?.unit ?? row.unit) === '%'
+      const score = percentage ? Math.abs(absolute) : relative == null ? Infinity : Math.abs(relative)
+      highlights.push({ row, selection, value: current!.value!, reference: previous!.value!, absolute, relative, score })
+    }
+  }
+  // A change from zero has no relative size; rank it after measurable changes.
+  return highlights.sort((a, b) => (Number.isFinite(b.score) ? b.score : -1) - (Number.isFinite(a.score) ? a.score : -1)).slice(0, limit)
+}
+
 export function temporalMetricCells(result: ComparisonResponse, row: ComparisonMetricRow) {
   return (result.periods || []).map((period) => ({
     period,

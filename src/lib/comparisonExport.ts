@@ -1,7 +1,8 @@
 import type { Workbook, Worksheet } from 'exceljs'
-import { reportMetricTitle, reportStatusLabel, type ComparisonReport, type ReportRow } from './comparisonReport'
+import { reportMetricTitle, reportPeriodLabel, reportStatusLabel, type ComparisonReport, type ReportRow } from './comparisonReport'
+import { downloadFile, exportFileName, tableExportHtml, type ExportDocument } from './tableExport'
 
-export type ComparisonExportFormat = 'csv' | 'xml' | 'xlsx'
+export type ComparisonExportFormat = 'csv' | 'xml' | 'xlsx' | 'json' | 'html'
 export const COMPARISON_CSV_COLUMNS = [
   'record_type', 'report_title', 'created_at', 'source', 'source_label', 'mode', 'dimension', 'granularity', 'configuration_revision', 'kpi_fingerprint',
   'selection_id', 'selection_label', 'group_id', 'period_id', 'date_from', 'time_from', 'date_to', 'time_to', 'is_partial', 'is_current', 'is_future',
@@ -304,13 +305,27 @@ export async function comparisonReportXlsx(report: ComparisonReport): Promise<Ui
   return new Uint8Array(buffer)
 }
 
+// Readable tables for the HTML (print / PDF) export.
+export function comparisonReportDocument(report: ComparisonReport): ExportDocument {
+  const tr = (uk: string, en: string) => report.language === 'uk' ? uk : en
+  const selection = (id: string) => report.selections.find(item => item.id === id)
+  return {
+    title: report.title, createdAt: report.createdAt,
+    meta: [[tr('Джерело даних', 'Data source'), report.sourceLabel], [tr('Режим', 'Mode'), report.mode], [tr('Групування', 'Dimension'), String(report.dimension ?? '')], ...(report.configurationRevision != null ? [[tr('Версія розрахунку', 'Calculation revision'), String(report.configurationRevision)] as [string, string]] : [])],
+    notes: [report.referenceExplanation, ...report.notes].filter(Boolean),
+    tables: [
+      { name: tr('Вибірки', 'Selections'), columns: [{ key: 'selection', title: tr('Вибірка', 'Selection') }, { key: 'period', title: tr('Період', 'Period') }, { key: 'reference', title: tr('Порівнюється з', 'Compared with') }, { key: 'filters', title: tr('Фільтри', 'Filters') }, { key: 'partial', title: tr('Неповний період', 'Partial period') }],
+        rows: report.selections.map(item => [item.label, reportPeriodLabel(item), item.referenceLabel, item.filters.map(filter => `${filter.label}: ${filter.labels.join(', ')}`).join('\n'), item.isPartial]) },
+      { name: tr('Показники', 'Metrics'), columns: [
+        { key: 'selection', title: tr('Вибірка', 'Selection') }, { key: 'metric', title: tr('Показник', 'Metric') }, { key: 'breakdown', title: tr('Розріз', 'Breakdown') }, { key: 'unit', title: tr('Одиниця', 'Unit') },
+        { key: 'value', title: tr('Значення', 'Value'), kind: 'number' }, { key: 'reference', title: tr('База', 'Reference'), kind: 'number' }, { key: 'difference', title: tr('Різниця', 'Difference'), kind: 'number' },
+        { key: 'relative', title: tr('Відносна зміна', 'Relative change'), kind: 'percent', decimals: 1 }, { key: 'status', title: tr('Стан', 'Status') }],
+        rows: report.rows.map(row => [selection(row.selectionId)?.label ?? row.selectionId, reportMetricTitle({ label: row.metricLabel, context: row.metricContext }), row.pathLabels.join(' › '), row.unit, row.value, row.referenceValue, row.absoluteDifference, row.relativeDifference, reportStatusLabel(row.differenceStatus === 'available' ? row.valueStatus : row.differenceStatus, report.language)]) },
+    ],
+  }
+}
+
 export async function downloadComparisonReport(report: ComparisonReport, format: ComparisonExportFormat): Promise<void> {
-  const data = format === 'xlsx' ? await comparisonReportXlsx(report) : format === 'xml' ? comparisonReportXml(report) : comparisonReportCsv(report)
-  const mime = format === 'xlsx' ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' : format === 'xml' ? 'application/xml;charset=utf-8' : 'text/csv;charset=utf-8'
-  const bytes = data instanceof Uint8Array ? new Uint8Array(data).buffer : data
-  const url = URL.createObjectURL(new Blob([bytes], { type: mime }))
-  const link = document.createElement('a')
-  link.href = url; link.download = `analytics-comparison-${report.mode}-${report.createdAt.slice(0, 10)}.${format}`
-  document.body.appendChild(link)
-  try { link.click() } finally { link.remove(); window.setTimeout(() => URL.revokeObjectURL(url), 1000) }
+  const data = format === 'xlsx' ? await comparisonReportXlsx(report) : format === 'xml' ? comparisonReportXml(report) : format === 'json' ? JSON.stringify(report, null, 2) : format === 'html' ? tableExportHtml(comparisonReportDocument(report)) : comparisonReportCsv(report)
+  downloadFile(data, exportFileName(`analytics-comparison-${report.mode}`, report.createdAt, format), format)
 }

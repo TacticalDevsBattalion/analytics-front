@@ -14,4 +14,5 @@ export const WidgetDefinitionSection = {
   targets: 'targets',
   losses: 'losses',
   resources: 'resources',
+  positions: 'positions',
 } as const;

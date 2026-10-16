@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { accountApi, type AppUser, type AuthSession } from '../lib/accountApi'
 import { useAppConfiguration } from './AppConfigurationContext'
 
-type AuthValue = AuthSession & { loading: boolean; error: string; refresh: () => Promise<void>; login: (username: string, password: string) => Promise<void>; logout: () => Promise<void> }
+type AuthValue = AuthSession & { loading: boolean; error: string; refresh: () => Promise<void>; login: (username: string, password: string, keycloak?: boolean) => Promise<void>; logout: () => Promise<void> }
 const Context = createContext<AuthValue | null>(null)
 export type { AppUser }
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -36,11 +36,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     catch (reason) { if (current === generation.current) setError(reason instanceof Error ? reason.message : 'Не вдалося перевірити вхід.') }
     finally { if (current === generation.current) setLoading(false) }
   }, [apply])
-  const login = useCallback(async (username: string, password: string) => {
+  const login = useCallback(async (username: string, password: string, keycloak = false) => {
     if (transitionBusy.current) return
     transitionBusy.current = true
     const current = ++generation.current
-    try { const next = await accountApi.login(username, password); if (current === generation.current) await apply(next, current) }
+    try { const next = await accountApi.login(username, password, keycloak); if (current === generation.current) await apply(next, current) }
     catch (reason) { if (current === generation.current && previousIdentity.current !== null) setError(reason instanceof Error ? reason.message : 'Не вдалося завантажити налаштування.'); throw reason }
     finally { transitionBusy.current = false; if (current === generation.current) setLoading(false) }
   }, [apply])

@@ -483,7 +483,8 @@ export function FilterBar({
   options,
   onChange,
   comparison,
-  initiallyOpen = true,
+  // Closed by default: filters already apply on every page; open only on request.
+  initiallyOpen = false,
   customFilters: showCustom = false,
 }: Props) {
   const { tr } = useLanguage()

@@ -8,6 +8,20 @@ import { escapeChartHtml, observeDashboardChartSize } from './dashboardChartPres
 import { nativePlotValue, nativeTimelineTotal, nativeTimelineValues, visibleNativeTimeline } from '../lib/nativeWidgetPresentation'
 import './DashboardCharts.css'
 
+// A click anywhere in a day's column, not only on a point or a bar, selects that day.
+function selectDayOnClick(chart: ReturnType<typeof echarts.init>, data: TimelinePoint[], onSelect?: (field: string, value: unknown) => void) {
+  if (!onSelect) return
+  chart.getZr().on('click', (event: { offsetX: number; offsetY: number }) => {
+    if (!chart.containPixel({ gridIndex: 0 }, [event.offsetX, event.offsetY])) return
+    const [index] = chart.convertFromPixel({ xAxisIndex: 0 }, [event.offsetX, event.offsetY]) as number[]
+    const point = data[Math.round(index)]
+    if (point) onSelect('date', point.date)
+  })
+  chart.getZr().on('mousemove', (event: { offsetX: number; offsetY: number }) => {
+    chart.getZr().setCursorStyle(chart.containPixel({ gridIndex: 0 }, [event.offsetX, event.offsetY]) ? 'pointer' : 'default')
+  })
+}
+
 function LegacyTimelineChart({ data = [], hideZeroValues = false, onSelect }: { data?: TimelinePoint[]; hideZeroValues?: boolean; onSelect?: (field: string, value: unknown) => void }) {
   const ref = useRef<HTMLDivElement>(null)
   const { tr } = useLanguage()
@@ -16,7 +30,7 @@ function LegacyTimelineChart({ data = [], hideZeroValues = false, onSelect }: { 
     if (!ref.current) return
 
     const chart = echarts.init(ref.current)
-    chart.on('click', (event: { dataIndex?: number }) => { const point = data[event.dataIndex ?? -1]; if (point) onSelect?.('date', point.date) })
+    selectDayOnClick(chart, data, onSelect)
 
     const timelineConfig = getFrontendConfig().ui.timeline
     const dayLabel = tr('День', 'Day')
@@ -197,7 +211,7 @@ function CountTimelineChart({ data, view, descriptionId, hideZeroValues, onSelec
     if (!ref.current || data.length === 0) return
     const element = ref.current
     const chart = echarts.init(element)
-    chart.on('click', (event: { dataIndex?: number }) => { const point = data[event.dataIndex ?? -1]; if (point) onSelect?.('date', point.date) })
+    selectDayOnClick(chart, data, onSelect)
     const totalLabel = tr('Всього', 'Total')
     const dayLabel = tr('День', 'Day')
     const nightLabel = tr('Ніч', 'Night')

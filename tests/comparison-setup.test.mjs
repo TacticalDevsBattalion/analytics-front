@@ -7,7 +7,7 @@ const moduleUrl = (source) => `data:text/javascript;base64,${Buffer.from(source)
 const comparisonSource = stripTypeScriptTypes(await readFile(new URL('../src/lib/comparison.ts', import.meta.url), 'utf8'), { mode: 'strip' })
 const setupSource = stripTypeScriptTypes(await readFile(new URL('../src/lib/comparisonSetup.ts', import.meta.url), 'utf8'), { mode: 'strip' })
   .replace(/from\s+(['"])\.\/comparison\1/g, `from ${JSON.stringify(moduleUrl(comparisonSource))}`)
-const { buildComparisonRequest, comparisonSetupValidation } = await import(moduleUrl(setupSource))
+const { automaticComparisonRequest, buildComparisonRequest, comparisonSetupValidation } = await import(moduleUrl(setupSource))
 
 function filters(overrides = {}) {
   return {
@@ -188,4 +188,14 @@ test('invalid enabled settings throw clear submission errors for each validation
   assert.throws(() => buildComparisonRequest(settings({ reference: 'custom', reference_period: { date_from: '', date_to: '' } }), filters()), /valid custom comparison date and time range/)
   assert.throws(() => buildComparisonRequest(settings({ mode: 'units' }), filters({ bbak: [] })), /2 and 6 distinct/)
   assert.throws(() => buildComparisonRequest(settings({ mode: 'units_over_time', granularity: 'day' }), filters({ date_to: '2026-09-30' })), /24 periods and 72/)
+})
+
+test('automatic request runs valid comparisons immediately and waits when units are missing', () => {
+  const periods = automaticComparisonRequest(settings({ enabled: false }), filters())
+  assert.equal(periods.mode, 'periods')
+  assert.equal(periods.comparison_filters, undefined)
+  const units = automaticComparisonRequest(settings({ mode: 'units', dimension: 'rota' }), filters())
+  assert.deepEqual(units.units, ['company A', 'company B'])
+  assert.equal(automaticComparisonRequest(settings({ mode: 'units', dimension: 'rota' }), filters({ rota: ['company A'] })), null)
+  assert.equal(automaticComparisonRequest(settings(), filters({ date_from: '2026-09-08' })), null)
 })

@@ -1,4 +1,5 @@
 import { withApiBase } from '../config'
+import type { QueryRequest } from './biTypes'
 import type { AnalyticsComparison, AnalyticsComparisonRequest, AnalyticsHierarchy, AnalyticsMetadata, DashboardDefinition, DashboardOverrides, DashboardQueryResult, DashboardType, DateRange, QueryFilter, QueryResult, WidgetDefinition } from './biTypes'
 import type { AnalyticsCatalog, PersonalAppearance, PersonalDashboard } from './biTypes'
 import { personalAppearancePayload } from './semanticCatalog'
@@ -44,5 +45,6 @@ export const biApi = {
   metadata: (signal?: AbortSignal) => biRequest<AnalyticsMetadata>('/metadata', 'GET', undefined, signal),
   hierarchy: (signal?: AbortSignal) => biRequest<AnalyticsHierarchy>('/hierarchy', 'GET', undefined, signal),
   dashboards: (type: DashboardType, signal?: AbortSignal) => biRequest<DashboardDefinition[]>(`/dashboards?type=${encodeURIComponent(type)}`, 'GET', undefined, signal),
+  query: (request: QueryRequest, signal?: AbortSignal) => biRequest<QueryResult>('/query', 'POST', request, signal),
   comparison: (request: AnalyticsComparisonRequest, signal?: AbortSignal) => biRequest<AnalyticsComparison>('/comparison', 'POST', request, signal),
 }

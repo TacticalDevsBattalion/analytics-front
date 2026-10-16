@@ -9,10 +9,14 @@ import { SaxesParser } from 'saxes'
 const reportSource = stripTypeScriptTypes(await readFile(new URL('../src/lib/comparisonReport.ts', import.meta.url), 'utf8'), { mode: 'strip' })
 const reportUrl = `data:text/javascript;base64,${Buffer.from(reportSource).toString('base64')}`
 const { buildComparisonReport } = await import(reportUrl)
+const tableSource = stripTypeScriptTypes(await readFile(new URL('../src/lib/tableExport.ts', import.meta.url), 'utf8'), { mode: 'strip' })
+  .replace("import('exceljs')", `import(${JSON.stringify(import.meta.resolve('exceljs'))})`)
+const tableUrl = `data:text/javascript;base64,${Buffer.from(tableSource).toString('base64')}`
 const exportSource = stripTypeScriptTypes(await readFile(new URL('../src/lib/comparisonExport.ts', import.meta.url), 'utf8'), { mode: 'strip' })
   .replace("'./comparisonReport'", JSON.stringify(reportUrl))
+  .replace("'./tableExport'", JSON.stringify(tableUrl))
   .replace("import('exceljs')", `import(${JSON.stringify(import.meta.resolve('exceljs'))})`)
-const { comparisonReportCsv, comparisonReportXml, comparisonReportXlsx, comparisonCsvHeaders, COMPARISON_CSV_COLUMNS } = await import(`data:text/javascript;base64,${Buffer.from(exportSource).toString('base64')}`)
+const { comparisonReportCsv, comparisonReportXml, comparisonReportXlsx, comparisonReportDocument, comparisonCsvHeaders, COMPARISON_CSV_COLUMNS } = await import(`data:text/javascript;base64,${Buffer.from(exportSource).toString('base64')}`)
 
 const config = {
   filters: { organization_dimension: 'bbak', fields: [{ key: 'organization', label: 'Підрозділ' }, { key: 'category', label: 'Кафедра' }] },
@@ -221,4 +225,14 @@ test('real XLSX ZIP opens with four sheets, typed zero/percentage/null cells, re
   const contextSheet = workbook.getWorksheet('Контекст')
   assert.ok(contextSheet.getRows(4, contextSheet.rowCount - 3).some(row => row.getCell(3).value instanceof Date))
   assert.ok(contextSheet.getRows(4, contextSheet.rowCount - 3).some(row => row.getCell(5).value === '09:15:00.125'))
+})
+
+test('comparison report converts to a readable HTML document', async () => {
+  const { tableExportHtml } = await import(tableUrl)
+  const report = build(), document = comparisonReportDocument(report)
+  assert.deepEqual(document.tables.map(table => table.name), ['Вибірки', 'Показники'])
+  assert.equal(document.tables[1].rows.length, report.rows.length)
+  const page = tableExportHtml(document)
+  assert.match(page, /^<!doctype html>/)
+  assert.match(page, /<h1>Звіт порівняння<\/h1>/)
 })

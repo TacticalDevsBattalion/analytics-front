@@ -391,7 +391,6 @@ export function KpiCards({ metrics = [], onDrill, hideZeroValues = false }: { me
           <div className="kpi-card__value">{formatValue(metric)}</div>
           {hasSecondary && <div className="kpi-card__secondary"><span>{metric.secondary_label || 'Додаткове значення'}</span><strong>{formatNumber(metric.secondary_value ?? null)}</strong></div>}
           {metric.delta != null && <div className="kpi-card__delta"><span aria-hidden="true">{metric.delta > 0 ? '▲' : metric.delta < 0 ? '▼' : '■'}</span>{metric.delta > 0 ? '+' : ''}{metric.delta}%</div>}
-          {interactive && <div className="kpi-card__drill-hint">{autoHover ? 'Наведи або натисни для деталізації' : 'Натисни для деталізації'}</div>}
         </article>
       })}
     </section>
