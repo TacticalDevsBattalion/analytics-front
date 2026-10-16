@@ -1,0 +1,138 @@
+# =============================================================================
+# Analytics frontend (React/Vite → nginx) — Kubernetes deployment
+# -----------------------------------------------------------------------------
+# Застосовує Jenkins-джоба «Analytics Front Deploy» через envsubst:
+#     envsubst < deploy.yaml | kubectl apply -f -
+# envsubst підставляє КОЖНУ змінну з доларом у цьому файлі, коментарі теж: використовувати
+# лише SERVICE_NAME, NAMESPACE, REPOSITORY, IMAGE_TAG, HOST, BASE_PATH.
+#   SERVICE_NAME = analytics-front, HOST = analytics.kub.k2.lan, BASE_PATH = /
+#
+# Єдиний вхід застосунку: nginx віддає статику і проксіює /api/* на бекенд
+# (Service analytics-backend у тому ж namespace — його деплоїть «Analytics Backend Deploy»).
+# nginx.conf — шаблон: NGINX_RESOLVER і BACKEND_UPSTREAM нижче замінюють типові значення docker compose.
+# resolver потрібен, бо upstream резолвиться наживо (переживає перестворення Service бекенда);
+# через це в BACKEND_UPSTREAM повне ім'я — resolver nginx не знає search-доменів пода.
+#
+# Стану немає, ConfigMap/Secret не потрібні: runtime-конфіг фронту (config/frontend) вшитий в образ.
+# BASE_PATH має бути "/": фронт зібраний під корінь (абсолютні /assets, /api, /config, /sw.js).
+# =============================================================================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${SERVICE_NAME}
+  namespace: ${NAMESPACE}
+  labels:
+    app: ${SERVICE_NAME}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  minReadySeconds: 5
+  progressDeadlineSeconds: 300
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: ${SERVICE_NAME}
+  template:
+    metadata:
+      labels:
+        app: ${SERVICE_NAME}
+    spec:
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: ${SERVICE_NAME}
+          image: "${REPOSITORY}:${IMAGE_TAG}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+          env:
+            - name: API_PREFIX
+              value: "/api"
+            - name: NGINX_RESOLVER
+              value: "kube-dns.kube-system.svc.cluster.local"
+            - name: BACKEND_UPSTREAM
+              value: "analytics-backend.${NAMESPACE}.svc.cluster.local:8000"
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 3
+            failureThreshold: 20
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 30
+            timeoutSeconds: 3
+            failureThreshold: 3
+          lifecycle:
+            preStop:
+              exec:
+                # Видалення з Endpoints і SIGTERM ідуть паралельно — пауза, щоб haproxy встиг.
+                command: ["sleep", "5"]
+          securityContext:
+            allowPrivilegeEscalation: false
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${SERVICE_NAME}
+  namespace: ${NAMESPACE}
+  labels:
+    app: ${SERVICE_NAME}
+spec:
+  type: ClusterIP
+  selector:
+    app: ${SERVICE_NAME}
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ${SERVICE_NAME}
+  namespace: ${NAMESPACE}
+  annotations:
+    cert-manager.io/cluster-issuer: k2-intermediate-issuer
+    # Важкі аналітичні запити: nginx фронту чекає бекенд до 300 с — інгрес не повинен рвати раніше.
+    haproxy.org/timeout-server: "300s"
+spec:
+  ingressClassName: haproxy
+  tls:
+    - hosts:
+        - ${HOST}
+      secretName: ${SERVICE_NAME}-tls-secret
+  rules:
+    - host: ${HOST}
+      http:
+        paths:
+          - path: ${BASE_PATH}
+            pathType: Prefix
+            backend:
+              service:
+                name: ${SERVICE_NAME}
+                port:
+                  name: http
