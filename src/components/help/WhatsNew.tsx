@@ -49,17 +49,17 @@ export function useNewFor(where: Parameters<typeof entriesFor>[1]) {
 export function NewBadge({ entries, compact = false }: { entries: WhatsNewEntry[]; compact?: boolean }) {
   const ref = useRef<HTMLSpanElement>(null)
   const { markSeen } = useWhatsNew()
-  const { open, setOpen, show, hide } = useHoverCard()
+  const { open, close, toggle, trigger, card } = useHoverCard(ref)
   if (!entries.length) return null
   return <>
     <span ref={ref} className={`new-badge${compact ? ' new-badge--dot' : ''}`} tabIndex={compact ? -1 : 0} role={compact ? undefined : 'button'} aria-label={compact ? 'Є нове' : 'Що нового тут'}
-      onPointerEnter={compact ? undefined : show} onPointerLeave={compact ? undefined : hide} onFocus={compact ? undefined : show} onBlur={compact ? undefined : hide}
-      onClick={event => { if (compact) return; event.stopPropagation(); setOpen(current => !current) }}>
+      {...(compact ? {} : trigger)}
+      onClick={event => { if (compact) return; event.stopPropagation(); toggle() }}>
       {compact ? '' : 'Нове'}
     </span>
-    {open && ref.current && <HintCard anchor={ref.current} onEnter={show} onLeave={hide}>
+    {open && ref.current && <HintCard anchor={ref.current} {...card}>
       {entries.map(entry => <div className="hint-card__entry" key={entry.id}><strong className="hint-card__title">{entry.title}</strong><div className="hint-card__body">{entry.text}</div></div>)}
-      <button type="button" className="hint-card__action" onClick={() => { markSeen(entries.map(entry => entry.id)); setOpen(false) }}>Зрозуміло</button>
+      <button type="button" className="hint-card__action" onClick={() => { markSeen(entries.map(entry => entry.id)); close() }}>Зрозуміло</button>
     </HintCard>}
   </>
 }

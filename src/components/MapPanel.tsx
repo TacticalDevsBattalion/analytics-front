@@ -279,9 +279,12 @@ export function MapPanel({
         }
 
         // Hover shows the card; a click keeps it open.
+        // Touch screens have no hover: a tap opens the card with a close button.
         let hovered = ''
+        const noHover = window.matchMedia?.('(hover: none)').matches
         map.on('mousemove', 'points', (event) => {
           map.getCanvas().style.cursor = 'pointer'
+          if (noHover) return
           const feature = event.features?.[0]
           const id = String(feature?.properties?.id ?? '')
           if (!feature || pinnedRef.current || id === hovered) return
