@@ -190,3 +190,11 @@
 .loss-assets tfoot td { padding:6px 10px; border-top:1px solid var(--border-2); color:var(--text-2); font-weight:600; }
 .losses-group__spent { color:var(--text-3); font-size:var(--fs-xs); white-space:nowrap; }
 .loss-results--positions em { align-self:center; color:var(--text-3); font-size:var(--fs-xs); font-style:normal; }
+
+/* Departments start collapsed; an opened one must not stretch its neighbour. */
+.losses-groups { align-items:start; }
+.losses-groups__bar { grid-column:1 / -1; display:flex; align-items:center; justify-content:space-between; gap:10px; color:var(--text-2); font-size:var(--fs-sm); }
+.losses-groups__bar b { color:var(--text-1); }
+.losses-groups__bar button { padding:4px 10px; border:1px solid var(--border-2); border-radius:999px; background:transparent; color:var(--accent); font:inherit; font-size:var(--fs-xs); cursor:pointer; }
+.losses-groups__bar button:hover { background:var(--bg-2); }
+@media (pointer: coarse) { .losses-groups__bar button { min-height:36px; padding-inline:14px; } }

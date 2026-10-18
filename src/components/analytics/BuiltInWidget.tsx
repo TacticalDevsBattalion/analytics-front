@@ -24,12 +24,16 @@ export function AverageFlightsPerPosition({ overview, hideZeroValues = false }: 
 
 export function LostDevicesList({ rows }: { rows: EventRow[] }) {
   const { tr } = useLanguage()
-  const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set())
+  // Collapsed by default: each department shows only its count until opened.
+  const [open, setOpen] = useState<Set<string>>(() => new Set())
   const groups = summarizeLosses(rows, [...getFrontendConfig().ui.lost_department_order])
   if (!groups.length) return <div className="losses-empty">{tr('За вибраний період втрат бортів у цих кафедрах немає.', 'No lost devices for these departments in the selected period.')}</div>
-  const toggle = (department: string) => setCollapsed(current => { const next = new Set(current); if (next.has(department)) next.delete(department); else next.add(department); return next })
-  return <div className="losses-groups">{groups.map(group => {
-    const expanded = !collapsed.has(group.department)
+  const toggle = (department: string) => setOpen(current => { const next = new Set(current); if (next.has(department)) next.delete(department); else next.add(department); return next })
+  const allOpen = groups.every(group => open.has(group.department))
+  return <div className="losses-groups">
+    <div className="losses-groups__bar"><span>{tr('Усього втрачено', 'Lost in total')}: <b>{groups.reduce((sum, group) => sum + group.lost, 0)}</b></span><button type="button" onClick={() => setOpen(allOpen ? new Set() : new Set(groups.map(group => group.department)))}>{allOpen ? tr('Згорнути все', 'Collapse all') : tr('Розгорнути все', 'Expand all')}</button></div>
+    {groups.map(group => {
+    const expanded = open.has(group.department)
     // Reusable drones all have one result ("Втрата борту"): a breakdown would repeat it.
     const detailed = group.results.length > 1
     const singleUse = group.spent > 0
