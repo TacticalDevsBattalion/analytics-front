@@ -118,3 +118,50 @@
 .bi-area-mission-group > h4 { margin:0; display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px; font-size:var(--fs-md, 15px); }
 .bi-area-mission-group > h4 span { color:var(--text-2); font-size:var(--fs-sm); font-weight:400; }
 .bi-area-mission-group > .bi-areas { padding:0; }
+
+/* Position board: departments, positions and crews by day and night. */
+.pb { --pb-day:#e5b653; --pb-night:#91a9df; display:flex; flex-direction:column; gap:10px; height:100%; min-height:0; }
+.pb-departments { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:8px; }
+.pb-department { display:flex; flex-direction:column; gap:4px; align-items:stretch; text-align:left; padding:8px 10px; border:1px solid var(--border-3); border-radius:var(--radius-sm); background:var(--bg-2); color:var(--text-1); cursor:pointer; font:inherit; }
+.pb-department:hover { border-color:var(--accent); }
+.pb-department.active { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; }
+.pb-department__name { color:var(--text-2); font-size:var(--fs-xs); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pb-department strong { font-size:var(--fs-lg); font-variant-numeric:tabular-nums; }
+.pb-department__efficiency { color:var(--text-2); font-size:var(--fs-xs); }
+.pb-department__efficiency b { color:var(--text-1); font-variant-numeric:tabular-nums; }
+.pb-department small { color:var(--text-3); font-size:var(--fs-xs); }
+.pb-department__split { display:flex; justify-content:space-between; gap:6px; font-size:var(--fs-xs); font-variant-numeric:tabular-nums; }
+.pb-department__split span { display:inline-flex; align-items:center; gap:3px; }
+.pb .pb-day { color:var(--pb-day); }
+.pb .pb-night { color:var(--pb-night); }
+.pb-bar { height:8px; border-radius:4px; background:color-mix(in srgb, var(--text-3) 18%, transparent); overflow:hidden; min-width:60px; }
+.pb-bar__fill { display:flex; height:100%; }
+.pb-bar__day { background:var(--pb-day); }
+.pb-bar__night { background:var(--pb-night); }
+.pb-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; }
+.pb-search { display:inline-flex; align-items:center; gap:6px; flex:1 1 220px; max-width:320px; padding:4px 8px; border:1px solid var(--border-3); border-radius:var(--radius-sm); background:var(--bg-2); color:var(--text-3); }
+.pb-search input { flex:1; min-width:0; border:0; outline:0; background:transparent; color:var(--text-1); font:inherit; font-size:var(--fs-sm); }
+.pb-sort { display:inline-flex; align-items:center; gap:6px; color:var(--text-2); font-size:var(--fs-sm); }
+.pb-legend { display:inline-flex; gap:12px; font-size:var(--fs-xs); }
+.pb-legend span { display:inline-flex; align-items:center; gap:4px; }
+.pb-legend i { width:10px; height:8px; border-radius:2px; background:currentColor; }
+.pb-reset { margin-left:auto; }
+.pb-table-scroll { flex:1; min-height:120px; overflow:auto; }
+.pb-table { width:100%; border-collapse:collapse; font-size:var(--fs-sm); }
+.pb-table th, .pb-table td { padding:6px 10px; border-bottom:1px solid #28405680; text-align:left; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.pb-table thead th { position:sticky; top:0; z-index:2; background:var(--bg-2); color:var(--text-2); font-weight:500; }
+.pb-table .bi-num { text-align:right; }
+.pb-bar-col { width:40%; min-width:120px; }
+.pb-group th { position:sticky; top:31px; z-index:1; background:var(--bg-3, var(--bg-2)); color:var(--text-1); font-weight:600; }
+.pb-group small { margin-left:10px; color:var(--text-3); font-weight:400; font-size:var(--fs-xs); }
+.pb-row { cursor:pointer; }
+.pb-row:hover, .pb-row:focus-visible { background:rgba(var(--accent-rgb, 74,155,255), .08); outline:none; }
+.pb-name { display:inline-flex; align-items:center; gap:6px; }
+.pb-name > span { display:inline-flex; flex-direction:column; line-height:1.2; }
+.pb-name small { color:var(--text-3); font-size:var(--fs-xs); }
+.pb-chevron { color:var(--text-3); transform:rotate(-90deg); transition:transform .15s; flex:none; }
+.pb-row.expanded .pb-chevron { transform:none; }
+.pb-crew td { font-size:var(--fs-xs); color:var(--text-2); background:color-mix(in srgb, var(--text-3) 6%, transparent); }
+.pb-crew__name { padding-left:26px; }
+.pb-crew .pb-bar { height:5px; }
+@media (max-width: 640px) { .pb-bar-col { display:none; } .pb-reset { margin-left:0; } }

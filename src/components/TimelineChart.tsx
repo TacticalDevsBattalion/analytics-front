@@ -13,7 +13,8 @@ function selectDayOnClick(chart: ReturnType<typeof echarts.init>, data: Timeline
   if (!onSelect) return
   chart.getZr().on('click', (event: { offsetX: number; offsetY: number }) => {
     if (!chart.containPixel({ gridIndex: 0 }, [event.offsetX, event.offsetY])) return
-    const [index] = chart.convertFromPixel({ xAxisIndex: 0 }, [event.offsetX, event.offsetY]) as number[]
+    // With a grid finder ECharts returns [x, y]; x is the category index.
+    const [index] = chart.convertFromPixel({ gridIndex: 0 }, [event.offsetX, event.offsetY]) as number[]
     const point = data[Math.round(index)]
     if (point) onSelect('date', point.date)
   })
