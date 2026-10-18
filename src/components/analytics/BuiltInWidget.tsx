@@ -9,6 +9,8 @@ import { useLanguage } from '../../i18n/LanguageContext'
 import { getFrontendConfig } from '../../config'
 import { flightSummaryRows } from '../../lib/flightSummaries'
 import { visibleNativeValues } from '../../lib/nativeWidgetPresentation'
+import { summarizeLosses } from '../../lib/lostDevices'
+import { InfoHint } from '../help/InfoHint'
 import type { EventRow, GeoFeatureCollection, MapLines, Metric, TimelinePoint } from '../../lib/types'
 import type { QueryResult, WidgetDefinition } from '../../lib/biTypes'
 
@@ -22,13 +24,32 @@ export function AverageFlightsPerPosition({ overview, hideZeroValues = false }: 
 
 export function LostDevicesList({ rows }: { rows: EventRow[] }) {
   const { tr } = useLanguage()
-  const [expanded, setExpanded] = useState<Set<string>>(() => new Set())
-  const order = [...getFrontendConfig().ui.lost_department_order]
-  for (const row of rows) if (!order.includes(row.category)) order.push(row.category)
-  const groups = order.map(department => ({ department, rows: rows.filter(row => row.category === department) })).filter(group => group.rows.length)
+  const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set())
+  const groups = summarizeLosses(rows, [...getFrontendConfig().ui.lost_department_order])
   if (!groups.length) return <div className="losses-empty">{tr('За вибраний період втрат бортів у цих кафедрах немає.', 'No lost devices for these departments in the selected period.')}</div>
-  const toggle = (department: string) => setExpanded(current => { const next = new Set(current); if (next.has(department)) next.delete(department); else next.add(department); return next })
-  return <div className="losses-groups">{groups.map(group => <section className={`losses-group${expanded.has(group.department) ? ' losses-group--expanded' : ''}`} key={group.department}><button type="button" className="losses-group__head" onClick={() => toggle(group.department)} aria-expanded={expanded.has(group.department)}><div><span>{tr('Кафедра', 'Department')}</span><strong>{group.department}</strong></div><div className="losses-group__summary"><b title={tr('Загальна кількість втрат', 'Total lost devices')}>{group.rows.length}</b><ChevronDown className="losses-group__chevron" size={16} /></div></button>{expanded.has(group.department) && <div className="losses-group__items">{group.rows.map(row => <article className="loss-card" key={row.id}><div className="loss-card__asset"><span>{tr('Засіб', 'Asset')}</span><strong>{row.asset || '—'}</strong></div><div className="loss-card__meta"><div><span>{tr('Позиція', 'Position')}</span><strong>{row.group || '—'}</strong></div><div><span>{tr('Мета вильоту', 'Flight purpose')}</span><strong>{row.purpose || '—'}</strong></div></div></article>)}</div>}</section>)}</div>
+  const toggle = (department: string) => setCollapsed(current => { const next = new Set(current); if (next.has(department)) next.delete(department); else next.add(department); return next })
+  return <div className="losses-groups">{groups.map(group => {
+    const expanded = !collapsed.has(group.department)
+    // Reusable drones all have one result ("Втрата борту"): a breakdown would repeat it.
+    const detailed = group.results.length > 1
+    const singleUse = group.spent > 0
+    return <section className={`losses-group${expanded ? ' losses-group--expanded' : ''}`} key={group.department}>
+      <button type="button" className="losses-group__head" onClick={() => toggle(group.department)} aria-expanded={expanded}>
+        <div><span>{tr('Кафедра', 'Department')}</span><strong>{group.department}</strong></div>
+        <div className="losses-group__summary">
+          {singleUse && <small className="losses-group__spent" title={tr('Засоби, які уразили або знищили ціль, — це не втрати', 'Drones that struck or destroyed the target are not losses')}>{tr('уразили / знищили', 'struck / destroyed')} {group.spent}</small>}
+          <b title={tr('Втрачено засобів', 'Lost devices')}>{group.lost}</b><ChevronDown className="losses-group__chevron" size={16} />
+        </div>
+      </button>
+      {expanded && <div className="losses-group__items">
+        {detailed && <div className="loss-results">{group.results.map(([result, count]) => <span key={result}>{result} <b>{count}</b></span>)}</div>}
+        {!singleUse && group.positions.length > 0 && <div className="loss-results loss-results--positions" aria-label={tr('Втрати за позиціями', 'Losses by position')}><em>{tr('Позиції', 'Positions')}:</em>{group.positions.map(([position, count]) => <span key={position}>{position} <b>{count}</b></span>)}</div>}
+        <table className="loss-assets"><thead><tr><th>{tr('Засіб', 'Asset')}</th><th>{tr('Втрачено', 'Lost')}</th>{singleUse && <th>{tr('Уразили / знищили ціль', 'Struck / destroyed target')}<InfoHint title={tr('Не втрати', 'Not losses')}>{tr('Одноразові засоби, які уразили або знищили ціль, виконали завдання. Вони не входять у втрати; тут показано їхню кількість для повноти картини.', 'Single-use drones that struck or destroyed the target did their job. They are not losses; the count is shown for completeness.')}</InfoHint></th>}</tr></thead><tbody>
+          {group.assets.map(asset => <tr key={asset.asset}><td><strong>{asset.asset}</strong>{detailed && asset.results.length > 0 && <small>{asset.results.map(([result, count]) => `${result} ${count}`).join(' · ')}</small>}{!singleUse && asset.positions.length > 0 && <small>{asset.positions.map(([position, count]) => `${position} ${count}`).join(' · ')}</small>}</td><td>{asset.lost || '—'}</td>{singleUse && <td className="loss-assets__spent">{asset.spent || '—'}</td>}</tr>)}
+        </tbody>{singleUse && <tfoot><tr><td>{tr('Усього використано', 'Used in total')}: {group.lost + group.spent}</td><td>{group.lost}</td><td className="loss-assets__spent">{group.spent}</td></tr></tfoot>}</table>
+      </div>}
+    </section>
+  })}</div>
 }
 
 export function BuiltInWidget({ definition, result, onDrill, onSelect }: { definition: WidgetDefinition; result: QueryResult; onDrill?: (metric: Metric) => void; onSelect?: (field: string, value: unknown) => void }) {

@@ -1,5 +1,6 @@
 import { Fragment, useMemo, useState } from 'react'
 import { ChevronDown, Moon, Search, Sun } from 'lucide-react'
+import { InfoHint } from '../help/InfoHint'
 import type { QueryResult } from '../../lib/biTypes'
 import { SORTS, efficiencyOf, groupPositions, sortValue, type Counts, type Position, type SortKey } from '../../lib/positionBoard'
 
@@ -50,7 +51,7 @@ export function PositionBoard({ result, locale }: { result: QueryResult; locale:
     {!shown.length && <p className="bi-state" role="status">Нічого не знайдено</p>}
     <div className="pb-table-scroll" tabIndex={0}>
       <table className="pb-table">
-        <thead><tr><th>Позиція</th><th className="pb-bar-col">Вдень / вночі</th><th className="bi-num">Вдень</th><th className="bi-num">Вночі</th><th className="bi-num">Усього</th><th className="bi-num">Ніч, %</th></tr></thead>
+        <thead><tr><th>Позиція</th><th className="pb-bar-col">Вдень / вночі<InfoHint title="Смуга">Довжина — кількість вильотів відносно найбільшої позиції в списку. Жовта частина — вильоти вдень (типово 07:00–19:00 за київським часом), блакитна — вночі.</InfoHint></th><th className="bi-num">Вдень</th><th className="bi-num">Вночі</th><th className="bi-num">Усього</th><th className="bi-num">Ніч, %<InfoHint title="Частка ночі">Вильоти вночі ÷ усі вильоти позиції × 100%. Вильоти без зазначеного часу рахуються як нічні.</InfoHint></th></tr></thead>
         {shown.map(department => <tbody key={department.category}>
           <tr className="pb-group"><th colSpan={6}>{department.category}<small>{department.positions.length} поз. · {format.format(department.positions.reduce((sum, position) => sum + position.flights, 0))} вильотів</small></th></tr>
           {department.positions.map(position => {

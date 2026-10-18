@@ -15,6 +15,8 @@ import { getFrontendConfig } from '../config'
 import { useAppConfiguration } from '../config/AppConfigurationContext'
 import { useAuth } from '../config/AuthContext'
 import '../styles/mobile-nav.css'
+import { NewBadge, VersionButton, useWhatsNew } from './help/WhatsNew'
+import { entriesFor } from '../lib/whatsNew'
 
 export type PageId =
   | 'dashboard'
@@ -38,6 +40,9 @@ export function Sidebar({
 }) {
   const { tr } = useLanguage()
   const { branding } = getFrontendConfig().app
+  const { active: fresh } = useWhatsNew()
+  // A pulsing dot marks sections with changes the user has not seen yet.
+  const newDot = (id: PageId) => <NewBadge compact entries={entriesFor(fresh, { page: id })} />
   const { config } = useAppConfiguration()
   const auth = useAuth()
   const pagePermissions: Partial<Record<PageId, string>> = { dashboard: 'dashboard.view', statistics: 'statistics.view', comparison: 'comparison.view', personal: 'personal_dashboard.view', map: 'dashboard.view', table: 'statistics.view', dictionaries: 'metric.view', administration: 'analytics.admin' }
@@ -99,6 +104,7 @@ export function Sidebar({
           >
             <Icon size={18} />
             <span>{label}</span>
+            {newDot(id)}
           </button>
         ))}
       </nav>
@@ -116,11 +122,12 @@ export function Sidebar({
           >
             <Icon size={18} />
             <span>{label}</span>
+            {newDot(id)}
           </button>
         ))}
       </nav>
 
-      <div className="side-footer">{branding.sidebar_version}</div>
+      <div className="side-footer"><VersionButton />{branding.sidebar_version && <small>{branding.sidebar_version}</small>}</div>
     </aside>
 
     <nav className="mobile-tabbar" aria-label={tr('Основна навігація', 'Main navigation')}>
@@ -128,6 +135,7 @@ export function Sidebar({
         <button key={id} type="button" className={active === id ? 'active' : ''} aria-current={active === id ? 'page' : undefined} onClick={() => go(id)}>
           <Icon size={20} aria-hidden="true" />
           <span>{label}</span>
+          {newDot(id)}
         </button>
       ))}
       {mobileMore.length > 0 && (
@@ -142,6 +150,7 @@ export function Sidebar({
                 <button key={id} type="button" role="menuitem" className={active === id ? 'active' : ''} aria-current={active === id ? 'page' : undefined} onClick={() => go(id)}>
                   <Icon size={18} aria-hidden="true" />
                   <span>{label}</span>
+                  {newDot(id)}
                 </button>
               ))}
             </div>

@@ -16,6 +16,8 @@ import { filterNativeKpiBreakdown, nativeKpiValueVisible } from '../lib/nativeKp
 import { useAppConfiguration } from '../config/AppConfigurationContext'
 import { configurationLabel } from '../config/appConfiguration'
 import './KpiCardDetails.css'
+import { InfoHint } from './help/InfoHint'
+import { useMetricTexts } from './help/MetricTexts'
 
 const iconMap = {
   flights: Plane,
@@ -196,6 +198,7 @@ type OpenCardDetails = { key: string; origin: 'hover' | 'keyboard' | 'click' }
 
 export function KpiCards({ metrics = [], onDrill, hideZeroValues = false }: { metrics?: Metric[]; onDrill?: (metric: Metric) => void; hideZeroValues?: boolean }) {
   const { config } = useAppConfiguration()
+  const metricTexts = useMetricTexts()
   const settings = config.appearance.card_details ?? { interaction: 'auto', hover_delay_ms: 0, width: 'standard' }
   const enabled = settings.interaction !== 'disabled'
   const [openDetails, setOpenDetails] = useState<OpenCardDetails | null>(null)
@@ -386,7 +389,7 @@ export function KpiCards({ metrics = [], onDrill, hideZeroValues = false }: { me
           onClick={() => { if (interactive) activate(metric.key) }}
           onKeyDown={event => { if (interactive && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); activate(metric.key, true) } }}
         >
-          <div className="kpi-card__top"><div className="kpi-card__icon"><Icon size={22} strokeWidth={1.8} /></div><span className="kpi-card__label">{metric.label}</span></div>
+          <div className="kpi-card__top"><div className="kpi-card__icon"><Icon size={22} strokeWidth={1.8} /></div><span className="kpi-card__label">{metric.label}</span>{metricTexts[metric.key]?.description && metricTexts[metric.key]!.description !== 'Деталізований системний показник' && <InfoHint title={metric.label}>{metricTexts[metric.key]!.description}</InfoHint>}</div>
           {metric.primary_label && <div className="kpi-card__primary-label">{metric.primary_label}</div>}
           <div className="kpi-card__value">{formatValue(metric)}</div>
           {hasSecondary && <div className="kpi-card__secondary"><span>{metric.secondary_label || 'Додаткове значення'}</span><strong>{formatNumber(metric.secondary_value ?? null)}</strong></div>}

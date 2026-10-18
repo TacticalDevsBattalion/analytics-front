@@ -15,13 +15,15 @@ type Props = {
   gap?: number
   rowHeight?: number
   renderWidget: (widget: WidgetDefinition) => ReactNode
+  /** Next to the title: "how it is calculated" and "new" marks. */
+  headerExtras?: (widget: WidgetDefinition) => ReactNode
   onLayoutChange?: (widgetId: string, layout: WidgetLayout) => void
   onLayoutsChange?: (layouts: Record<string, WidgetLayout>) => void
   onEdit?: (widget: WidgetDefinition) => void; onDuplicate?: (widget: WidgetDefinition) => void; onDelete?: (widget: WidgetDefinition) => void
 }
 type Interaction = { id: string; mode: 'move' | 'resize'; startX: number; startY: number; columnSize: number; layout: WidgetLayout; pointerId: number }
 
-export function DashboardGrid({ widgets, editable = false, manageWidgets = false, canManageWidget, canEditWidget, canDeleteWidget, frameless = false, gap = BI_GRID_GAP, rowHeight = BI_GRID_ROW_HEIGHT, renderWidget, onLayoutChange, onLayoutsChange, onEdit, onDuplicate, onDelete }: Props) {
+export function DashboardGrid({ widgets, editable = false, manageWidgets = false, canManageWidget, canEditWidget, canDeleteWidget, frameless = false, gap = BI_GRID_GAP, rowHeight = BI_GRID_ROW_HEIGHT, renderWidget, headerExtras, onLayoutChange, onLayoutsChange, onEdit, onDuplicate, onDelete }: Props) {
   const { tr } = useLanguage()
   const ref = useRef<HTMLDivElement>(null)
   const interaction = useRef<Interaction | null>(null)
@@ -95,7 +97,7 @@ export function DashboardGrid({ widgets, editable = false, manageWidgets = false
       return <article className={`bi-widget${bare ? ' bi-widget-frameless' : ''}${draft?.id === widget.id ? ' bi-widget-active' : ''}`} key={widget.id} style={style} data-builtin={widget.builtin ?? undefined} aria-label={widget.title}>
         {!bare && <header className="bi-widget-header">
           {allowed(widget, 'move') && <button type="button" className="bi-drag-handle" title={tr('Перемістити. Також доступні клавіші зі стрілками.', 'Move. Arrow keys are also supported.')} aria-label={`${tr('Перемістити', 'Move')} ${widget.title}`} onPointerDown={event => begin(event, widget, 'move')} onPointerMove={move} onPointerUp={event => finish(event)} onPointerCancel={event => finish(event, true)} onKeyDown={event => keyboard(event, widget, 'move')}><GripVertical size={17} /></button>}
-          <h3>{widget.title}</h3>{widget.is_locked && <LockKeyhole size={14} aria-label={tr('Заблоковано', 'Locked')} />}
+          <h3><span className="bi-widget-title">{widget.title}</span>{!editable && headerExtras?.(widget)}</h3>{widget.is_locked && <LockKeyhole size={14} aria-label={tr('Заблоковано', 'Locked')} />}
           {manageWidgets && <div className="bi-widget-actions">{onEdit && (canEditWidget ? canEditWidget(widget) : manageable) && <button type="button" aria-label={`${tr('Налаштувати', 'Configure')} ${widget.title}`} onClick={() => onEdit(widget)}><Settings2 size={15} /></button>}{onDuplicate && manageable && <button type="button" aria-label={`${tr('Дублювати', 'Duplicate')} ${widget.title}`} onClick={() => onDuplicate(widget)}><Copy size={15} /></button>}{onDelete && (canDeleteWidget ? canDeleteWidget(widget) : manageable) && !widget.is_locked && widget.removable !== false && !widget.mandatory && <button type="button" aria-label={`${tr('Видалити', 'Delete')} ${widget.title}`} onClick={() => onDelete(widget)}><Trash2 size={15} /></button>}</div>}
         </header>}
         <div className="bi-widget-content">{renderWidget(widget)}</div>

@@ -19,6 +19,7 @@ import type { QueryFilter } from './lib/biTypes'
 import { biApi } from './lib/biApi'
 
 // Route-level code splitting: heavy pages (ECharts, MapLibre, admin UI) load on demand.
+import { WhatsNewProvider } from './components/help/WhatsNew'
 const MapPanel = lazy(() => import('./components/MapPanel').then(m => ({ default: m.MapPanel })))
 const AdministrationPage = lazy(() => import('./components/AdministrationPage').then(m => ({ default: m.AdministrationPage })))
 const ComparisonPage = lazy(() => import('./components/ComparisonPage').then(m => ({ default: m.ComparisonPage })))
@@ -155,15 +156,6 @@ function pageFromHash(): PageId {
   const config = getAppConfiguration()
   const defaultPage = config.appearance.default_page as PageId
   return pageInfo[raw] && (raw === 'administration' || raw === 'personal' || config.appearance.menu.includes(raw)) ? raw : (pageInfo[defaultPage] ? defaultPage : 'dashboard')
-}
-
-function aggregate(rows: EventRow[], key: keyof EventRow) {
-  const counts = new Map<string, number>()
-  for (const row of rows) {
-    const value = String(row[key] ?? '—')
-    counts.set(value, (counts.get(value) || 0) + 1)
-  }
-  return [...counts.entries()].sort((a, b) => b[1] - a[1])
 }
 
 function matchesSearch(row: EventRow, term: string) {
@@ -322,7 +314,17 @@ export default function App() {
       ? String(analyticsError)
       : ''
 
+  const openFromWhatsNew = (next: string, section?: string) => {
+    if (next === 'statistics' && section) {
+      setDrillFilters([])
+      setStatisticsSection(section)
+      window.location.hash = `/statistics?section=${encodeURIComponent(section)}`
+      setPage('statistics')
+    } else navigate(next as PageId)
+  }
+
   return (
+    <WhatsNewProvider onNavigate={openFromWhatsNew}>
     <div className="app-shell">
       <Sidebar active={page} onNavigate={navigate} permissions={permissions} />
       <main className={`main-area${page === 'comparison' ? ' main-area--comparison' : ''}`}>
@@ -358,6 +360,7 @@ export default function App() {
         </Suspense>
       </main>
     </div>
+    </WhatsNewProvider>
   )
 }
 
@@ -378,16 +381,8 @@ function AccountProfile({ onSettings, onLogout }: { onSettings: () => void; onLo
   return <div className="account-profile-wrap" ref={ref}><button className="account-profile-button account-profile" type="button" aria-label={tr('Меню облікового запису', 'Account menu')} aria-expanded={open} onClick={() => setOpen(!open)}><span className="account-avatar">{initials}</span><span className="account-profile-name"><strong>{name}</strong><small>{auth.user?.role === 'administrator' ? tr('Адміністратор', 'Administrator') : tr('Особистий дашборд', 'Personal dashboard')}</small></span><ChevronDown size={15} /></button>{open && <div className="account-profile-menu"><small>{auth.user?.username || tr('Доступ ще не налаштовано', 'Account access has not been configured')}</small><button type="button" onClick={() => { setOpen(false); onSettings() }}><SlidersHorizontal size={15} />{tr('Мій дашборд', 'My dashboard')}</button>{auth.user && <button type="button" disabled={busy} onClick={() => { setBusy(true); setError(''); void onLogout().catch(reason => setError(reason instanceof Error ? reason.message : tr('Не вдалося вийти.', 'Could not sign out.'))).finally(() => setBusy(false)) }}><LogOut size={15} />{busy ? tr('Вихід…', 'Signing out…') : tr('Вийти', 'Sign out')}</button>}{error && <small className="account-error" role="alert">{error}</small>}</div>}</div>
 }
 
-function Breakdown({ title, data }: { title: string; data: [string, number][] }) {
-  const { tr } = useLanguage()
-  const max = Math.max(...data.map((x) => x[1]), 1)
-  return <article className="panel breakdown-card"><div className="panel-head"><div><h2>{title}</h2><p>{tr('Поточна вибірка', 'Current selection')}</p></div></div><div className="breakdown-list">{data.slice(0, 8).map(([label, count]) => <div className="breakdown-row" key={label}><div className="breakdown-meta"><span>{label}</span><strong>{count}</strong></div><div className="progress-track"><span style={{ width: `${(count / max) * 100}%` }} /></div></div>)}</div></article>
-}
-
 function MapPage({ filters, setFilters, options, rows, geojson }: { filters: FilterState; setFilters: (f: FilterState) => void; options?: FilterOptions; rows: EventRow[]; geojson?: GeoFeatureCollection }) {
-  const { tr } = useLanguage()
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const selected = rows.find((x) => x.id === selectedId) || null
   return <>
     <FilterBar
       filters={filters}
@@ -395,15 +390,8 @@ function MapPage({ filters, setFilters, options, rows, geojson }: { filters: Fil
       onChange={setFilters}
       mode="general"
     />
-    <section className="map-page-grid">
-      <article className="panel full-map-panel"><div className="panel-head"><div><h2>{tr('Карта всієї вибірки', 'Selection map')}</h2><p>{tr('Уражені та знищені цілі, лінія фронту та окупована територія. Наведіть на ціль, щоб побачити всі ураження.', 'Struck and destroyed targets, front line and occupied territory. Hover a target to see every strike.')}</p></div><span className="badge">{tr('Кластери', 'Clusters')}</span></div><MapPanel geojson={geojson} rows={rows} selectedId={selectedId} onSelect={setSelectedId} /></article>
-      <aside className="map-side-stack">
-        <article className="panel"><div className="panel-head"><div><h2>{selected ? tr('Вибрана подія', 'Selected event') : tr('Підсумок', 'Summary')}</h2><p>{selected ? selected.id : tr('Видимі дані', 'Visible data')}</p></div>{selected && <button className="icon-button" onClick={() => setSelectedId(null)}><X size={16} /></button>}</div>
-          {selected ? <div className="event-detail"><div className="grid-ref-card"><span>Grid ID</span><code>{selected.grid_ref}</code></div><Detail label={tr('Дата', 'Date')} value={selected.timestamp.replace('T',' ')} /><Detail label={tr('Підрозділ', 'Unit')} value={selected.unit} /><Detail label={tr('Тип / засіб', 'Type / asset')} value={`${selected.category} / ${selected.asset}`} /><Detail label={tr('Мета', 'Purpose')} value={selected.purpose} /><Detail label={tr('Результат', 'Result')} value={selected.result} /></div>
-          : <div className="side-summary"><div><span>{tr('Подій', 'Events')}</span><strong>{rows.length}</strong></div><div><span>{tr('Позитивні', 'Positive')}</span><strong>{rows.filter((x) => x.result === 'Позитивний').length}</strong></div><div><span>{tr('Підрозділів', 'Units')}</span><strong>{new Set(rows.map((x) => x.unit)).size}</strong></div><div><span>{tr('Типів', 'Types')}</span><strong>{new Set(rows.map((x) => x.category)).size}</strong></div></div>}
-        </article>
-        <Breakdown title={tr('Точки за підрозділами', 'Points by unit')} data={aggregate(rows, 'unit')} />
-      </aside>
+    <section className="map-page">
+      <article className="panel full-map-panel"><MapPanel geojson={geojson} rows={rows} selectedId={selectedId} onSelect={setSelectedId} /></article>
     </section>
   </>
 }

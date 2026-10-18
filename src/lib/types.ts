@@ -150,6 +150,8 @@ export type EventRow = {
   grid_ref: string
   lat: number
   lon: number
+  /** Losses report: a single-use drone spent on a strike or kill, not lost. */
+  spent?: boolean
 }
 
 export type IdTitleOption = {

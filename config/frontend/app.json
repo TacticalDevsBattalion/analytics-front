@@ -3,7 +3,7 @@
     "app_name": "Analytics UI",
     "short_name": "Analytics",
     "sidebar_title": "ANALYTICS",
-    "sidebar_version": "v0.3 demo"
+    "sidebar_version": ""
   },
   "routing": {
     "default_page": "dashboard"

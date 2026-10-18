@@ -28,3 +28,21 @@ test('affected-only targets and broken history', () => {
   assert.deepEqual(targetHistory({ history: 'not json' }), [])
   assert.equal(targetHistory({ history: history }).length, 3)
 })
+
+test('cluster list puts destroyed and most struck targets first', async () => {
+  const { sortTargets, targetListHtml } = await import(`data:text/javascript;base64,${Buffer.from(stripTypeScriptTypes(source, { mode: 'strip' })).toString('base64')}`)
+  const features = [
+    { properties: { target_id: 'A', status: 'affected', strikes: 5, affected_count: 5, timestamp: '2026-10-10 08:00' } },
+    { properties: { target_id: 'B', status: 'destroyed', strikes: 1, affected_count: 0, timestamp: '2026-10-09 08:00' } },
+    { properties: { target_id: 'C', status: 'affected', strikes: 1, affected_count: 1, timestamp: '2026-10-11 08:00' } },
+    { properties: { target_id: 'D', status: 'destroyed', strikes: 3, affected_count: 2, timestamp: '2026-10-08 08:00' } },
+  ]
+  const sorted = sortTargets(features)
+  assert.deepEqual(sorted.map(item => item.properties.target_id), ['D', 'B', 'A', 'C'])
+  const html = targetListHtml(sorted, 120)
+  assert.match(html, /Цілей: 120/)
+  assert.match(html, /знищено 2 з показаних 4/)
+  assert.match(html, /Знищено після 2 разів|Знищено після 2 рази/)
+  assert.match(html, /Уражено 5 разів/)
+  assert.equal((html.match(/data-index=/g) ?? []).length, 4)
+})

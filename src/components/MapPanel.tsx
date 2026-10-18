@@ -1,5 +1,6 @@
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Layers, X } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import {
   AttributionControl,
@@ -15,7 +16,9 @@ import mapLibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&ur
 
 import type { EventRow, GeoFeatureCollection, MapLines } from '../lib/types'
 import { api } from '../lib/api'
-import { TARGET_COLORS, targetPopupHtml } from '../lib/mapTargets'
+import { InfoHint } from './help/InfoHint'
+import { explainWidget } from '../lib/widgetExplanations'
+import { TARGET_COLORS, sortTargets, targetListHtml, targetPopupHtml } from '../lib/mapTargets'
 import { useLanguage } from '../i18n/LanguageContext'
 import { getFrontendConfig } from '../config'
 
@@ -24,6 +27,7 @@ setWorkerUrl(mapLibreWorkerUrl)
 
 const emptyGeoJson: GeoFeatureCollection = { type: 'FeatureCollection', features: [] }
 const emptyLines: MapLines = { type: 'FeatureCollection', features: [] }
+const mapHelp = explainWidget({ builtin: 'map' })
 type Layer = 'occupied' | 'front_line' | 'affected' | 'destroyed'
 const LINE_LAYERS: Record<'occupied' | 'front_line', string[]> = { occupied: ['occupied-fill'], front_line: ['front-casing', 'front-line'] }
 const OCCUPIED_OPACITY: Record<Basemap, number> = { dark: 0.3, satellite: 0.22 }
@@ -51,6 +55,17 @@ function initialBasemap(): Basemap {
   } catch { /* storage may be blocked */ }
   const configured = getFrontendConfig().map.default_basemap
   return configured && available.includes(configured) ? configured : available[0]
+}
+
+const LAYERS_OPEN_KEY = 'analytics.map.layers_open'
+
+// The layer panel starts folded on small screens; the viewer's choice is remembered.
+function initialLayersOpen(): boolean {
+  try {
+    const saved = localStorage.getItem(LAYERS_OPEN_KEY)
+    if (saved === '1' || saved === '0') return saved === '1'
+  } catch { /* storage may be blocked */ }
+  return typeof window === 'undefined' || window.innerWidth > (getFrontendConfig().ui.filters.mobile_breakpoint_px ?? 720)
 }
 
 function createMapStyle(basemap: Basemap) {
@@ -103,6 +118,7 @@ export function MapPanel({
   const ref = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MapLibreMap | null>(null)
   const popupRef = useRef<Popup | null>(null)
+  // A clicked card or cluster list stays open; hovering does not replace it.
   const pinnedRef = useRef(false)
   const [fatal, setFatal] = useState<string | null>(null)
   const [tilesWarning, setTilesWarning] = useState(false)
@@ -110,6 +126,7 @@ export function MapPanel({
   const [visible, setVisible] = useState<Record<Layer, boolean>>({ occupied: true, front_line: true, affected: true, destroyed: true })
   const [basemap, setBasemap] = useState<Basemap>(initialBasemap)
   const basemapRef = useRef(basemap)
+  const [layersOpen, setLayersOpen] = useState(initialLayersOpen)
 
   const fetched = useQuery({ queryKey: ['map-lines'], queryFn: api.mapLines, enabled: lines === undefined, staleTime: 5 * 60_000 })
   const lineData = lines ?? fetched.data ?? emptyLines
@@ -213,42 +230,75 @@ export function MapPanel({
           },
         })
 
+        const openPopup = (coordinates: [number, number], html: string, pin = true) => {
+          const previous = popupRef.current
+          popupRef.current = null
+          previous?.remove()
+          pinnedRef.current = pin
+          const popup = new Popup({ closeButton: pin, closeOnClick: pin, offset: 12, maxWidth: '320px', className: 'map-target-popup' })
+            .setLngLat(coordinates)
+            .setHTML(html)
+            .addTo(map)
+          popup.on('close', () => { if (popupRef.current === popup) { popupRef.current = null; pinnedRef.current = false } })
+          popupRef.current = popup
+          return popup
+        }
+
+        // A cluster lists its targets instead of zooming; a row opens the target.
         map.on('click', 'clusters', async (event) => {
           const feature = map.queryRenderedFeatures(event.point, { layers: ['clusters'] })[0]
           if (!feature) return
-          const zoom = await (map.getSource('events') as GeoJSONSource).getClusterExpansionZoom(Number(feature.properties?.cluster_id))
-          map.easeTo({ center: (feature.geometry as any).coordinates, zoom })
+          const source = map.getSource('events') as GeoJSONSource
+          const clusterId = Number(feature.properties?.cluster_id)
+          const total = Number(feature.properties?.point_count ?? 0)
+          const center = (feature.geometry as any).coordinates as [number, number]
+          const leaves = sortTargets(await source.getClusterLeaves(clusterId, 300, 0) as any[])
+          const showList = () => {
+            const popup = openPopup(center, targetListHtml(leaves, total))
+            const element = popup.getElement()
+            element.querySelector('[data-action="zoom"]')?.addEventListener('click', async () => {
+              popup.remove()
+              map.easeTo({ center, zoom: await source.getClusterExpansionZoom(clusterId) })
+            })
+            element.querySelectorAll<HTMLButtonElement>('[data-index]').forEach(button => button.addEventListener('click', () => {
+              const target = leaves[Number(button.dataset.index)]
+              if (!target) return
+              const detail = openPopup(center, targetPopupHtml(target.properties, { back: true }))
+              detail.getElement().querySelector('[data-action="back"]')?.addEventListener('click', showList)
+              onSelect?.(String(target.properties.id))
+            }))
+          }
+          showList()
         })
 
-        const show = (event: MapLayerMouseEvent, pin: boolean) => {
-          const feature = event.features?.[0]
-          if (!feature) return
-          const props = feature.properties as any
-          let html: string
-          if (props.status) html = targetPopupHtml(props)
-          else {
-            // Points without a target state (other data sources) keep the old card.
-            const row = rowsRef.current.find(item => item.id === String(props.id))
-            html = `<div class="map-popup"><strong>${props.grid_ref || '—'}</strong><span>${row?.unit || props.unit || ''}</span><span>${row?.purpose || props.purpose || ''}</span><small>${row?.timestamp?.replace('T', ' ') || props.timestamp || ''}</small></div>`
-          }
-          popupRef.current?.remove()
-          pinnedRef.current = pin
-          popupRef.current = new Popup({ closeButton: pin, closeOnClick: pin, offset: 12, maxWidth: '340px', className: 'map-target-popup' })
-            .setLngLat((feature.geometry as any).coordinates)
-            .setHTML(html)
-            .addTo(map)
-          if (pin) onSelect?.(String(props.id))
+        const pointHtml = (props: any) => {
+          if (props.status) return targetPopupHtml(props)
+          // Points without a target state (other data sources) keep the old card.
+          const row = rowsRef.current.find(item => item.id === String(props.id))
+          return `<div class="map-popup"><strong>${props.grid_ref || '—'}</strong><span>${row?.unit || props.unit || ''}</span><span>${row?.purpose || props.purpose || ''}</span><small>${row?.timestamp?.replace('T', ' ') || props.timestamp || ''}</small></div>`
         }
+
+        // Hover shows the card; a click keeps it open.
         let hovered = ''
         map.on('mousemove', 'points', (event) => {
           map.getCanvas().style.cursor = 'pointer'
-          const id = String(event.features?.[0]?.properties?.id ?? '')
-          if (!pinnedRef.current && id !== hovered) { hovered = id; show(event, false) }
+          const feature = event.features?.[0]
+          const id = String(feature?.properties?.id ?? '')
+          if (!feature || pinnedRef.current || id === hovered) return
+          hovered = id
+          openPopup((feature.geometry as any).coordinates, pointHtml(feature.properties), false)
         })
-        map.on('mouseleave', 'points', () => { map.getCanvas().style.cursor = ''; hovered = ''; if (!pinnedRef.current) { popupRef.current?.remove(); popupRef.current = null } })
-        map.on('click', 'points', (event) => show(event, true))
-        map.on('click', (event) => {
-          if (!map.queryRenderedFeatures(event.point, { layers: ['points'] }).length && pinnedRef.current) { popupRef.current?.remove(); pinnedRef.current = false }
+        map.on('mouseleave', 'points', () => {
+          map.getCanvas().style.cursor = ''
+          hovered = ''
+          if (!pinnedRef.current) { const popup = popupRef.current; popupRef.current = null; popup?.remove() }
+        })
+        map.on('click', 'points', (event) => {
+          const feature = event.features?.[0]
+          if (!feature) return
+          const props = feature.properties as any
+          openPopup((feature.geometry as any).coordinates, pointHtml(props))
+          onSelect?.(String(props.id))
         })
         map.on('mouseenter', 'clusters', () => { map.getCanvas().style.cursor = 'pointer' })
         map.on('mouseleave', 'clusters', () => { map.getCanvas().style.cursor = '' })
@@ -279,6 +329,10 @@ export function MapPanel({
     map.setPaintProperty('points', 'circle-radius', ['+', ['case', ['==', ['get', 'id'], selectedId || ''], 3, 0], ['interpolate', ['linear'], ['coalesce', ['get', 'strikes'], 1], 1, 5.5, 6, 9]] as any)
   }, [selectedId])
 
+  const toggleLayers = () => setLayersOpen(current => {
+    try { localStorage.setItem(LAYERS_OPEN_KEY, current ? '0' : '1') } catch { /* storage may be blocked */ }
+    return !current
+  })
   const toggle = (layer: Layer) => setVisible(current => ({ ...current, [layer]: !current[layer] }))
   const legend: [Layer, string, number, string][] = [
     ['destroyed', 'Знищені цілі', counts.destroyed, TARGET_COLORS.destroyed],
@@ -292,7 +346,9 @@ export function MapPanel({
       {fatal && <div className="map-fallback"><strong>{tr('Карта не ініціалізована.', 'Map is not initialized.')}</strong><span>{fatal}</span></div>}
       {tilesWarning && !fatal && <div className="map-tile-warning">{tr('Частина картографічної підкладки тимчасово недоступна.', 'Some map tiles are temporarily unavailable.')}</div>}
       <div ref={ref} className="map" />
-      {!fatal && <div className="map-layers" role="group" aria-label="Шари карти">
+      {!fatal && !layersOpen && <button type="button" className="map-layers-toggle" onClick={toggleLayers} aria-expanded={false} title="Підкладка і шари"><Layers size={16} /><span>Шари</span></button>}
+      {!fatal && layersOpen && <div className="map-layers" role="group" aria-label="Шари карти">
+        <div className="map-layers__title"><span>Підкладка і шари{mapHelp && <InfoHint title="Карта">{mapHelp.lead && <p>{mapHelp.lead}</p>}<dl>{mapHelp.items.map(item => <div key={item.term}><dt>{item.term}</dt><dd>{item.text}</dd></div>)}</dl></InfoHint>}</span><button type="button" onClick={toggleLayers} aria-expanded={true} aria-label="Сховати панель шарів"><X size={14} /></button></div>
         {availableBasemaps().length > 1 && <div className="map-layers__basemap" role="radiogroup" aria-label="Підкладка">{availableBasemaps().map(name => <button type="button" role="radio" aria-checked={basemap === name} className={basemap === name ? 'active' : ''} key={name} onClick={() => setBasemap(name)}>{name === 'dark' ? 'Темна' : 'Супутник'}</button>)}</div>}
         {legend.filter(([layer, , count]) => count > 0 || layer === 'affected' || layer === 'destroyed').map(([layer, label, count, color]) => <label key={layer} className={`map-layers__item map-layers__item--${layer === 'front_line' ? 'line' : layer === 'occupied' ? 'area' : 'point'}`}>
           <input type="checkbox" checked={visible[layer]} onChange={() => toggle(layer)} />

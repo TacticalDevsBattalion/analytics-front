@@ -172,3 +172,21 @@
 }
 
 
+
+/* Losses as counts per device. */
+.loss-results { display:flex; flex-wrap:wrap; gap:4px 6px; padding:8px 10px 6px; border-bottom:1px solid var(--border-1); }
+.loss-results span { padding:2px 7px; border:1px solid var(--border-2); border-radius:999px; color:var(--text-2); font-size:var(--fs-xs); white-space:nowrap; }
+.loss-results b { color:var(--text-1); font-variant-numeric:tabular-nums; }
+.loss-assets { width:100%; border-collapse:collapse; font-size:var(--fs-xs); }
+.loss-assets th { padding:5px 10px; color:var(--text-3); font-weight:500; text-align:left; border-bottom:1px solid var(--border-1); }
+.loss-assets th:last-child, .loss-assets td:last-child { width:1%; text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.loss-assets td { padding:6px 10px; border-bottom:1px solid var(--border-1); color:var(--text-1); vertical-align:top; }
+.loss-assets tr:last-child td { border-bottom:0; }
+.loss-assets td strong { display:block; font-weight:600; overflow-wrap:anywhere; }
+.loss-assets td small { display:block; margin-top:2px; color:var(--text-3); }
+.loss-assets td:last-child { font-weight:650; }
+.loss-assets th:not(:first-child), .loss-assets td:not(:first-child) { width:1%; text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.loss-assets__spent { color:var(--text-3); font-weight:500 !important; }
+.loss-assets tfoot td { padding:6px 10px; border-top:1px solid var(--border-2); color:var(--text-2); font-weight:600; }
+.losses-group__spent { color:var(--text-3); font-size:var(--fs-xs); white-space:nowrap; }
+.loss-results--positions em { align-self:center; color:var(--text-3); font-size:var(--fs-xs); font-style:normal; }
