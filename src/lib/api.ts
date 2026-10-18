@@ -1,5 +1,5 @@
 import { getFrontendConfig, withApiBase, type FrontendApiConfig } from '../config'
-import type { ComparisonRequest, ComparisonResponse, EventRow, FilterOptions, FilterState, GeoFeatureCollection, KpiOptions, KpiPreview, Metric, SourceStatus, TimelinePoint } from './types'
+import type { ComparisonRequest, ComparisonResponse, EventRow, FilterOptions, FilterState, GeoFeatureCollection, KpiOptions, MapLines, KpiPreview, Metric, SourceStatus, TimelinePoint } from './types'
 import type { KpiConfiguration } from '../config/appConfiguration'
 
 async function json<T>(url: string, init?: RequestInit): Promise<T> {
@@ -35,6 +35,7 @@ export const api = {
   timeline: (filters: FilterState) => json<TimelinePoint[]>(endpoint('timeline'), { method: 'POST', body: JSON.stringify(filters) }),
   events: (filters: FilterState) => json<EventRow[]>(endpoint('events'), { method: 'POST', body: JSON.stringify(filters) }),
   map: (filters: FilterState) => json<GeoFeatureCollection>(endpoint('map'), { method: 'POST', body: JSON.stringify(filters) }),
+  mapLines: () => json<MapLines>(withApiBase('/api/analytics/map/lines')),
   kpiOptions: () => json<KpiOptions>(withApiBase('/api/analytics/kpi-options')),
   kpiPreview: (request: { filters: FilterState; kpi: KpiConfiguration }, signal?: AbortSignal) => json<KpiPreview>(withApiBase('/api/analytics/kpi-preview'), { method: 'POST', body: JSON.stringify(request), signal }),
 }

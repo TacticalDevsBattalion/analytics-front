@@ -90,3 +90,28 @@ html[data-animations="off"] *, html[data-animations="off"] *::before, html[data-
 .source-dot { width:9px; height:9px; border-radius:999px; background:#22c55e; display:inline-block; }
 .source-dot.bad { background:#ef4444; }
 
+
+/* Map layers and target hover card. */
+.map-layers { position:absolute; z-index:5; top:10px; right:10px; display:grid; gap:4px; max-width:min(240px, calc(100% - 70px)); padding:8px 10px; border:1px solid rgba(148,163,184,.35); border-radius:var(--radius-sm); background:rgba(7,17,26,.86); color:#e2e8f0; font-size:var(--fs-xs); }
+.map-layers__item { display:flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap; }
+.map-layers__item input { margin:0; }
+.map-layers__item i { flex:none; width:10px; height:10px; border-radius:50%; border:1px solid #f8fafc; }
+.map-layers__item--line i { height:3px; width:14px; border:0; border-radius:2px; }
+.map-layers__item span { overflow:hidden; text-overflow:ellipsis; }
+.map-layers__item b { margin-left:auto; padding-left:8px; font-variant-numeric:tabular-nums; }
+.map-layers__note { color:#fcd34d; white-space:normal; }
+.map-target-popup .maplibregl-popup-content { padding:10px 12px; border-radius:8px; }
+.map-target { display:grid; gap:4px; min-width:220px; color:#0f172a; font-family:Inter,system-ui,sans-serif; font-size:12px; }
+.map-target__head { display:flex; align-items:center; gap:6px; padding-right:14px; }
+.map-target__head i { flex:none; width:10px; height:10px; border-radius:50%; }
+.map-target__head strong { font-size:13px; }
+.map-target__status { font-weight:600; }
+.map-target__meta { color:#475569; font-size:11px; }
+.map-target__history { display:grid; gap:4px; max-height:220px; overflow:auto; margin:4px 0 0; padding:6px 0 0 18px; border-top:1px solid #e2e8f0; }
+.map-target__strike { padding-left:2px; }
+.map-target__strike::marker { color:#94a3b8; font-size:10px; }
+.map-target__strike b { margin-right:6px; }
+.map-target__strike--affected b { color:#b45309; }
+.map-target__strike--destroyed b { color:#b91c1c; }
+.map-target__strike span { color:#334155; font-variant-numeric:tabular-nums; }
+.map-target__strike small { display:block; color:#64748b; font-size:10.5px; }

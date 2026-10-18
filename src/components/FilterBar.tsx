@@ -171,7 +171,8 @@ function periodIsValid(filters: FilterState) {
     return false
   }
 
-  return from.getTime() <= to.getTime()
+  // Equal ends with a time (a reporting day 15:00 → 15:00 of the same date) select nothing.
+  return filters.time_from || filters.time_to ? from.getTime() < to.getTime() : from.getTime() <= to.getTime()
 }
 
 function MultiSelectFilter({
@@ -768,10 +769,16 @@ export function FilterBar({
   }
 
   const changeCustomDate = (key: 'date_from' | 'date_to', value: string) => {
-    setDraft((current) => ({
-      ...current,
-      [key]: value,
-    }))
+    setDraft((current) => {
+      const next = { ...current, [key]: value }
+      // A reporting day is named by its end: day D runs from D−1 at the cut-off to D at the cut-off.
+      if (dayMode === 'reporting' && next.date_from && next.date_from === next.date_to) {
+        const start = new Date(`${next.date_to}T${String(frontendConfig.app.defaults.calendar_anchor_hour).padStart(2, '0')}:00:00`)
+        start.setDate(start.getDate() - 1)
+        next.date_from = isoLocal(start)
+      }
+      return next
+    })
   }
 
   /** One field carries both the date and the time of day. */

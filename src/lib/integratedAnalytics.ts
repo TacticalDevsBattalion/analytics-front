@@ -16,7 +16,9 @@ export function mergeCrossFilters(current: QueryFilter[], incoming: QueryFilter[
 export function drillFilterState(current: FilterState, filters: QueryFilter[]): FilterState {
   const next = structuredClone(current)
   for (const filter of filters) {
-    if (filter.field === 'date' && filter.operator === 'eq' && typeof filter.value === 'string') { next.date_from = filter.value.slice(0, 10); next.date_to = filter.value.slice(0, 10); continue }
+    // A chart day is a calendar day: open all of it, not a reporting window that
+    // would start and end at the same cut-off time on that day.
+    if (filter.field === 'date' && filter.operator === 'eq' && typeof filter.value === 'string') { next.date_from = filter.value.slice(0, 10); next.date_to = filter.value.slice(0, 10); next.time_from = undefined; next.time_to = undefined; continue }
     const field = legacyFields[filter.field]
     if (!field || !['eq', 'in'].includes(filter.operator)) continue
     const values = Array.isArray(filter.value) ? filter.value : [filter.value]

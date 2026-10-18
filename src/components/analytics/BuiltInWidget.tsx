@@ -9,7 +9,7 @@ import { useLanguage } from '../../i18n/LanguageContext'
 import { getFrontendConfig } from '../../config'
 import { flightSummaryRows } from '../../lib/flightSummaries'
 import { visibleNativeValues } from '../../lib/nativeWidgetPresentation'
-import type { EventRow, GeoFeatureCollection, Metric, TimelinePoint } from '../../lib/types'
+import type { EventRow, GeoFeatureCollection, MapLines, Metric, TimelinePoint } from '../../lib/types'
 import type { QueryResult, WidgetDefinition } from '../../lib/biTypes'
 
 export function AverageFlightsPerPosition({ overview, hideZeroValues = false }: { overview?: Metric[]; hideZeroValues?: boolean }) {
@@ -44,9 +44,10 @@ export function BuiltInWidget({ definition, result, onDrill, onSelect }: { defin
       return <TimelineChart data={Array.isArray(payload) ? payload as TimelinePoint[] : []} view={view} hideZeroValues={hideZeroValues} onSelect={onSelect} />
     }
     case 'map': {
-      const data = payload as { geojson?: GeoFeatureCollection; rows?: EventRow[] } | GeoFeatureCollection | undefined
+      const data = payload as { geojson?: GeoFeatureCollection; rows?: EventRow[]; lines?: MapLines; coordinates?: boolean } | GeoFeatureCollection | undefined
       const geojson = data && 'type' in data ? data as GeoFeatureCollection : data?.geojson
-      return <MapPanel geojson={geojson} rows={data && 'rows' in data ? data.rows ?? [] : []} />
+      const extra = data && !('type' in data) ? data : undefined
+      return <MapPanel geojson={geojson} rows={extra?.rows ?? []} lines={extra?.lines} coordinates={extra?.coordinates} />
     }
     case 'records': return <EventsTable rows={Array.isArray(payload) ? payload as EventRow[] : []} />
     case 'losses': return <LostDevicesList rows={Array.isArray(payload) ? payload as EventRow[] : []} />

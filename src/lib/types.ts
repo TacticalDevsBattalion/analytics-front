@@ -186,9 +186,26 @@ export type GeoFeatureCollection = {
       timestamp?: string
       purpose?: string
       class_name?: string
+      // Struck / destroyed targets: the last state and every strike in order (JSON).
+      status?: 'affected' | 'destroyed'
+      target_id?: string
+      strikes?: number
+      affected_count?: number
+      destroyed_count?: number
+      location_name?: string
+      first?: string
+      history?: string
+      history_truncated?: boolean
     }
   }>
 }
+
+export type MapLineFeature = {
+  type: 'Feature'
+  geometry: { type: 'LineString' | 'MultiLineString' | 'Polygon' | 'MultiPolygon'; coordinates: unknown }
+  properties: { layer: 'flet' | 'front_line'; title: string; valid_from?: string }
+}
+export type MapLines = { type: 'FeatureCollection'; features: MapLineFeature[]; coordinates?: boolean }
 
 export type SourceStatus = {
   source: 'mock' | 'clickhouse' | 'external' | 'database'

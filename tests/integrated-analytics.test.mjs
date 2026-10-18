@@ -84,6 +84,9 @@ test('drill-through carries date, organisation IDs and semantic context without 
   const carried = drillFilterState(filters, [{ field: 'date', operator: 'eq', value: '2026-10-03' }, { field: 'department', operator: 'eq', value: 12 }, { field: 'category', operator: 'eq', value: 'FPV' }, { field: 'team', operator: 'eq', value: 'Crew A' }])
   assert.equal(carried.date_from, '2026-10-03')
   assert.equal(carried.date_to, '2026-10-03')
+  // A reporting window would be 15:00 → 15:00 of the same day, i.e. empty.
+  const reporting = drillFilterState({ ...filters, time_from: '15:00', time_to: '15:00' }, [{ field: 'date', operator: 'eq', value: '2026-10-03' }])
+  assert.deepEqual([reporting.date_from, reporting.date_to, reporting.time_from, reporting.time_to], ['2026-10-03', '2026-10-03', undefined, undefined])
   assert.deepEqual(carried.bbak, ['12'])
   assert.deepEqual(carried.category, ['FPV'])
   assert.deepEqual(carried.group, ['Crew A'])
