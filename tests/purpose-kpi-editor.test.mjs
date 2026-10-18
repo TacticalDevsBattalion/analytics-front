@@ -32,3 +32,15 @@ test('equivalent source casing and whitespace cannot create overlapping purpose 
   assert.deepEqual(uniquePurposeKpiValues(['УСПІШНО', 'Інший результат', 'Успішно']), ['Успішно', 'Інший результат'])
   assert.match(validatePurposeKpi({ purpose_rules: [{ ...rule, successful_results: ['Успішно'] }] }), /не потребує/)
 })
+test('records during the flight need chosen results; the loss rule must be known', () => {
+  assert.match(validatePurposeKpi({ purpose_rules: [{ ...rule, success_mode: 'events' }] }), /хоча б один/)
+  assert.equal(validatePurposeKpi({ purpose_rules: [{ ...rule, success_mode: 'events', successful_results: ['Виявлено'], loss_rule: 'penalty' }] }), null)
+  assert.match(validatePurposeKpi({ purpose_rules: [{ ...rule, loss_rule: 'sometimes' }] }), /втрату борту/)
+})
+test('the sample takes a lost drone without a result off only under a penalty rule', () => {
+  const plain = { ...rule, coefficient: 1, usefulness_percent: 100 }
+  assert.deepEqual(purposeKpiSample({ ...plain, loss_rule: 'penalty' }, 10, 6, 2), { points: 4, capacity: 10, value: 40 })
+  assert.deepEqual(purposeKpiSample({ ...plain, loss_rule: 'ignore' }, 10, 6, 2), { points: 6, capacity: 10, value: 60 })
+  assert.deepEqual(purposeKpiSample({ ...plain, loss_rule: 'penalty' }, 4, 0, 4), { points: -4, capacity: 4, value: -100 })
+  assert.equal(purposeKpiSample({ ...plain, loss_rule: 'penalty' }, 10, 6, 5), null)
+})

@@ -9,10 +9,13 @@ export type ConfiguredFilter = { key: ConfiguredFilterKey; label: string; placem
 export type DashboardBlock = 'timeline' | 'map' | 'events' | 'departments' | 'purposes' | 'lost_devices'
 export type PurposeKpiRule = {
   purpose: string
-  success_mode: 'source' | 'results'
+  /** source: the source's flag; results: the main result; events: any record made during the flight. */
+  success_mode: 'source' | 'results' | 'events'
   successful_results: string[]
   usefulness_percent: number
   coefficient: number
+  /** A lost drone: no effect, makes the flight unsuccessful, or a minus on an unsuccessful flight. */
+  loss_rule?: 'ignore' | 'unsuccessful' | 'penalty'
 }
 export type KpiConfiguration = { purpose_rules: PurposeKpiRule[] }
 export type CardDetailsConfiguration = { interaction: 'auto' | 'click' | 'disabled'; hover_delay_ms: number; width: 'standard' | 'wide' }

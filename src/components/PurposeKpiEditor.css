@@ -31,13 +31,13 @@
 .purpose-kpi-validation { color:#ebaaaa; line-height:1.6; font-size:var(--fs-sm); margin:12px 0; }
 .purpose-kpi-sample { border-top:1px solid var(--border-3); margin-top:21px; padding-top:1px; }
 .purpose-kpi-sample>p { color:var(--text-2); font-size:var(--fs-sm); line-height:1.6; }
-.purpose-kpi-sample .admin-fields { gap:10px; }
+.purpose-kpi-sample .admin-fields { gap:10px; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); }
 .purpose-kpi-sample-answer { display:grid; gap:5px; background:var(--bg-3); border:1px solid var(--border-3); border-radius:var(--radius-sm); padding:12px; }
 .purpose-kpi-sample-answer>strong { color:#a5dbc7; font-size:19px; overflow-wrap:anywhere; }
 .purpose-kpi-sample-answer>span { font-size:var(--fs-sm); color:#94b9b4; }
 .purpose-kpi-preview { border-top:1px solid var(--border-3); margin-top:24px; }
 .purpose-kpi-preview-controls { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto; align-items:end; gap:12px; margin-bottom:18px; }
-.purpose-kpi-totals { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:17px 0 10px; }
+.purpose-kpi-totals { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin:17px 0 10px; }
 .purpose-kpi-totals>div { display:grid; gap:9px; align-content:start; min-width:0; border:1px solid var(--border-3); border-radius:var(--radius-sm); background:var(--bg-3); padding:13px; }
 .purpose-kpi-totals span { font-size:var(--fs-xs); line-height:1.5; color:var(--text-2); }
 .purpose-kpi-totals strong { font-size:19px; color:var(--text-1); overflow-wrap:anywhere; }
@@ -51,5 +51,33 @@
 .purpose-kpi-table td:first-child { min-width:180px; max-width:250px; overflow-wrap:anywhere; }
 .purpose-kpi-table td:first-child strong { font-weight:500; }
 .purpose-kpi-table td small { display:block; color:var(--text-3); margin-top:6px; font-size:var(--fs-xs); }
-@media(max-width:1100px) { .purpose-kpi-layout { grid-template-columns:1fr; }.purpose-kpi-list { max-height:240px; grid-template-columns:repeat(2,minmax(0,1fr)); }.purpose-kpi-preview-controls { grid-template-columns:repeat(2,minmax(0,1fr)); }.purpose-kpi-preview-controls>button { grid-column:1 / -1; }.purpose-kpi-totals { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:1100px) { .purpose-kpi-layout { grid-template-columns:1fr; }.purpose-kpi-list { max-height:240px; grid-template-columns:repeat(2,minmax(0,1fr)); }.purpose-kpi-preview-controls { grid-template-columns:repeat(2,minmax(0,1fr)); }.purpose-kpi-preview-controls>button { grid-column:1 / -1; }.purpose-kpi-totals { grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); } }
 @media(max-width:720px) { .purpose-kpi-formula { padding:12px; }.purpose-kpi-list { grid-template-columns:1fr; max-height:220px; }.purpose-kpi-rule { padding:13px; }.purpose-kpi-numbers label>span { min-height:0; }.purpose-kpi-rule-actions>button { flex:1; }.purpose-kpi-preview-controls { gap:9px; }.purpose-kpi-preview-controls input { font-size:var(--fs-sm)!important; padding:7px!important; }.purpose-kpi-totals>div { padding:10px; }.purpose-kpi-totals strong { font-size:17px; } }
+/* Rule as plain choices: when a flight counts, then what a lost drone does. */
+.purpose-kpi-summary { margin:4px 0 14px; padding:10px 12px; border-left:3px solid var(--accent); border-radius:var(--radius-sm); background:rgba(74,155,255,.08); color:var(--text-1); font-size:var(--fs-sm); line-height:1.55; }
+.purpose-kpi-choice { display:grid; gap:6px; margin:0 0 14px; padding:0; border:0; min-width:0; }
+.purpose-kpi-choice legend { margin-bottom:6px; padding:0; color:var(--text-1); font-weight:600; font-size:var(--fs-sm); }
+.purpose-kpi-choice label { display:flex; gap:10px; align-items:flex-start; padding:9px 11px; border:1px solid var(--border-2); border-radius:var(--radius-sm); cursor:pointer; transition:border-color .15s, background .15s; }
+.purpose-kpi-choice label:hover { border-color:var(--border-3); }
+.purpose-kpi-choice label.active { border-color:var(--accent); background:rgba(74,155,255,.07); }
+.purpose-kpi-choice input { width:16px; height:16px; margin:2px 0 0; flex:none; accent-color:#609de4; }
+.purpose-kpi-choice span { display:grid; gap:2px; min-width:0; }
+.purpose-kpi-choice strong { font-size:var(--fs-sm); color:var(--text-1); }
+.purpose-kpi-choice small { color:var(--text-3); font-size:var(--fs-xs); line-height:1.5; }
+.purpose-kpi-numbers-title { grid-column:1 / -1; margin:0; color:var(--text-1); font-weight:600; font-size:var(--fs-sm); }
+.purpose-kpi-formula strong + code { margin-bottom:4px; }
+.purpose-kpi-formula p + strong { margin-top:14px; }
+/* Too narrow for nine columns (tablets): each purpose becomes a card of label/value pairs. */
+.purpose-kpi-preview-result { container-type:inline-size; }
+@container (max-width: 760px) {
+  .purpose-kpi-table-wrap { border:0; overflow:visible; }
+  .purpose-kpi-table { min-width:0; }
+  .purpose-kpi-table thead { display:none; }
+  .purpose-kpi-table, .purpose-kpi-table tbody { display:block; }
+  .purpose-kpi-table tr { display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:8px 12px; margin-bottom:10px; padding:12px; border:1px solid var(--border-3); border-radius:var(--radius-sm); background:var(--bg-2); }
+  .purpose-kpi-table td { display:grid; gap:2px; padding:0; border:0; color:var(--text-1); }
+  .purpose-kpi-table td::before { content:attr(data-label); color:var(--text-3); font-size:var(--fs-xs); }
+  .purpose-kpi-table td:first-child { grid-column:1 / -1; max-width:none; min-width:0; padding-bottom:6px; border-bottom:1px solid var(--border-2); }
+  .purpose-kpi-table td:first-child::before { content:none; }
+  .purpose-kpi-table td:first-child strong { font-size:var(--fs-md); font-weight:600; }
+}

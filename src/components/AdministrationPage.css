@@ -13,7 +13,7 @@
 .admin-login>div { flex:1; min-width:240px; }
 .admin-login>svg { color:var(--text-2); }
 .admin-login input { width:205px; }
-.administration-page input:not([type=checkbox]), .administration-page select { width:100%; background:var(--bg-1); color:var(--text-1); border:1px solid var(--border-3); border-radius:var(--radius-sm); min-height:37px; padding:8px 10px; font-size:var(--fs-md); min-width:0; }
+.administration-page input:not([type=checkbox]):not([type=radio]), .administration-page select { width:100%; background:var(--bg-1); color:var(--text-1); border:1px solid var(--border-3); border-radius:var(--radius-sm); min-height:37px; padding:8px 10px; font-size:var(--fs-md); min-width:0; }
 .administration-page input::placeholder { color:var(--text-3); }
 .admin-button { display:inline-flex; gap:7px; align-items:center; justify-content:center; min-height:37px; border:1px solid var(--border-3); border-radius:var(--radius-sm); padding:8px 12px; background:var(--bg-3); color:var(--text-1); font-size:var(--fs-sm); }
 .admin-button:hover:not(:disabled) { border-color:#608db3; background:var(--bg-sel); }

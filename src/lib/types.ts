@@ -100,24 +100,27 @@ export type ComparisonResponse = {
   kpi_configuration?: KpiConfiguration | null
 }
 
-export type KpiOptions = { purposes: string[]; results: string[] }
+export type KpiOptions = { purposes: string[]; results: string[]; event_results?: string[] }
 export type PurposeKpiCalculation = {
   purpose: string
   flights: number
   successful_flights: number
+  penalized_flights?: number
   success_rate: number
   usefulness_percent: number
   coefficient: number
   usefulness_points: number
   weighted_flights: number
   weighted_efficiency: number | null
-  success_mode: 'source' | 'results'
+  success_mode: 'source' | 'results' | 'events'
   successful_results: string[]
+  loss_rule?: 'ignore' | 'unsuccessful' | 'penalty'
 }
 export type KpiPreview = {
   source: string
   total_flights: number
   successful_flights: number
+  penalized_flights?: number
   usefulness_points: number
   weighted_flights: number
   weighted_efficiency: number | null

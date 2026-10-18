@@ -21,8 +21,9 @@ export function validatePurposeKpi(kpi: AppConfiguration['kpi']): string | null 
     purposes.add(normalizedPurpose)
     if (!Number.isFinite(rule.usefulness_percent) || rule.usefulness_percent < 0 || rule.usefulness_percent > 100) return `Для мети «${rule.purpose}» частка корисної дії має бути числом від 0 до 100%.`
     if (!Number.isFinite(rule.coefficient) || rule.coefficient < 0 || rule.coefficient > 100) return `Для мети «${rule.purpose}» коефіцієнт має бути числом від 0 до 100.`
-    if (!['source', 'results'].includes(rule.success_mode)) return `Для мети «${rule.purpose}» оберіть спосіб визначення успішного вильоту.`
-    if (rule.success_mode === 'results' && (!rule.successful_results.length || rule.successful_results.some(value => !value.trim()))) return `Для мети «${rule.purpose}» оберіть хоча б один успішний результат.`
+    if (!['source', 'results', 'events'].includes(rule.success_mode)) return `Для мети «${rule.purpose}» оберіть спосіб визначення успішного вильоту.`
+    if (rule.success_mode !== 'source' && (!rule.successful_results.length || rule.successful_results.some(value => !value.trim()))) return `Для мети «${rule.purpose}» оберіть хоча б один успішний результат.`
+    if (rule.loss_rule !== undefined && !['ignore', 'unsuccessful', 'penalty'].includes(rule.loss_rule)) return `Для мети «${rule.purpose}» оберіть, як враховувати втрату борту.`
     if (rule.success_mode === 'source' && rule.successful_results.length) return `Для мети «${rule.purpose}» ознака джерела не потребує обраних результатів.`
     if (rule.successful_results.length > 500 || rule.successful_results.some(value => value.trim().length > 256)) return `Для мети «${rule.purpose}» можна обрати до 500 результатів, кожен до 256 символів.`
     if (new Set(rule.successful_results.map(normalizePurposeKpiValue)).size !== rule.successful_results.length) return `Для мети «${rule.purpose}» результати не повинні повторюватися.`
@@ -30,9 +31,11 @@ export function validatePurposeKpi(kpi: AppConfiguration['kpi']): string | null 
   return null
 }
 
-export function purposeKpiSample(rule: PurposeRule, flights: number, successful: number) {
-  if (![flights, successful, rule.usefulness_percent, rule.coefficient].every(Number.isFinite) || !Number.isInteger(flights) || !Number.isInteger(successful) || flights < 0 || successful < 0 || successful > flights) return null
-  const points = successful * rule.usefulness_percent / 100 * rule.coefficient
+/** A worked example; penalized are unsuccessful flights that lost the drone (a minus under a "penalty" rule). */
+export function purposeKpiSample(rule: PurposeRule, flights: number, successful: number, penalized = 0) {
+  if (![flights, successful, penalized, rule.usefulness_percent, rule.coefficient].every(Number.isFinite) || !Number.isInteger(flights) || !Number.isInteger(successful) || !Number.isInteger(penalized) || flights < 0 || successful < 0 || penalized < 0 || successful + penalized > flights) return null
+  const minus = rule.loss_rule === 'penalty' ? penalized : 0
+  const points = (successful - minus) * rule.usefulness_percent / 100 * rule.coefficient
   const capacity = flights * rule.coefficient
   return { points, capacity, value: capacity > 0 ? 100 * points / capacity : null }
 }

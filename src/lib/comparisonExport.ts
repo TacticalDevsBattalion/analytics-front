@@ -289,7 +289,7 @@ export async function comparisonReportXlsx(report: ComparisonReport): Promise<Ui
   for (const row of [3, 4, 5]) { rules.getRow(row).height = 42; rules.getRow(row).alignment = { wrapText: true, vertical: 'top' } }
   header(rules, 6, [tr('Мета вильоту', 'Flight purpose'), tr('Критерій успіху', 'Success criterion'), tr('Результативні результати', 'Successful results'), tr('Корисна дія, %', 'Usefulness, %'), tr('Коефіцієнт', 'Coefficient'), tr('Сире значення мети', 'Raw purpose')])
   for (const rule of report.kpiRules || []) {
-    const row = rules.addRow([rule.purpose, rule.success_mode === 'source' ? tr('Із джерела', 'Source flag') : tr('Вибрані головні результати', 'Selected main results'), rule.successful_results.join('; '), rule.usefulness_percent / 100, rule.coefficient, rule.purpose])
+    const row = rules.addRow([rule.purpose, rule.success_mode === 'source' ? tr('Із джерела', 'Source flag') : rule.success_mode === 'events' ? tr('Записи під час вильоту', 'Records during the flight') : tr('Вибрані головні результати', 'Selected main results'), rule.successful_results.join('; '), rule.usefulness_percent / 100, rule.coefficient, rule.purpose])
     row.height = 32; row.getCell(4).numFmt = percentageFormat; row.getCell(5).numFmt = quantityFormat(rule.coefficient)
   }
   if (report.kpiRules?.length === 0) {
