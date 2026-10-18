@@ -1,5 +1,5 @@
 {
-  "panel_version": "v7-stable-esri-raster-hybrid",
+  "panel_version": "v9-dark-osm",
   "bounds": [
     [
       22.0,
@@ -44,6 +44,14 @@
       "min_zoom": 0,
       "max_zoom": 19,
       "attribution": "Reference © Esri"
+    },
+    "dark": {
+      "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+      "tile_size": 256,
+      "min_zoom": 0,
+      "max_zoom": 19,
+      "attribution": "© OpenStreetMap contributors",
+      "invert": true
     }
   },
   "result_colors": {
@@ -54,5 +62,6 @@
   "result_values": {
     "positive": "Позитивний",
     "negative": "Негативний"
-  }
+  },
+  "default_basemap": "dark"
 }

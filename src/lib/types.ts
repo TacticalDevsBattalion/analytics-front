@@ -203,7 +203,7 @@ export type GeoFeatureCollection = {
 export type MapLineFeature = {
   type: 'Feature'
   geometry: { type: 'LineString' | 'MultiLineString' | 'Polygon' | 'MultiPolygon'; coordinates: unknown }
-  properties: { layer: 'flet' | 'front_line'; title: string; valid_from?: string }
+  properties: { layer: 'occupied' | 'front_line'; title: string; valid_from?: string }
 }
 export type MapLines = { type: 'FeatureCollection'; features: MapLineFeature[]; coordinates?: boolean }
 

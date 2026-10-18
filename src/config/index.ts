@@ -95,7 +95,11 @@ export type FrontendMapConfig = {
   tiles: {
     satellite: MapTileSourceConfig
     reference: MapTileSourceConfig
+    // Dark basemap (as on DeepState): background and labels as separate rasters.
+    dark?: MapTileSourceConfig
+    dark_labels?: MapTileSourceConfig
   }
+  default_basemap?: 'dark' | 'satellite'
   result_values: {
     positive: string
     negative: string
@@ -109,6 +113,8 @@ export type FrontendMapConfig = {
 
 type MapTileSourceConfig = {
   url: string
+  // Shown with inverted brightness: a light map (e.g. OpenStreetMap) becomes dark.
+  invert?: boolean
   tile_size: number
   min_zoom: number
   max_zoom: number

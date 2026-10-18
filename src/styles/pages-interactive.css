@@ -115,3 +115,7 @@ html[data-animations="off"] *, html[data-animations="off"] *::before, html[data-
 .map-target__strike--destroyed b { color:#b91c1c; }
 .map-target__strike span { color:#334155; font-variant-numeric:tabular-nums; }
 .map-target__strike small { display:block; color:#64748b; font-size:10.5px; }
+.map-layers__basemap { display:flex; gap:2px; margin-bottom:4px; padding:2px; border-radius:6px; background:rgba(148,163,184,.14); }
+.map-layers__basemap button { flex:1; padding:3px 8px; border:0; border-radius:4px; background:transparent; color:#cbd5e1; font:inherit; cursor:pointer; }
+.map-layers__basemap button.active { background:#e2e8f0; color:#0f172a; font-weight:600; }
+.map-layers__item--area i { width:14px; height:10px; border-radius:2px; border:1px solid #ff3b30; }

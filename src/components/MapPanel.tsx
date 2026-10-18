@@ -24,22 +24,54 @@ setWorkerUrl(mapLibreWorkerUrl)
 
 const emptyGeoJson: GeoFeatureCollection = { type: 'FeatureCollection', features: [] }
 const emptyLines: MapLines = { type: 'FeatureCollection', features: [] }
-type Layer = 'flet' | 'front_line' | 'affected' | 'destroyed'
-const LINE_LAYERS: Record<'flet' | 'front_line', string[]> = { flet: ['flet-casing', 'flet-line'], front_line: ['front-fill', 'front-outline'] }
+type Layer = 'occupied' | 'front_line' | 'affected' | 'destroyed'
+const LINE_LAYERS: Record<'occupied' | 'front_line', string[]> = { occupied: ['occupied-fill'], front_line: ['front-casing', 'front-line'] }
+const OCCUPIED_OPACITY: Record<Basemap, number> = { dark: 0.3, satellite: 0.22 }
 
-function createMapStyle() {
-  const { satellite, reference } = getFrontendConfig().map.tiles
+export type Basemap = 'dark' | 'satellite'
+const BASEMAP_KEY = 'analytics.map.basemap'
+const BASEMAP_LAYERS: Record<Basemap, string[]> = { dark: ['dark', 'dark-labels'], satellite: ['satellite', 'reference'] }
+
+// "{s}" in a tile URL spreads requests over the a–d subdomains.
+const tileUrls = (url: string) => url.includes('{s}') ? ['a', 'b', 'c', 'd'].map(sub => url.replace('{s}', sub)) : [url]
+
+function rasterSource(source: { url: string; tile_size: number; min_zoom: number; max_zoom: number; attribution: string }) {
+  return { type: 'raster', tiles: tileUrls(source.url), tileSize: source.tile_size, minzoom: source.min_zoom, maxzoom: source.max_zoom, attribution: source.attribution }
+}
+
+export function availableBasemaps(): Basemap[] {
+  return getFrontendConfig().map.tiles.dark ? ['dark', 'satellite'] : ['satellite']
+}
+
+function initialBasemap(): Basemap {
+  const available = availableBasemaps()
+  try {
+    const saved = localStorage.getItem(BASEMAP_KEY) as Basemap | null
+    if (saved && available.includes(saved)) return saved
+  } catch { /* storage may be blocked */ }
+  const configured = getFrontendConfig().map.default_basemap
+  return configured && available.includes(configured) ? configured : available[0]
+}
+
+function createMapStyle(basemap: Basemap) {
+  const { satellite, reference, dark, dark_labels: darkLabels } = getFrontendConfig().map.tiles
+  const visibility = (name: Basemap) => ({ visibility: basemap === name ? 'visible' : 'none' })
   return {
     version: 8,
-    name: 'Configured raster hybrid',
+    name: 'Configured raster basemaps',
     sources: {
-      satellite: { type: 'raster', tiles: [satellite.url], tileSize: satellite.tile_size, minzoom: satellite.min_zoom, maxzoom: satellite.max_zoom, attribution: satellite.attribution },
-      reference: { type: 'raster', tiles: [reference.url], tileSize: reference.tile_size, minzoom: reference.min_zoom, maxzoom: reference.max_zoom, attribution: reference.attribution },
+      satellite: rasterSource(satellite),
+      reference: rasterSource(reference),
+      ...(dark ? { dark: rasterSource(dark) } : {}),
+      ...(darkLabels ? { 'dark-labels': rasterSource(darkLabels) } : {}),
     },
     layers: [
-      { id: 'background', type: 'background', paint: { 'background-color': '#07111a' } },
-      { id: 'satellite', type: 'raster', source: 'satellite', paint: { 'raster-opacity': 1, 'raster-saturation': -0.04, 'raster-contrast': 0.06, 'raster-brightness-min': 0, 'raster-brightness-max': 1 } },
-      { id: 'reference', type: 'raster', source: 'reference', paint: { 'raster-opacity': 1 } },
+      { id: 'background', type: 'background', paint: { 'background-color': basemap === 'dark' ? '#0b0e12' : '#07111a' } },
+      // Inverted brightness turns a light map dark while labels stay readable.
+      ...(dark ? [{ id: 'dark', type: 'raster', source: 'dark', layout: visibility('dark'), paint: dark.invert ? { 'raster-brightness-min': 0.9, 'raster-brightness-max': 0.08, 'raster-saturation': -0.85, 'raster-hue-rotate': 180, 'raster-contrast': 0.05 } : {} }] : []),
+      { id: 'satellite', type: 'raster', source: 'satellite', layout: visibility('satellite'), paint: { 'raster-opacity': 1, 'raster-saturation': -0.04, 'raster-contrast': 0.06, 'raster-brightness-min': 0, 'raster-brightness-max': 1 } },
+      { id: 'reference', type: 'raster', source: 'reference', layout: visibility('satellite'), paint: { 'raster-opacity': 1 } },
+      ...(darkLabels ? [{ id: 'dark-labels', type: 'raster', source: 'dark-labels', layout: visibility('dark') }] : []),
     ],
   } as any
 }
@@ -61,7 +93,7 @@ export function MapPanel({
   selectedId?: string | null
   onSelect?: (rowId: string | null) => void
   rows?: EventRow[]
-  /** FLET and front line; loaded by the panel itself when not given. */
+  /** Occupied territory and front line; loaded by the panel itself when not given. */
   lines?: MapLines
   /** False when the viewer may not see exact target coordinates. */
   coordinates?: boolean
@@ -75,7 +107,9 @@ export function MapPanel({
   const [fatal, setFatal] = useState<string | null>(null)
   const [tilesWarning, setTilesWarning] = useState(false)
   const [loaded, setLoaded] = useState(false)
-  const [visible, setVisible] = useState<Record<Layer, boolean>>({ flet: true, front_line: true, affected: true, destroyed: true })
+  const [visible, setVisible] = useState<Record<Layer, boolean>>({ occupied: true, front_line: true, affected: true, destroyed: true })
+  const [basemap, setBasemap] = useState<Basemap>(initialBasemap)
+  const basemapRef = useRef(basemap)
 
   const fetched = useQuery({ queryKey: ['map-lines'], queryFn: api.mapLines, enabled: lines === undefined, staleTime: 5 * 60_000 })
   const lineData = lines ?? fetched.data ?? emptyLines
@@ -85,10 +119,10 @@ export function MapPanel({
   const counts = useMemo(() => ({
     affected: targets.features.filter(feature => feature.properties.status !== 'destroyed').length,
     destroyed: targets.features.filter(feature => feature.properties.status === 'destroyed').length,
-    flet: lineData.features.filter(feature => feature.properties.layer === 'flet').length,
+    occupied: lineData.features.filter(feature => feature.properties.layer === 'occupied').length,
     front_line: lineData.features.filter(feature => feature.properties.layer === 'front_line').length,
   }), [targets, lineData])
-  const fletDate = lineData.features.find(feature => feature.properties.layer === 'flet')?.properties.valid_from
+  const frontDate = lineData.features.find(feature => feature.properties.layer === 'front_line')?.properties.valid_from
 
   const rowsRef = useRef(rows)
   rowsRef.current = rows
@@ -118,8 +152,18 @@ export function MapPanel({
   useEffect(() => {
     const map = mapRef.current
     if (!map || !loaded) return
-    for (const layer of ['flet', 'front_line'] as const) for (const id of LINE_LAYERS[layer]) if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', visible[layer] ? 'visible' : 'none')
+    for (const layer of ['occupied', 'front_line'] as const) for (const id of LINE_LAYERS[layer]) if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', visible[layer] ? 'visible' : 'none')
   }, [visible, loaded])
+
+  useEffect(() => {
+    basemapRef.current = basemap
+    try { localStorage.setItem(BASEMAP_KEY, basemap) } catch { /* storage may be blocked */ }
+    const map = mapRef.current
+    if (!map || !loaded) return
+    for (const [name, layers] of Object.entries(BASEMAP_LAYERS)) for (const id of layers) if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', name === basemap ? 'visible' : 'none')
+    map.setPaintProperty('background', 'background-color', basemap === 'dark' ? '#0b0e12' : '#07111a')
+    map.setPaintProperty('occupied-fill', 'fill-opacity', OCCUPIED_OPACITY[basemap])
+  }, [basemap, loaded])
 
   useEffect(() => {
     if (!ref.current || mapRef.current) return
@@ -127,7 +171,7 @@ export function MapPanel({
       setFatal(null)
       setTilesWarning(false)
       const map = new MapLibreMap({
-        container: ref.current, style: createMapStyle(),
+        container: ref.current, style: createMapStyle(basemapRef.current),
         center: mapConfig.initial_view.center, zoom: mapConfig.initial_view.zoom,
         attributionControl: false, renderWorldCopies: false,
         minZoom: mapConfig.initial_view.min_zoom, maxZoom: mapConfig.initial_view.max_zoom,
@@ -138,10 +182,10 @@ export function MapPanel({
 
       map.once('load', () => {
         map.addSource('lines', { type: 'geojson', data: emptyLines as any })
-        map.addLayer({ id: 'front-fill', type: 'fill', source: 'lines', filter: ['all', ['==', ['get', 'layer'], 'front_line'], ['in', ['geometry-type'], ['literal', ['Polygon', 'MultiPolygon']]]], paint: { 'fill-color': '#ef4444', 'fill-opacity': 0.08 } })
-        map.addLayer({ id: 'front-outline', type: 'line', source: 'lines', filter: ['==', ['get', 'layer'], 'front_line'], paint: { 'line-color': '#f87171', 'line-width': 1.6, 'line-dasharray': [3, 2] } })
-        map.addLayer({ id: 'flet-casing', type: 'line', source: 'lines', filter: ['==', ['get', 'layer'], 'flet'], layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#0b1220', 'line-width': 5.5, 'line-opacity': 0.75 } })
-        map.addLayer({ id: 'flet-line', type: 'line', source: 'lines', filter: ['==', ['get', 'layer'], 'flet'], layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#38bdf8', 'line-width': 3 } })
+        // Occupied territory in red with the front line along its edge, as on DeepState.
+        map.addLayer({ id: 'occupied-fill', type: 'fill', source: 'lines', filter: ['==', ['get', 'layer'], 'occupied'], paint: { 'fill-color': '#d7261e', 'fill-opacity': OCCUPIED_OPACITY[basemapRef.current] } })
+        map.addLayer({ id: 'front-casing', type: 'line', source: 'lines', filter: ['==', ['get', 'layer'], 'front_line'], layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#0b0e12', 'line-width': 4, 'line-opacity': 0.6 } })
+        map.addLayer({ id: 'front-line', type: 'line', source: 'lines', filter: ['==', ['get', 'layer'], 'front_line'], layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#ff3b30', 'line-width': 2 } })
 
         map.addSource('events', {
           type: 'geojson', data: emptyGeoJson as any,
@@ -239,8 +283,8 @@ export function MapPanel({
   const legend: [Layer, string, number, string][] = [
     ['destroyed', 'Знищені цілі', counts.destroyed, TARGET_COLORS.destroyed],
     ['affected', 'Уражені цілі', counts.affected, TARGET_COLORS.affected],
-    ['flet', fletDate ? `FLET (${fletDate.slice(0, 10)})` : 'FLET', counts.flet, '#38bdf8'],
-    ['front_line', 'Лінія фронту', counts.front_line, '#f87171'],
+    ['front_line', frontDate ? `Лінія фронту (${frontDate.slice(0, 10)})` : 'Лінія фронту', counts.front_line, '#ff3b30'],
+    ['occupied', 'Окупована територія', counts.occupied, 'rgba(215,38,30,.6)'],
   ]
 
   return (
@@ -249,7 +293,8 @@ export function MapPanel({
       {tilesWarning && !fatal && <div className="map-tile-warning">{tr('Частина картографічної підкладки тимчасово недоступна.', 'Some map tiles are temporarily unavailable.')}</div>}
       <div ref={ref} className="map" />
       {!fatal && <div className="map-layers" role="group" aria-label="Шари карти">
-        {legend.filter(([layer, , count]) => count > 0 || layer === 'affected' || layer === 'destroyed').map(([layer, label, count, color]) => <label key={layer} className={`map-layers__item map-layers__item--${layer === 'flet' || layer === 'front_line' ? 'line' : 'point'}`}>
+        {availableBasemaps().length > 1 && <div className="map-layers__basemap" role="radiogroup" aria-label="Підкладка">{availableBasemaps().map(name => <button type="button" role="radio" aria-checked={basemap === name} className={basemap === name ? 'active' : ''} key={name} onClick={() => setBasemap(name)}>{name === 'dark' ? 'Темна' : 'Супутник'}</button>)}</div>}
+        {legend.filter(([layer, , count]) => count > 0 || layer === 'affected' || layer === 'destroyed').map(([layer, label, count, color]) => <label key={layer} className={`map-layers__item map-layers__item--${layer === 'front_line' ? 'line' : layer === 'occupied' ? 'area' : 'point'}`}>
           <input type="checkbox" checked={visible[layer]} onChange={() => toggle(layer)} />
           <i style={{ background: color }} />
           <span>{label}</span>
