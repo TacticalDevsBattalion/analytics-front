@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, Calculator, Check, Eye, History, KeyRound, ListFilter, MessageSquare, Palette, RefreshCw, Save, Settings2, ShieldCheck, Table2, BookOpen, Database, Undo2, Users } from 'lucide-react'
+import { ArrowDown, ArrowUp, Calculator, Trophy, Check, Eye, History, KeyRound, ListFilter, MessageSquare, Palette, RefreshCw, Save, Settings2, ShieldCheck, Table2, BookOpen, Database, Undo2, Users } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useAppConfiguration } from '../config/AppConfigurationContext'
@@ -9,6 +9,7 @@ import type { FilterOptions, SourceStatus } from '../lib/types'
 import { validatePurposeKpi } from '../lib/purposeKpiEditor'
 import { ALL_COLUMNS } from './EventsTable'
 import { PurposeKpiEditor } from './PurposeKpiEditor'
+import { RankingSettingsEditor, validateRanking } from './RankingSettingsEditor'
 import { CustomFilterEditor } from './CustomFilterEditor'
 import { biApi } from '../lib/biApi'
 import { validateCustomFilters } from '../lib/customFilters'
@@ -17,7 +18,7 @@ import { useAuth } from '../config/AuthContext'
 import { AnalyticsAdministrationSection, analyticsAdministrationSections, type AnalyticsAdministrationSectionId } from './bi/AnalyticsAdministrationSection'
 import './AdministrationPage.css'
 
-type SectionId = AnalyticsAdministrationSectionId | 'filters' | 'card_details' | 'kpi' | 'dictionaries' | 'tables' | 'appearance' | 'source' | 'history'
+type SectionId = AnalyticsAdministrationSectionId | 'filters' | 'card_details' | 'kpi' | 'ranking' | 'dictionaries' | 'tables' | 'appearance' | 'source' | 'history'
 type Revision = { revision: number; created_at: string; action: string }
 type DictionaryGroup = keyof FilterOptions
 const TOKEN_KEY = 'analytics-app-admin-session'
@@ -28,6 +29,7 @@ const sections: Array<{ key: SectionId; label: string; icon: typeof ListFilter }
   { key: 'filters', label: 'Фільтри', icon: ListFilter },
   { key: 'card_details', label: 'Підказки карток', icon: MessageSquare },
   { key: 'kpi', label: 'Розрахунок KPI', icon: Calculator },
+  { key: 'ranking', label: 'Рейтинг екіпажів', icon: Trophy },
   { key: 'dictionaries', label: 'Довідники', icon: BookOpen },
   { key: 'tables', label: 'Таблиці та звіти', icon: Table2 },
   { key: 'appearance', label: 'Оформлення і меню', icon: Palette },
@@ -88,7 +90,7 @@ function validate(config: AppConfiguration): string | null {
   if (!config.appearance.menu.includes(config.appearance.default_page)) return 'Початкова сторінка має бути видимою в меню.'
   const details = config.appearance.card_details ?? defaultCardDetailsConfiguration()
   if (!Number.isInteger(details.hover_delay_ms) || details.hover_delay_ms < 0 || details.hover_delay_ms > 1500) return 'Затримка наведення має бути цілим числом від 0 до 1500 мс.'
-  return validatePurposeKpi(config.kpi)
+  return validateRanking(config.ranking) || validatePurposeKpi(config.kpi)
 }
 
 export function AdministrationPage({ onPreview }: { onPreview?: () => void }) {
@@ -275,6 +277,7 @@ export function AdministrationPage({ onPreview }: { onPreview?: () => void }) {
           </div>
         </>}
 
+        {section === 'ranking' && <>{!options && !optionsError && <p className="admin-hint">Завантаження цілей вильотів і кафедр…</p>}<RankingSettingsEditor value={draft.ranking} purposes={options?.purpose ?? []} categories={options?.category ?? []} onChange={ranking => change(value => { value.ranking = ranking; return value })} /></>}
         {section === 'kpi' && <PurposeKpiEditor value={draft.kpi} onChange={kpi => change(value => { value.kpi = kpi; return value })} />}
 
         {section === 'dictionaries' && <>

@@ -18,6 +18,17 @@ export type PurposeKpiRule = {
   loss_rule?: 'ignore' | 'unsuccessful' | 'penalty'
 }
 export type KpiConfiguration = { purpose_rules: PurposeKpiRule[] }
+export type RankingMissionGroup = { id: string; title: string; purposes: string[]; ignore_losses_for: string[] }
+/** Crew ranking: missions ranked apart, how much each criterion counts, flights needed per mission group. */
+export type RankingConfiguration = { min_flights: number; weights: { avg_flights: number; efficiency: number; loss_rate: number }; mission_groups: RankingMissionGroup[] }
+export function defaultRankingConfiguration(): RankingConfiguration {
+  return { min_flights: 5, weights: { avg_flights: 1, efficiency: 1, loss_rate: 1 }, mission_groups: [
+    { id: 'strike', title: 'Ударні', purposes: ['Динамічне ураження', 'Планове ураження', 'Вільне полювання', 'Засідка'], ignore_losses_for: ['FPV', 'Ударні крила'] },
+    { id: 'logistics', title: 'Логістика', purposes: ['Доставка', 'Евакуація'], ignore_losses_for: [] },
+    { id: 'mining', title: 'Мінування', purposes: ['Мінування'], ignore_losses_for: [] },
+    { id: 'recon', title: 'Розвідка', purposes: ['Розвідка', 'Дорозвідка', 'Зйомка ураження'], ignore_losses_for: [] },
+  ] }
+}
 export type CardDetailsConfiguration = { interaction: 'auto' | 'click' | 'disabled'; hover_delay_ms: number; width: 'standard' | 'wide' }
 export function defaultCardDetailsConfiguration(): CardDetailsConfiguration { return { interaction: 'auto', hover_delay_ms: 0, width: 'standard' } }
 export type AppConfiguration = {
@@ -28,6 +39,7 @@ export type AppConfiguration = {
   defaults: { date_range_days: number; comparison_mode: ComparisonMode; comparison_granularity: ComparisonGranularity }
   dictionaries: { labels: Record<string, Record<string, string>> }
   kpi: KpiConfiguration
+  ranking?: RankingConfiguration
 }
 export type PublicAppConfiguration = { revision: number; config: AppConfiguration; administration_enabled: boolean }
 export type ConfigurationHistory = { revision: number; created_at: string; action: string }
@@ -57,6 +69,7 @@ export function defaultAppConfiguration(): AppConfiguration {
     defaults: { date_range_days: frontend.app.defaults.date_range_days, comparison_mode: 'units_over_time', comparison_granularity: 'week' },
     dictionaries: { labels: {} },
     kpi: { purpose_rules: [] },
+    ranking: defaultRankingConfiguration(),
   }
 }
 
