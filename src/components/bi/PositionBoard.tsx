@@ -39,7 +39,7 @@ export function PositionBoard({ result, locale }: { result: QueryResult; locale:
         <DayNightBar counts={department} scale={department.flights} />
         <span className="pb-department__split"><span className="pb-day"><Sun size={12} />{share(department.day, department.flights)}</span><span className="pb-night"><Moon size={12} />{share(department.night, department.flights)}</span></span>
         {hasEfficiency && <span className="pb-department__efficiency">Результативність <b>{efficiency(department)}</b></span>}
-        <small>{department.positions.length} поз.</small>
+        <small>{department.positions.length} поз. · ≈{percent.format(department.positions.length ? department.flights / department.positions.length : 0)} вил./поз.</small>
       </button>)}
     </div>
     <div className="pb-toolbar">
