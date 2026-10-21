@@ -794,6 +794,29 @@ export function FilterBar({
     onChange(cloneFilters({ ...submittedFilters, ...period }))
   }
 
+  /**
+   * Switches calendar / reporting day from the closed filter bar. A quick period stays
+   * the same quick period; a custom range keeps its days (reporting day D runs D−1 → D).
+   */
+  const applyDayMode = (mode: PeriodMode, cutoff = reportingCutoff) => {
+    if (mode === dayMode && (mode === 'calendar' || cutoff === reportingCutoff)) return
+    if (mode === 'reporting') setReportingCutoff(cutoff)
+    const item = quick.find((entry) => entry.key === activeQuick)
+    if (item) return applyQuickPeriod(buildQuickPeriod(item.days, item.offset, mode, cutoff))
+    if (activeQuick === 'thisMonth') return applyQuickPeriod(buildMonthPeriod(mode, cutoff))
+    const shift = (date: string, days: number) => {
+      const day = new Date(`${date}T${String(frontendConfig.app.defaults.calendar_anchor_hour).padStart(2, '0')}:00:00`)
+      day.setDate(day.getDate() + days)
+      return isoLocal(day)
+    }
+    const { date_from: from, date_to: to } = submittedFilters
+    if (mode === 'calendar') {
+      applyQuickPeriod({ date_from: dayMode === 'reporting' && from < to ? shift(from, 1) : from, date_to: to, time_from: undefined, time_to: undefined })
+    } else {
+      applyQuickPeriod({ date_from: dayMode === 'calendar' ? shift(from, -1) : from, date_to: to, time_from: cutoff, time_to: cutoff })
+    }
+  }
+
   const resetSelections = () => {
     setDraft((current) => ({
       ...current,
@@ -1038,6 +1061,13 @@ export function FilterBar({
         {!panelOpen && !comparison && <div className="quick-row filter-bar-quick" role="group" aria-label={tr('Швидкий період', 'Quick period')}>
           {quick.map((item) => <button type="button" key={item.key} className={activeQuick === item.key ? 'selected' : ''} aria-pressed={activeQuick === item.key} onClick={() => applyQuickPeriod(buildQuickPeriod(item.days, item.offset))}>{quickLabel(item.key, tr)}</button>)}
           <button type="button" className={activeQuick === 'thisMonth' ? 'selected' : ''} aria-pressed={activeQuick === 'thisMonth'} onClick={() => applyQuickPeriod(buildMonthPeriod())}>{tr('Цей місяць', 'This month')}</button>
+          {showTimeControl && <span className="filter-bar-daymode" role="group" aria-label={tr('Доба', 'Day')}>
+            <button type="button" className={dayMode === 'calendar' ? 'selected' : ''} aria-pressed={dayMode === 'calendar'} title={tr('Звичайна доба: 00:00 → 23:59', 'Calendar day: 00:00 → 23:59')} onClick={() => applyDayMode('calendar')}><CalendarDays size={13} aria-hidden="true" />{tr('Звичайна', 'Calendar')}</button>
+            {reportingCutoffs.map((cutoff) => {
+              const active = dayMode === 'reporting' && reportingCutoff === cutoff
+              return <button type="button" key={cutoff} className={active ? 'selected' : ''} aria-pressed={active} title={tr(`Звітна доба: ${cutoff} → ${cutoff}`, `Reporting day: ${cutoff} → ${cutoff}`)} onClick={() => applyDayMode('reporting', cutoff)}><Clock3 size={13} aria-hidden="true" />{reportingCutoffs.length > 1 ? `${tr('Звітна', 'Reporting')} ${cutoff}` : tr('Звітна', 'Reporting')}</button>
+            })}
+          </span>}
         </div>}
         {appliedChips.length > 0 && <div className="filter-applied" role="list" aria-label={tr('Застосовані фільтри', 'Applied filters')}>
           {appliedChips.slice(0, visibleChipLimit).map((chip) => <span key={chip.id} role="listitem" className="filter-applied-chip" title={chip.label + ': ' + chip.text}>

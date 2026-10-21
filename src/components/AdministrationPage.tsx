@@ -24,7 +24,7 @@ const TOKEN_KEY = 'analytics-app-admin-session'
 const clone = (value: AppConfiguration): AppConfiguration => structuredClone(value)
 const readToken = () => { try { return sessionStorage.getItem(TOKEN_KEY) || '' } catch { return '' } }
 const sections: Array<{ key: SectionId; label: string; icon: typeof ListFilter }> = [
-  ...analyticsAdministrationSections.map(({ key, title }) => ({ key, label: title, icon: key === 'users' ? Users : key === 'roles' ? ShieldCheck : key === 'cache' ? Database : Calculator })),
+  ...analyticsAdministrationSections.map(({ key, title }) => ({ key, label: title, icon: key === 'access' || key === 'users' ? Users : key === 'roles' ? ShieldCheck : key === 'cache' ? Database : Calculator })),
   { key: 'filters', label: 'Фільтри', icon: ListFilter },
   { key: 'card_details', label: 'Підказки карток', icon: MessageSquare },
   { key: 'kpi', label: 'Розрахунок KPI', icon: Calculator },

@@ -7,14 +7,17 @@ import './styles/header.css'
 import './styles/polish.css'
 import App from './App'
 import { LanguageProvider } from './i18n/LanguageContext'
-import { loadFrontendConfig } from './config'
+import { loadFrontendConfig, withApiBase } from './config'
+import { installViewAs } from './lib/viewAs'
 import { AppConfigurationProvider, loadAppConfiguration } from './config/AppConfigurationContext'
 import { CustomFiltersProvider } from './config/CustomFiltersContext'
 import { AuthProvider } from './config/AuthContext'
 import { AuthGate } from './components/AuthGate'
+import { PreferencesProvider } from './config/PreferencesContext'
 
 async function bootstrap() {
   const config = await loadFrontendConfig()
+  installViewAs(withApiBase('/api'))
   await loadAppConfiguration()
 
   document.title = config.app.branding.app_name
@@ -34,7 +37,7 @@ async function bootstrap() {
     <React.StrictMode>
       <LanguageProvider>
         <QueryClientProvider client={queryClient}>
-          <AppConfigurationProvider><CustomFiltersProvider><AuthProvider><AuthGate><App /></AuthGate></AuthProvider></CustomFiltersProvider></AppConfigurationProvider>
+          <AppConfigurationProvider><CustomFiltersProvider><AuthProvider><AuthGate><PreferencesProvider><App /></PreferencesProvider></AuthGate></AuthProvider></CustomFiltersProvider></AppConfigurationProvider>
         </QueryClientProvider>
       </LanguageProvider>
     </React.StrictMode>,

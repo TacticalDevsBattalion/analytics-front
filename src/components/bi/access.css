@@ -1,0 +1,45 @@
+/* Administration → Доступи: user list on the left, the three questions on the right. */
+.access-admin { display:grid; grid-template-columns:minmax(260px, 340px) minmax(0, 1fr); gap:18px; align-items:start; }
+.access-admin__list { display:flex; flex-direction:column; gap:10px; min-width:0; }
+.access-admin__filters { display:flex; flex-wrap:wrap; gap:6px; }
+.access-admin__filters button { padding:5px 10px; border:1px solid var(--border-3); border-radius:999px; background:var(--bg-2); color:var(--text-2); font:inherit; font-size:var(--fs-sm); cursor:pointer; }
+.access-admin__filters button.active { border-color:#59b8dd; background:#59b8dd1f; color:var(--text-1); }
+.access-admin__filters b { margin-left:3px; color:var(--text-1); font-weight:600; }
+.access-admin__search { display:flex; align-items:center; gap:8px; padding:0 10px; border:1px solid var(--border-3); border-radius:var(--radius-md); background:var(--bg-2); color:var(--text-3); }
+.access-admin__search input { flex:1; min-width:0; min-height:36px; border:0 !important; background:transparent !important; color:var(--text-1); outline:none; padding:0 !important; }
+.access-admin__list ul { display:flex; flex-direction:column; gap:6px; max-height:min(70vh, 720px); overflow:auto; margin:0; padding:0; list-style:none; }
+.access-admin__list li { display:flex; align-items:stretch; gap:8px; padding-left:10px; border:1px solid var(--border-3); border-radius:var(--radius-md); background:var(--bg-2); }
+.access-admin__list li.active { border-color:#59b8dd; background:#59b8dd12; }
+.access-admin__list li > input { flex:none; width:18px !important; min-height:0 !important; margin:0; accent-color:#59b8dd; }
+.access-admin__list li > button { flex:1; min-width:0; display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:3px 8px; padding:9px 10px 9px 0; border:0; background:transparent; color:var(--text-1); font:inherit; text-align:left; cursor:pointer; }
+.access-admin__list li strong { overflow-wrap:anywhere; }
+.access-admin__list li small { grid-column:1 / -1; color:var(--text-2); font-size:var(--fs-xs); overflow-wrap:anywhere; }
+.access-status { align-self:start; padding:1px 8px; border-radius:999px; font-size:11px; white-space:nowrap; }
+.access-status--pending { background:rgba(250,204,21,.16); color:#fde68a; }
+.access-status--assigned { background:rgba(74,222,128,.14); color:#86efac; }
+.access-status--custom { background:rgba(148,163,184,.16); color:var(--text-2); }
+.access-admin__form { display:flex; flex-direction:column; gap:14px; min-width:0; padding:16px; border:1px solid var(--border-3); border-radius:var(--radius-md); background:var(--bg-2); }
+.access-admin__form h4 { margin:0; font-size:var(--fs-lg); }
+.access-admin__form fieldset { display:grid; gap:8px; margin:0; padding:0; border:0; min-width:0; }
+.access-admin__form legend { margin-bottom:6px; color:var(--text-2); font-size:var(--fs-sm); font-weight:600; }
+.access-admin__profiles { grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); }
+.access-admin__profiles label { display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--border-3); border-radius:var(--radius-md); cursor:pointer; }
+.access-admin__profiles label.active { border-color:#59b8dd; background:#59b8dd12; }
+.access-admin__profiles input { flex:none; width:18px !important; min-height:0 !important; margin:2px 0 0; accent-color:#59b8dd; }
+.access-admin__profiles span { display:grid; gap:3px; min-width:0; }
+.access-admin__profiles small { color:var(--text-2); font-size:var(--fs-xs); line-height:1.4; }
+.access-admin__unit { grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); align-items:end; }
+.access-admin__unit label { display:grid; gap:6px; font-size:var(--fs-sm); }
+.access-admin__unit select { min-height:40px; }
+.access-admin__switch { display:flex !important; align-items:center; gap:8px; grid-column:1 / -1; cursor:pointer; }
+.access-admin__switch input { width:18px !important; min-height:0 !important; margin:0; accent-color:#59b8dd; }
+.access-admin__summary { margin:0; padding:10px 12px; border-left:3px solid #59b8dd; border-radius:var(--radius-sm); background:#59b8dd0f; color:var(--text-1); line-height:1.5; }
+.access-admin__actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:10px; }
+.access-admin__actions button { min-height:40px; }
+.access-admin__empty { display:grid; justify-items:center; gap:10px; padding:28px 12px; color:var(--text-2); text-align:center; }
+.access-admin__history summary { display:flex; align-items:center; gap:6px; color:var(--text-2); cursor:pointer; }
+.access-admin__history ol { display:grid; gap:6px; margin:10px 0 0; padding-left:18px; color:var(--text-2); font-size:var(--fs-sm); }
+.access-admin__history time { color:var(--text-3); }
+@media (max-width: 860px) { .access-admin { grid-template-columns:1fr; } .access-admin__list ul { max-height:none; } }
+@media (pointer: coarse) { .access-admin__list li > button { min-height:48px; } .access-admin__list li > input, .access-admin__profiles input { width:22px !important; height:22px; } }
+.access-admin__view-as { display:inline-flex; align-items:center; gap:8px; align-self:flex-start; min-height:38px; }

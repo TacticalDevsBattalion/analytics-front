@@ -21,7 +21,8 @@
 .account-password-form button { cursor:pointer; }
 .account-profile-menu { position:absolute; right:0; top:calc(100% + 10px); min-width:220px; z-index:120; border:1px solid var(--border-3); border-radius:var(--radius-md); padding:10px; background:var(--bg-3); box-shadow:0 14px 35px #0008; display:grid; gap:7px; }
 .account-profile-menu button { display:flex; align-items:center; gap:9px; border:0; padding:9px; border-radius:var(--radius-sm); color:var(--text-1); background:transparent; cursor:pointer; text-align:left; }
-.account-profile-menu button:hover { background:var(--bg-sel); }
+.account-profile-menu button:hover, .account-profile-menu a:hover { background:var(--bg-sel); }
+.account-profile-menu a { display:flex; align-items:center; gap:9px; padding:9px; border-radius:var(--radius-sm); color:var(--text-1); text-decoration:none; }
 .account-profile-menu small { color:var(--text-2); padding:5px 9px; }
 .account-management { display:grid; gap:18px; }
 .account-user-form { padding:17px; border:1px solid var(--border-3); border-radius:var(--radius-md); grid-template-columns:repeat(2,minmax(0,1fr)); }
@@ -36,3 +37,23 @@
 .account-password-form input { min-width:0; flex:1; color:var(--text-1); background:var(--bg-3); border:1px solid var(--border-3); border-radius:var(--radius-sm); padding:8px; }
 .account-notice { color:#a2d8ba; line-height:1.6; }
 @media(max-width:600px) { .account-user-form { grid-template-columns:1fr; } .account-entry { padding:14px; }.account-entry-card { padding:20px; }.account-profile-name,.account-profile>svg { display:none; }.account-profile-button { padding:0; }.account-profile-menu { max-width:calc(100vw - 30px); } }
+/* Own password change and sign-in notices. */
+.account-setup-link { display:grid; place-items:center; min-height:42px; border-radius:var(--radius-sm); text-align:center; text-decoration:none; }
+.account-dialog-backdrop { position:fixed; inset:0; z-index:900; display:grid; place-items:center; padding:16px; background:rgba(2,6,12,.6); }
+.account-dialog { width:min(440px, 100%); max-height:calc(100vh - 32px); overflow:auto; padding:20px; display:grid; gap:14px; }
+.account-dialog header { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.account-dialog h2 { margin:0; font-size:var(--fs-lg); }
+.account-dialog p { margin:0; color:var(--text-2); line-height:1.6; }
+.account-dialog__close { display:grid; place-items:center; width:36px; height:36px; padding:0; border:0; border-radius:var(--radius-sm); background:transparent; color:var(--text-2); cursor:pointer; }
+.account-dialog__close:hover { background:var(--bg-sel); color:var(--text-1); }
+.account-dialog .account-dialog__form { grid-template-columns:1fr; }
+.account-dialog__actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:10px; }
+.account-dialog__actions button, .account-dialog > button { min-height:42px; }
+.account-notice { position:fixed; z-index:950; left:50%; top:calc(12px + env(safe-area-inset-top, 0px)); transform:translateX(-50%); display:flex; align-items:center; gap:10px; max-width:calc(100vw - 32px); padding:10px 10px 10px 16px; border:1px solid rgba(74,222,128,.45); border-radius:var(--radius-md); background:var(--bg-2); color:var(--text-1); box-shadow:0 10px 28px rgba(0,0,0,.4); }
+.account-notice button { display:grid; place-items:center; width:32px; height:32px; padding:0; border:0; border-radius:var(--radius-sm); background:transparent; color:var(--text-2); cursor:pointer; }
+/* An administrator viewing the application as another user. */
+.view-as-banner { position:sticky; top:env(safe-area-inset-top, 0px); z-index:60; display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin:0 0 12px; padding:10px 14px; border:1px solid rgba(250,204,21,.5); border-radius:var(--radius-md); background:#3a2f0bf2; color:#fde68a; }
+.view-as-banner span { flex:1 1 240px; }
+.view-as-banner b { color:#fff7d6; }
+.view-as-banner button { min-height:34px; padding:0 14px; border:1px solid rgba(250,204,21,.6); border-radius:999px; background:transparent; color:#fde68a; font:inherit; cursor:pointer; }
+.view-as-banner button:hover { background:rgba(250,204,21,.14); }

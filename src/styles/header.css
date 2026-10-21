@@ -18,11 +18,12 @@
   .data-status { padding: 0 8px; }
 }
 
-/* Tablets and narrow windows: the header actions wrap under the title instead of
-   pushing the page wider than the screen. */
+/* The header actions wrap under the title instead of pushing the page wider than
+   the screen: a long page title (Адміністрування) does that even at 1440 px. */
+.topbar { flex-wrap: wrap; min-width: 0; }
+.topbar > div:first-child { min-width: 0; max-width: 100%; }
+.top-actions { flex-wrap: wrap; justify-content: flex-end; min-width: 0; max-width: 100%; margin-left: auto; }
 @media (max-width: 1360px) {
-  .topbar { flex-wrap: wrap; min-width: 0; }
-  .topbar > div:first-child { min-width: 0; max-width: 100%; }
-  .top-actions { flex-wrap: wrap; justify-content: flex-end; min-width: 0; max-width: 100%; margin-left: auto; gap: 8px; }
+  .top-actions { gap: 8px; }
   .top-actions .search { width: auto; flex: 1 1 200px; min-width: 160px; max-width: 320px; }
 }

@@ -62,3 +62,13 @@
     grid-template-columns: minmax(0, 1fr); row-gap: 10px;
   }
 }
+
+/* ── Calendar / reporting day switch in the closed filter bar ─────────────── */
+.filters-section.filters-section--configured .filter-bar-daymode { display: inline-flex; gap: 0; margin-left: 6px; }
+.filters-section.filters-section--configured .filter-bar-daymode button { display: inline-flex; align-items: center; gap: 5px; border-radius: 0; margin-left: -1px; }
+.filters-section.filters-section--configured .filter-bar-daymode button:first-child { border-radius: 999px 0 0 999px; margin-left: 0; }
+.filters-section.filters-section--configured .filter-bar-daymode button:last-child { border-radius: 0 999px 999px 0; }
+.filters-section.filters-section--configured .filter-bar-daymode button.selected { position: relative; z-index: 1; }
+@media (max-width: 720px) {
+  .filters-section.filters-section--configured .filter-bar-daymode { margin-left: 0; width: 100%; }
+}

@@ -6,6 +6,7 @@ import type { AnalyticsCatalog, AnalyticsHierarchy, AnalyticsMetadata, Dashboard
 import { buildWeightedFormula, nextWidgetLayout, parseFilterInput } from '../../lib/biBuilder'
 import { DashboardGrid } from './DashboardGrid'
 import { WidgetRenderer } from './WidgetRenderer'
+import { AccessAdministration } from './AccessAdministration'
 import { CacheAdministration } from './CacheAdministration'
 import { KpiPolicyAdministration } from './KpiPolicyAdministration'
 import { semanticField } from '../../lib/semanticCatalog'
@@ -20,8 +21,9 @@ export const analyticsAdministrationSections = [
   { key: 'weight_sets', title: 'Набори ваг', description: 'Набори коефіцієнтів для розрахунку показників.' },
   { key: 'weights', title: 'Ваги цілей', description: 'Коефіцієнти категорій цілей та їхня участь у підсумках.' },
   { key: 'comparison', title: 'Налаштування порівняння', description: 'Набори показників і права доступу для сторінки «Порівняння».' },
-  { key: 'users', title: 'Користувачі', description: 'Ролі, дозволені функції та доступ до даних підрозділів.' },
-  { key: 'roles', title: 'Ролі та права', description: 'Спільні набори дозволів для користувачів.' },
+  { key: 'access', title: 'Доступи', description: 'Хто що бачить: роль, батальйон чи рота, точні координати.' },
+  { key: 'users', title: 'Права (розширено)', description: 'Старий спосіб: окремі ролі, дозволи й області даних для кожного користувача.' },
+  { key: 'roles', title: 'Ролі та права (розширено)', description: 'Спільні набори дозволів для старого способу призначення.' },
   { key: 'cache', title: 'Кеш', description: 'Стан кешування, прогрів та очищення результатів.' },
 ] as const
 export type AnalyticsAdministrationSectionId = typeof analyticsAdministrationSections[number]['key']
@@ -254,6 +256,7 @@ export function AnalyticsAdministrationSection({ section, token, onDirty }: { se
       {section === 'weight_sets' && <WeightSetEditor items={weightSets.data ?? []} shared={shared} />}
       {section === 'policies' && <KpiPolicyAdministration token={token} catalog={catalog.data} onDirty={setDirty} />}
       {section === 'weights' && <WeightEditor items={weights.data ?? []} shared={shared} />}
+      {section === 'access' && <AccessAdministration token={token} onDirty={setDirty} />}
       {section === 'users' && <UsersEditor shared={shared} />}
       {section === 'roles' && <RoleEditor items={users.data?.roles ?? []} shared={shared} />}
       {section === 'cache' && (canManageCache ? <CacheAdministration token={token} metrics={metadata.data?.metrics ?? []} kpis={cacheKpis} /> : <p className="bi-notice">Недостатньо прав для керування кешем.</p>)}

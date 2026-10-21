@@ -1,4 +1,4 @@
-import { ChevronDown, Download, LogOut, RefreshCcw, Search, SlidersHorizontal, X } from 'lucide-react'
+import { ChevronDown, Download, Eye, KeyRound, LogOut, RefreshCcw, Search, SlidersHorizontal, X } from 'lucide-react'
 import { useIsFetching, useQuery, useQueryClient } from '@tanstack/react-query'
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { Sidebar, type PageId } from './components/Sidebar'
@@ -15,6 +15,13 @@ import { useAppConfiguration } from './config/AppConfigurationContext'
 import { configuredFilterLabel, configurationLabel, getAppConfiguration, type AppConfiguration } from './config/appConfiguration'
 import { useAuth } from './config/AuthContext'
 import './components/Accounts.css'
+import { keycloakPageUrl, useAuthProvider } from './components/AuthGate'
+import { ChangePasswordDialog } from './components/ChangePasswordDialog'
+import { CrewRanking } from './components/bi/CrewRanking'
+import { readViewAs, stopViewAs } from './lib/viewAs'
+import { usePreferenceSync } from './config/PreferencesContext'
+import { useCustomFilters } from './config/CustomFiltersContext'
+import { restoreFilters, serializeFilters, type SavedFilters } from './lib/savedFilters'
 import type { QueryFilter } from './lib/biTypes'
 import { biApi } from './lib/biApi'
 
@@ -186,6 +193,7 @@ function exportCsv(rows: EventRow[], columnKeys: ColumnKey[], config: AppConfigu
 
 
 export default function App() {
+  const [viewAs] = useState(readViewAs)
   const { tr } = useLanguage()
   const { config, publishedConfig, isPreview, clearPreview } = useAppConfiguration()
   const auth = useAuth()
@@ -195,16 +203,43 @@ export default function App() {
   const [statisticsSection, setStatisticsSection] = useState(() => new URLSearchParams(window.location.hash.split('?')[1]).get('section') ?? 'overview')
   const [drillFilters, setDrillFilters] = useState<QueryFilter[]>([])
   const [filters, setFilters] = useState<FilterState>(defaultFilters())
-  const [comparisonTab, setComparisonTab] = useState<'areas' | 'periods' | 'units_over_time'>('areas')
+  const [comparisonTab, setComparisonTab] = useState<'areas' | 'periods' | 'units_over_time' | 'ranking'>('areas')
   const [comparisonSettings, setComparisonSettings] = useState<ComparisonFilterSettings>(() => defaultComparisonSettings(filters))
   const [appliedComparisonRequest, setAppliedComparisonRequest] = useState<ComparisonRequest | null>(null)
+  // Filters, period and comparison choices follow the user to every device.
+  const customFilters = useCustomFilters()
+  usePreferenceSync<SavedFilters>('filters', serializeFilters(filters, isoLocal(new Date()), customFilters.values), saved => {
+    setFilters(normalizeFilters(restoreFilters(saved, defaultFilters(), isoLocal(new Date()))))
+    if (saved.custom) customFilters.setValues(saved.custom as typeof customFilters.values)
+  })
+  const { reference_period: referencePeriod, ...comparisonChoice } = comparisonSettings
+  usePreferenceSync('comparison', { tab: comparisonTab, ...comparisonChoice, ...(comparisonSettings.reference === 'custom' ? { reference_period: referencePeriod } : {}) }, saved => {
+    const { tab, ...choice } = saved as { tab?: typeof comparisonTab } & Partial<ComparisonFilterSettings>
+    if (tab === 'areas' || tab === 'periods' || tab === 'units_over_time' || tab === 'ranking') setComparisonTab(tab)
+    setComparisonSettings(current => ({ ...current, ...choice, enabled: current.enabled }))
+  })
   const [searchTerm, setSearchTerm] = useState('')
   const appConfig = getFrontendConfig().app
   const uiConfig = getFrontendConfig().ui
   const [density, setDensityState] = useState<'comfortable' | 'compact'>(() => localStorage.getItem('analytics-ui-density') === 'compact' ? 'compact' : 'comfortable')
   const setDensity = (value: 'comfortable' | 'compact') => {
-    localStorage.setItem('analytics-ui-density', value); setDensityState(value)
+    try { localStorage.setItem('analytics-ui-density', value) } catch { /* storage may be blocked */ }
+    setDensityState(value)
   }
+  const animationsKey = appConfig.storage.animations_key
+  const [animations, setAnimations] = useState(() => {
+    try { const stored = localStorage.getItem(animationsKey); return stored == null ? appConfig.defaults.animations : stored !== 'off' } catch { return appConfig.defaults.animations }
+  })
+  useEffect(() => {
+    try { localStorage.setItem(animationsKey, animations ? 'on' : 'off') } catch { /* storage may be blocked */ }
+    document.documentElement.dataset.animations = animations ? 'on' : 'off'
+  }, [animations, animationsKey])
+  const { language, setLanguage } = useLanguage()
+  usePreferenceSync<{ density?: string; animations?: boolean; language?: string }>('ui', { density, animations, language }, saved => {
+    if (saved.density === 'compact' || saved.density === 'comfortable') setDensity(saved.density)
+    if (typeof saved.animations === 'boolean') setAnimations(saved.animations)
+    if (saved.language === 'uk' || saved.language === 'en') setLanguage(saved.language)
+  })
   const queryFilters = filters
 
   const filterKey = useMemo(
@@ -280,7 +315,7 @@ export default function App() {
       const nextFilters = normalizeFilters(queryFilters)
       setFilters(nextFilters)
       setComparisonSettings(current => ({ ...current, enabled: true }))
-      setAppliedComparisonRequest(comparisonTab === 'areas' ? null : automaticComparisonRequest({ ...comparisonSettings, mode: comparisonTab }, nextFilters))
+      setAppliedComparisonRequest(comparisonTab === 'periods' || comparisonTab === 'units_over_time' ? automaticComparisonRequest({ ...comparisonSettings, mode: comparisonTab }, nextFilters) : null)
     }
     window.location.hash = `/${next}`
     setPage(next)
@@ -328,6 +363,7 @@ export default function App() {
     <div className="app-shell">
       <Sidebar active={page} onNavigate={navigate} permissions={permissions} />
       <main className={`main-area${page === 'comparison' ? ' main-area--comparison' : ''}`}>
+        {viewAs && <div className="view-as-banner" role="status"><Eye size={16} aria-hidden="true" /><span>{tr('Ви переглядаєте застосунок як', 'You are viewing the application as')} <b>{viewAs.name}</b> — {tr('лише читання, зміни не зберігаються.', 'read-only, changes are not saved.')}</span><button type="button" onClick={stopViewAs}>{tr('Вийти з перегляду', 'Stop viewing')}</button></div>}
         <header className="topbar">
           <div><h1>{tr(...info.title)}</h1><p>{tr(...info.subtitle)}</p></div>
           <div className="top-actions">
@@ -351,11 +387,11 @@ export default function App() {
         {!pageAllowed && <article className="panel settings-card" role="status">{tr('Адміністратор ще не надав доступ до цього розділу.', 'Your administrator has not granted access to this page.')}</article>}
         <Suspense fallback={<div className="page-loading" role="status" aria-busy="true">…</div>}>
         {pageAllowed && ['dashboard', 'statistics', 'personal'].includes(page) && <IntegratedAnalyticsPage key={page} page={page as 'dashboard' | 'statistics' | 'personal'} filters={filters} inheritedFilters={drillFilters} onClearInheritedFilters={() => setDrillFilters([])} section={statisticsSection} onSectionChange={section => { setStatisticsSection(section); window.history.replaceState(null, '', `#/statistics?section=${encodeURIComponent(section)}`) }} filterBar={<FilterBar filters={filters} options={options.data} onChange={next => { setFilters(next); setDrillFilters([]) }} mode={page === 'statistics' ? 'detailed' : 'general'} customFilters />} onNavigate={(next, nextFilters, section, extra) => { setFilters(normalizeFilters(nextFilters)); setDrillFilters(extra ?? []); setStatisticsSection(section ?? 'overview'); setPage(next); window.location.hash = `/${next}${next === 'statistics' ? `?section=${encodeURIComponent(section ?? 'overview')}` : ''}` }} />}
-        {pageAllowed && page === 'comparison' && <><nav className="ia-sections" aria-label="Вид порівняння">{([['areas', 'Кафедри / ББАК / екіпажі'], ['periods', 'Періоди'], ['units_over_time', 'Підрозділи в часі']] as const).map(([key, label]) => <button key={key} className={`secondary${comparisonTab === key ? ' active' : ''}`} onClick={() => { setComparisonTab(key); if (key !== 'areas') setComparisonSettings(current => ({ ...current, enabled: true, mode: key })); setAppliedComparisonRequest(key === 'areas' ? null : automaticComparisonRequest({ ...comparisonSettings, mode: key }, filters)) }}>{label}</button>)}</nav>{comparisonTab === 'areas' ? <><FilterBar filters={filters} options={options.data} onChange={setFilters} mode="detailed" customFilters /><BIComparison filters={filters} /></> : <ComparisonPage filters={filters} options={options.data} settings={{ ...comparisonSettings, enabled: true, mode: comparisonTab }} request={appliedComparisonRequest} onApply={applyAnalyticsFilters} />}</>}
+        {pageAllowed && page === 'comparison' && <><nav className="ia-sections" aria-label="Вид порівняння">{([['areas', 'Кафедри / ББАК / екіпажі'], ['periods', 'Періоди'], ['units_over_time', 'Підрозділи в часі'], ...(permitted('ranking.view') ? [['ranking', 'Рейтинг екіпажів']] as const : [])] as const).map(([key, label]) => <button key={key} className={`secondary${comparisonTab === key ? ' active' : ''}`} onClick={() => { setComparisonTab(key); if (key === 'periods' || key === 'units_over_time') setComparisonSettings(current => ({ ...current, enabled: true, mode: key })); setAppliedComparisonRequest(key === 'periods' || key === 'units_over_time' ? automaticComparisonRequest({ ...comparisonSettings, mode: key }, filters) : null) }}>{label}</button>)}</nav>{comparisonTab === 'ranking' && permitted('ranking.view') ? <><FilterBar filters={filters} options={options.data} onChange={setFilters} mode="detailed" customFilters /><CrewRanking filters={filters} /></> : comparisonTab === 'areas' || comparisonTab === 'ranking' ? <><FilterBar filters={filters} options={options.data} onChange={setFilters} mode="detailed" customFilters /><BIComparison filters={filters} /></> : <ComparisonPage filters={filters} options={options.data} settings={{ ...comparisonSettings, enabled: true, mode: comparisonTab }} request={appliedComparisonRequest} onApply={applyAnalyticsFilters} />}</>}
         {pageAllowed && page === 'map' && <MapPage filters={filters} setFilters={setFilters} options={options.data} rows={rows} geojson={mapData.data} />}
         {pageAllowed && page === 'table' && <TablePage filters={filters} setFilters={setFilters} options={options.data} rows={rows} />}
         {pageAllowed && page === 'dictionaries' && <DictionariesPage options={options.data} />}
-        {page === 'settings' && <SettingsPage density={density} setDensity={setDensity} source={source.data} />}
+        {page === 'settings' && <SettingsPage density={density} setDensity={setDensity} animations={animations} setAnimations={setAnimations} source={source.data} />}
         {pageAllowed && page === 'administration' && <AdministrationPage onPreview={() => navigate(config.appearance.default_page as PageId)} />}
         </Suspense>
       </main>
@@ -368,7 +404,8 @@ function AccountProfile({ onSettings, onLogout }: { onSettings: () => void; onLo
   const { tr } = useLanguage()
   const auth = useAuth()
   const ref = useRef<HTMLDivElement>(null)
-  const [open, setOpen] = useState(false), [busy, setBusy] = useState(false), [error, setError] = useState('')
+  const provider = useAuthProvider()
+  const [open, setOpen] = useState(false), [busy, setBusy] = useState(false), [error, setError] = useState(''), [changingPassword, setChangingPassword] = useState(false)
   useEffect(() => {
     if (!open) return
     const outside = (event: PointerEvent) => { if (ref.current && !ref.current.contains(event.target as Node)) setOpen(false) }
@@ -378,7 +415,10 @@ function AccountProfile({ onSettings, onLogout }: { onSettings: () => void; onLo
   }, [open])
   const name = auth.user?.display_name || tr('Користувач', 'User')
   const initials = name.split(/\s+/).slice(0, 2).map(part => part[0] || '').join('').toLocaleUpperCase()
-  return <div className="account-profile-wrap" ref={ref}><button className="account-profile-button account-profile" type="button" aria-label={tr('Меню облікового запису', 'Account menu')} aria-expanded={open} onClick={() => setOpen(!open)}><span className="account-avatar">{initials}</span><span className="account-profile-name"><strong>{name}</strong><small>{auth.user?.role === 'administrator' ? tr('Адміністратор', 'Administrator') : tr('Особистий дашборд', 'Personal dashboard')}</small></span><ChevronDown size={15} /></button>{open && <div className="account-profile-menu"><small>{auth.user?.username || tr('Доступ ще не налаштовано', 'Account access has not been configured')}</small><button type="button" onClick={() => { setOpen(false); onSettings() }}><SlidersHorizontal size={15} />{tr('Мій дашборд', 'My dashboard')}</button>{auth.user && <button type="button" disabled={busy} onClick={() => { setBusy(true); setError(''); void onLogout().catch(reason => setError(reason instanceof Error ? reason.message : tr('Не вдалося вийти.', 'Could not sign out.'))).finally(() => setBusy(false)) }}><LogOut size={15} />{busy ? tr('Вихід…', 'Signing out…') : tr('Вийти', 'Sign out')}</button>}{error && <small className="account-error" role="alert">{error}</small>}</div>}</div>
+  return <div className="account-profile-wrap" ref={ref}><button className="account-profile-button account-profile" type="button" aria-label={tr('Меню облікового запису', 'Account menu')} aria-expanded={open} onClick={() => setOpen(!open)}><span className="account-avatar">{initials}</span><span className="account-profile-name"><strong>{name}</strong><small>{auth.user?.role === 'administrator' ? tr('Адміністратор', 'Administrator') : tr('Особистий дашборд', 'Personal dashboard')}</small></span><ChevronDown size={15} /></button>{open && <div className="account-profile-menu"><small>{auth.user?.username || tr('Доступ ще не налаштовано', 'Account access has not been configured')}</small><button type="button" onClick={() => { setOpen(false); onSettings() }}><SlidersHorizontal size={15} />{tr('Мій дашборд', 'My dashboard')}</button>{auth.user && provider.data && (provider.data.provider === 'keycloak'
+  // Keycloak asks for the current password, then the new one, and returns here.
+  ? <a href={keycloakPageUrl({ action: 'password' })}><KeyRound size={15} />{tr('Змінити пароль', 'Change password')}</a>
+  : <button type="button" onClick={() => { setOpen(false); setChangingPassword(true) }}><KeyRound size={15} />{tr('Змінити пароль', 'Change password')}</button>)}{auth.user && <button type="button" disabled={busy} onClick={() => { setBusy(true); setError(''); void onLogout().catch(reason => setError(reason instanceof Error ? reason.message : tr('Не вдалося вийти.', 'Could not sign out.'))).finally(() => setBusy(false)) }}><LogOut size={15} />{busy ? tr('Вихід…', 'Signing out…') : tr('Вийти', 'Sign out')}</button>}{error && <small className="account-error" role="alert">{error}</small>}</div>}{changingPassword && <ChangePasswordDialog onClose={() => setChangingPassword(false)} />}</div>
 }
 
 function MapPage({ filters, setFilters, options, rows, geojson }: { filters: FilterState; setFilters: (f: FilterState) => void; options?: FilterOptions; rows: EventRow[]; geojson?: GeoFeatureCollection }) {
@@ -449,17 +489,10 @@ function DictionariesPage({ options }: { options?: FilterOptions }) {
   })}</section>
 }
 
-function SettingsPage({ density, setDensity, source }: { density: 'comfortable' | 'compact'; setDensity: (v: 'comfortable' | 'compact') => void; source?: SourceStatus }) {
+function SettingsPage({ density, setDensity, animations, setAnimations, source }: { density: 'comfortable' | 'compact'; setDensity: (v: 'comfortable' | 'compact') => void; animations: boolean; setAnimations: (value: boolean) => void; source?: SourceStatus }) {
   const { tr } = useLanguage()
-  const animationsKey = getFrontendConfig().app.storage.animations_key
-  const defaultAnimations = getFrontendConfig().app.defaults.animations
-  const [animations, setAnimations] = useState(() => {
-    const stored = localStorage.getItem(animationsKey)
-    return stored == null ? defaultAnimations : stored !== 'off'
-  })
   const [probe, setProbe] = useState<string>('')
   const [probing, setProbing] = useState(false)
-  useEffect(() => { localStorage.setItem(animationsKey, animations ? 'on' : 'off'); document.documentElement.dataset.animations = animations ? 'on' : 'off' }, [animations, animationsKey])
   const runProbe = async () => {
     setProbing(true)
     try {

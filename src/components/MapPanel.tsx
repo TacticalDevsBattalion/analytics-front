@@ -1,4 +1,5 @@
 import 'maplibre-gl/dist/maplibre-gl.css'
+import { usePreferenceSync } from '../config/PreferencesContext'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Layers, X } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
@@ -125,6 +126,8 @@ export function MapPanel({
   const [loaded, setLoaded] = useState(false)
   const [visible, setVisible] = useState<Record<Layer, boolean>>({ occupied: true, front_line: true, affected: true, destroyed: true })
   const [basemap, setBasemap] = useState<Basemap>(initialBasemap)
+  // The basemap follows the user to every device; the folded layer panel stays per device.
+  usePreferenceSync<{ basemap?: Basemap }>('map', { basemap }, saved => { if (saved.basemap && availableBasemaps().includes(saved.basemap)) setBasemap(saved.basemap) })
   const basemapRef = useRef(basemap)
   const [layersOpen, setLayersOpen] = useState(initialLayersOpen)
 

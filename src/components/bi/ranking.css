@@ -1,0 +1,26 @@
+/* Crew ranking: own crews and their places in the company, battalion and brigade. */
+.crew-ranking { display:grid; gap:14px; padding:16px; container-type:inline-size; }
+.crew-ranking__head { display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:12px; }
+.crew-ranking__head h2 { display:flex; align-items:center; gap:8px; margin:0 0 4px; font-size:var(--fs-lg); }
+.crew-ranking__head p { margin:0; max-width:640px; color:var(--text-2); font-size:var(--fs-sm); line-height:1.5; }
+.crew-ranking__controls { display:flex; flex-wrap:wrap; gap:10px; }
+.crew-ranking__controls label { display:grid; gap:5px; color:var(--text-2); font-size:var(--fs-sm); }
+.crew-ranking__controls select { min-height:38px; min-width:200px; }
+.crew-ranking__note { margin:0; color:var(--text-3); font-size:var(--fs-xs); }
+.crew-ranking__group h3 { margin:6px 0 8px; font-size:var(--fs-md); }
+.crew-ranking__table-wrap { overflow-x:auto; }
+.crew-ranking__table { width:100%; border-collapse:collapse; font-size:var(--fs-sm); }
+.crew-ranking__table th { padding:8px 10px; border-bottom:1px solid var(--border-2); color:var(--text-3); font-weight:600; text-align:left; white-space:nowrap; }
+.crew-ranking__table td { padding:8px 10px; border-bottom:1px solid var(--border-1); white-space:nowrap; }
+.crew-ranking__table tbody tr:hover { background:var(--bg-sel); }
+.crew-ranking__place { display:inline-grid; grid-template-columns:auto auto; gap:2px 4px; align-items:baseline; min-width:86px; color:var(--text-2); }
+.crew-ranking__place b { color:var(--text-1); font-size:var(--fs-md); }
+.crew-ranking__place i { grid-column:1 / -1; height:4px; border-radius:2px; background:linear-gradient(90deg, #59b8dd var(--share), rgba(148,163,184,.18) var(--share)); }
+@container (max-width: 760px) {
+  .crew-ranking__table thead { display:none; }
+  .crew-ranking__table, .crew-ranking__table tbody, .crew-ranking__table tr { display:block; }
+  .crew-ranking__table tr { margin-bottom:10px; padding:8px 10px; border:1px solid var(--border-2); border-radius:var(--radius-md); }
+  .crew-ranking__table td { display:flex; justify-content:space-between; gap:10px; padding:5px 0; border-bottom:1px dashed var(--border-1); white-space:normal; }
+  .crew-ranking__table td:last-child { border-bottom:0; }
+  .crew-ranking__table td::before { content:attr(data-label); color:var(--text-3); }
+}

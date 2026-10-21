@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { Sparkles, X } from 'lucide-react'
 import { WHATS_NEW, activeEntries, entriesFor, formatBuild, type WhatsNewEntry } from '../../lib/whatsNew'
 import { HintCard, useHoverCard } from './InfoHint'
+import { usePreferenceSync } from '../../config/PreferencesContext'
 import './help.css'
 
 const SEEN_KEY = 'analytics.whats_new.seen'
@@ -30,6 +31,10 @@ export function WhatsNewProvider({ children, onNavigate }: { children: ReactNode
     try { localStorage.setItem(SEEN_KEY, JSON.stringify([...next])) } catch { /* storage may be blocked */ }
     return next
   }), [])
+  // What a user has already read stays read on their other devices.
+  usePreferenceSync<{ seen?: string[] }>('whats_new', { seen: [...seen].sort() }, saved => {
+    if (Array.isArray(saved.seen)) markSeen(saved.seen.filter((item): item is string => typeof item === 'string'))
+  })
   const value = useMemo(() => ({ active, markSeen, openDialog: () => setDialog(true), onNavigate }), [active, markSeen, onNavigate])
   return <WhatsNewContext.Provider value={value}>
     {children}

@@ -82,7 +82,8 @@ export function BIComparison({ filters }: BIComparisonProps) {
   const owns = ownOptions(allOptions, level, metadata.data, hierarchy.data)
   const peers = allOptions.filter(option => option.id !== own)
   const dimensions = (catalog.data?.dimensions ?? []).map(item => ({ field: item.field ?? item.key, title: item.label ?? item.title ?? 'Розріз' }))
-  const metricDefinitions = metadata.data?.metrics ?? []
+  // Built-in cards (average per position, weighted KPI) are not comparable metrics.
+  const metricDefinitions = (metadata.data?.metrics ?? []).filter(metric => metric.kind !== 'builtin')
   const configuredDashboard = dashboards.data?.find(item => item.id === presetDashboardId) ?? dashboards.data?.[0]
   const configuredWidgets = configuredDashboard?.widgets.filter(widget => !['text', 'markdown'].includes(widget.visualization.type) && widget.query.metrics.length) ?? []
   const configuredWidget = configuredWidgets.find(widget => widget.id === presetWidgetId) ?? configuredWidgets[0]
