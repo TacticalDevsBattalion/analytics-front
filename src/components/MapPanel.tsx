@@ -266,7 +266,8 @@ export function MapPanel({
             element.querySelectorAll<HTMLButtonElement>('[data-index]').forEach(button => button.addEventListener('click', () => {
               const target = leaves[Number(button.dataset.index)]
               if (!target) return
-              const detail = openPopup(center, targetPopupHtml(target.properties, { back: true }))
+              // The card belongs to the target's own point: the cluster centre moves away when it splits on zoom.
+              const detail = openPopup((target.geometry as any).coordinates as [number, number], targetPopupHtml(target.properties, { back: true }))
               detail.getElement().querySelector('[data-action="back"]')?.addEventListener('click', showList)
               onSelect?.(String(target.properties.id))
             }))
