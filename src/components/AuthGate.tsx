@@ -33,7 +33,7 @@ export function useAuthProvider() {
   return useQuery({ queryKey: ['authentication-provider'], queryFn: async () => {
     const response = await fetch(withApiBase('/api/auth/provider'), { credentials: 'include', cache: 'no-store' })
     if (!response.ok) throw new Error(tr('Не вдалося визначити спосіб входу.', 'Could not load the sign-in provider.'))
-    return response.json() as Promise<{provider: 'local' | 'keycloak'; login_url: string | null; password_login?: boolean}>
+    return response.json() as Promise<{provider: 'local' | 'keycloak' | 'k2auth'; login_url: string | null; password_login?: boolean}>
   }, retry: false, staleTime: Infinity })
 }
 
@@ -58,6 +58,32 @@ function PasswordUpdatedNotice() {
   return <div className="account-notice" role="status"><span>{tr('Пароль змінено.', 'Your password has been changed.')}</span><button type="button" aria-label={tr('Закрити', 'Close')} onClick={() => setNotice('')}><X size={16} /></button></div>
 }
 
+// K2 Auth: the sign-in page leaves for the shared K2 login at once. A second automatic
+// trip within a short time means the session did not stick: stop and show the button.
+const K2_REDIRECT_KEY = 'analytics-k2auth-redirect'
+const K2_REDIRECT_PAUSE_MS = 30000
+function mayRedirectToK2Auth() {
+  try {
+    const last = Number(sessionStorage.getItem(K2_REDIRECT_KEY) || 0)
+    if (Date.now() - last < K2_REDIRECT_PAUSE_MS) return false
+    sessionStorage.setItem(K2_REDIRECT_KEY, String(Date.now()))
+    return true
+  } catch { return false }
+}
+
+function K2AuthEntry({ title, loginUrl, providerError }: { title: string; loginUrl: string; providerError: string }) {
+  const { tr } = useLanguage()
+  const [leaving] = useState(() => !providerError && mayRedirectToK2Auth())
+  useEffect(() => { if (leaving) window.location.assign(loginUrl) }, [leaving, loginUrl])
+  return <main className="account-entry"><section className="panel account-entry-card"><KeyRound size={25} /><h1>{title}</h1><h2>{tr('Вхід через K2 Auth', 'Sign in with K2 Auth')}</h2>
+    {leaving
+      ? <p role="status">{tr('Переходимо на сторінку входу K2…', 'Opening the K2 sign-in page…')}</p>
+      : <><p>{tr('Вхід — на спільній сторінці K2: пароль і passkey. Доступні функції та підрозділи визначає адміністратор.', 'Sign in on the shared K2 page with your password and passkey. Your administrator assigns features and data areas.')}</p>
+        {providerError && <p className="account-error" role="alert">{providerError === 'cancelled' ? tr('Вхід скасовано.', 'Sign-in was cancelled.') : providerError === 'unavailable' ? tr('Сервіс входу тимчасово недоступний. Спробуйте пізніше.', 'Sign-in is temporarily unavailable. Try again later.') : tr('Не вдалося завершити вхід. Спробуйте ще раз.', 'Could not complete sign-in. Try again.')}</p>}
+        <a className="primary" href={loginUrl}>{tr('Увійти', 'Sign in')}</a></>}
+  </section></main>
+}
+
 export function AuthGate({ children }: { children: ReactNode }) {
   const auth = useAuth()
   const { config } = useAppConfiguration()
@@ -70,6 +96,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
   if (auth.loading || auth.error) return <main className="account-entry"><section className="panel account-entry-card" role="status"><h1>{config.appearance.title}</h1><p>{auth.loading ? tr('Перевірка входу…', 'Checking sign-in…') : auth.error}</p>{!auth.loading && <button className="secondary" onClick={() => void auth.refresh()}><RefreshCcw size={16} /> {tr('Спробувати ще раз', 'Try again')}</button>}</section></main>
   if (!auth.enabled || auth.user) return <Fragment key={auth.user?.id ?? 'bootstrap'}><PasswordUpdatedNotice />{children}</Fragment>
   if (provider.isPending || provider.error) return <main className="account-entry"><section className="panel account-entry-card"><h1>{config.appearance.title}</h1><p>{provider.error instanceof Error ? provider.error.message : tr('Завантаження способу входу…', 'Loading sign-in…')}</p>{provider.error && <button className="secondary" onClick={() => void provider.refetch()}>{tr('Спробувати ще раз', 'Try again')}</button>}</section></main>
+  if (provider.data.provider === 'k2auth') return <K2AuthEntry title={config.appearance.title} loginUrl={withApiBase(provider.data.login_url ?? '/api/auth/keycloak/login')} providerError={providerError} />
   if (provider.data.provider === 'keycloak' && !provider.data.password_login) return <main className="account-entry"><section className="panel account-entry-card"><KeyRound size={25} /><h1>{config.appearance.title}</h1><h2>{tr('Вхід через Keycloak', 'Sign in with Keycloak')}</h2><p>{tr('Після входу адміністратор визначає доступні функції та підрозділи.', 'Your administrator assigns features and data areas after sign-in.')}</p>{providerError && <p className="account-error" role="alert">{providerError === 'cancelled' ? tr('Вхід скасовано.', 'Sign-in was cancelled.') : providerError === 'unavailable' ? tr('Сервіс входу тимчасово недоступний. Спробуйте пізніше.', 'Sign-in is temporarily unavailable. Try again later.') : tr('Не вдалося завершити вхід. Спробуйте ще раз.', 'Could not complete sign-in. Try again.')}</p>}<a className="primary" href={withApiBase(provider.data.login_url ?? '/api/auth/keycloak/login')}>{tr('Увійти', 'Sign in')}</a></section></main>
   // With Keycloak the same form is used; the backend checks the password there. Sign-in
   // and sign-out never leave the application.
