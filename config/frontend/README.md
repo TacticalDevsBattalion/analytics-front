@@ -2,7 +2,7 @@
 
 All non-secret frontend configuration lives here.
 
-- `app.json` — branding, defaults, React Query timings, language and localStorage keys.
+- `app.json` — branding, defaults, React Query timings, language and localStorage keys; `workspace.origins` — the K2 Workspace origins that embed the app (messages go only there).
 - `api.json` — backend API base URL and endpoint paths.
 - `ui.json` — KPI visibility, table sizes, reporting periods/cutoffs, timeline and source labels.
 - `map.json` — map bounds, tiles, zoom/cluster settings and result colors.

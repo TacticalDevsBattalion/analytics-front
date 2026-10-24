@@ -35,6 +35,10 @@ export type FrontendAppConfig = {
   special_filters: {
     lost_devices_result: string
   }
+  /** K2 Workspace origins that may embed the application (module contract, src/lib/embed.ts). */
+  workspace?: {
+    origins: string[]
+  }
 }
 
 export type FrontendApiConfig = {

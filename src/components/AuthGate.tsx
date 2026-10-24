@@ -6,6 +6,7 @@ import { useLanguage } from '../i18n/LanguageContext'
 import { useQuery } from '@tanstack/react-query'
 import { withApiBase } from '../config'
 import { AccountApiError } from '../lib/accountApi'
+import { isEmbedded, rememberRoute, requestLogin } from '../lib/embed'
 import './Accounts.css'
 
 // The Keycloak callback reports failures as ?auth_error=…; read it once and clean the address.
@@ -71,6 +72,26 @@ function mayRedirectToK2Auth() {
   } catch { return false }
 }
 
+// Inside K2 Workspace K2 Auth's pages are never framed: the sign-in is silent (prompt=none,
+// the Workspace is already signed in). Refused, or not sticking, it asks the Workspace to take
+// the whole tab to the interactive sign-in (k2:need-login), which comes back to the Workspace.
+function EmbeddedK2AuthEntry({ title, loginUrl, loginPath, providerError }: { title: string; loginUrl: string; loginPath: string; providerError: string }) {
+  const { tr } = useLanguage()
+  const [leaving] = useState(() => !providerError && mayRedirectToK2Auth())
+  const [asked] = useState(() => !leaving && requestLogin(loginPath, true))
+  useEffect(() => {
+    if (!leaving) return
+    rememberRoute()
+    window.location.assign(loginUrl + (loginUrl.includes('?') ? '&' : '?') + 'prompt=none')
+  }, [leaving, loginUrl])
+  return <main className="account-entry"><section className="panel account-entry-card"><KeyRound size={25} /><h1>{title}</h1><h2>{tr('Вхід через K2 Auth', 'Sign in with K2 Auth')}</h2>
+    {leaving
+      ? <p role="status">{tr('Входимо через K2…', 'Signing in with K2…')}</p>
+      : <><p role="status">{asked ? tr('Відкриваємо сторінку входу K2…', 'Opening the K2 sign-in page…') : tr('Потрібно увійти в K2 ще раз.', 'You need to sign in to K2 again.')}</p>
+        <button type="button" className={asked ? 'secondary' : 'primary'} onClick={() => requestLogin(loginPath, false)}>{tr('Увійти', 'Sign in')}</button></>}
+  </section></main>
+}
+
 function K2AuthEntry({ title, loginUrl, providerError }: { title: string; loginUrl: string; providerError: string }) {
   const { tr } = useLanguage()
   const [leaving] = useState(() => !providerError && mayRedirectToK2Auth())
@@ -96,6 +117,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
   if (auth.loading || auth.error) return <main className="account-entry"><section className="panel account-entry-card" role="status"><h1>{config.appearance.title}</h1><p>{auth.loading ? tr('Перевірка входу…', 'Checking sign-in…') : auth.error}</p>{!auth.loading && <button className="secondary" onClick={() => void auth.refresh()}><RefreshCcw size={16} /> {tr('Спробувати ще раз', 'Try again')}</button>}</section></main>
   if (!auth.enabled || auth.user) return <Fragment key={auth.user?.id ?? 'bootstrap'}><PasswordUpdatedNotice />{children}</Fragment>
   if (provider.isPending || provider.error) return <main className="account-entry"><section className="panel account-entry-card"><h1>{config.appearance.title}</h1><p>{provider.error instanceof Error ? provider.error.message : tr('Завантаження способу входу…', 'Loading sign-in…')}</p>{provider.error && <button className="secondary" onClick={() => void provider.refetch()}>{tr('Спробувати ще раз', 'Try again')}</button>}</section></main>
+  if (provider.data.provider === 'k2auth' && isEmbedded()) return <EmbeddedK2AuthEntry title={config.appearance.title} loginUrl={withApiBase(provider.data.login_url ?? '/api/auth/keycloak/login')} loginPath={provider.data.login_url ?? '/api/auth/keycloak/login'} providerError={providerError} />
   if (provider.data.provider === 'k2auth') return <K2AuthEntry title={config.appearance.title} loginUrl={withApiBase(provider.data.login_url ?? '/api/auth/keycloak/login')} providerError={providerError} />
   if (provider.data.provider === 'keycloak' && !provider.data.password_login) return <main className="account-entry"><section className="panel account-entry-card"><KeyRound size={25} /><h1>{config.appearance.title}</h1><h2>{tr('Вхід через Keycloak', 'Sign in with Keycloak')}</h2><p>{tr('Після входу адміністратор визначає доступні функції та підрозділи.', 'Your administrator assigns features and data areas after sign-in.')}</p>{providerError && <p className="account-error" role="alert">{providerError === 'cancelled' ? tr('Вхід скасовано.', 'Sign-in was cancelled.') : providerError === 'unavailable' ? tr('Сервіс входу тимчасово недоступний. Спробуйте пізніше.', 'Sign-in is temporarily unavailable. Try again later.') : tr('Не вдалося завершити вхід. Спробуйте ще раз.', 'Could not complete sign-in. Try again.')}</p>}<a className="primary" href={withApiBase(provider.data.login_url ?? '/api/auth/keycloak/login')}>{tr('Увійти', 'Sign in')}</a></section></main>
   // With Keycloak the same form is used; the backend checks the password there. Sign-in

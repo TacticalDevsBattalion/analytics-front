@@ -17,6 +17,7 @@ import { useAuth } from '../config/AuthContext'
 import '../styles/mobile-nav.css'
 import { NewBadge, VersionButton, useWhatsNew } from './help/WhatsNew'
 import { entriesFor } from '../lib/whatsNew'
+import { isEmbedded } from '../lib/embed'
 
 export type PageId =
   | 'dashboard'
@@ -86,13 +87,14 @@ export function Sidebar({
   return (
     <>
     <aside className="sidebar">
-      <div className="brand">
+      {/* Inside K2 Workspace its header carries the module's name and icon. */}
+      {!isEmbedded() && <div className="brand">
         <div className="brand-mark">{branding.short_name.slice(0, 1).toUpperCase()}</div>
         <div>
           <strong>{config.appearance.title}</strong>
           <span>{config.appearance.subtitle}</span>
         </div>
-      </div>
+      </div>}
 
       <nav className="side-nav" aria-label={tr('Основна навігація', 'Main navigation')}>
         {mainVisible.map(([id, label, Icon]) => (

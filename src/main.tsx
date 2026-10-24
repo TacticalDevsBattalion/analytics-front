@@ -14,9 +14,12 @@ import { CustomFiltersProvider } from './config/CustomFiltersContext'
 import { AuthProvider } from './config/AuthContext'
 import { AuthGate } from './components/AuthGate'
 import { PreferencesProvider } from './config/PreferencesContext'
+import { initEmbed } from './lib/embed'
 
 async function bootstrap() {
   const config = await loadFrontendConfig()
+  // Inside K2 Workspace (iframe + ?k2-embed=1): no own brand, logout or PWA offer; messages to the shell.
+  initEmbed(window, config.app.workspace?.origins)
   installViewAs(withApiBase('/api'))
   await loadAppConfiguration()
 

@@ -35,5 +35,11 @@
   },
   "special_filters": {
     "lost_devices_result": "__lost_devices__"
+  },
+  "workspace": {
+    "origins": [
+      "https://workspace.kub.k2.lan",
+      "https://workspace.arckos.net"
+    ]
   }
 }

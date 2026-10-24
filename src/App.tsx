@@ -24,6 +24,7 @@ import { useCustomFilters } from './config/CustomFiltersContext'
 import { restoreFilters, serializeFilters, type SavedFilters } from './lib/savedFilters'
 import type { QueryFilter } from './lib/biTypes'
 import { biApi } from './lib/biApi'
+import { isEmbedded, notifyReady, notifyRoute } from './lib/embed'
 
 // Route-level code splitting: heavy pages (ECharts, MapLibre, admin UI) load on demand.
 import { WhatsNewProvider } from './components/help/WhatsNew'
@@ -342,6 +343,16 @@ export default function App() {
   }
   const rows = useMemo(() => (events.data || []).filter((row) => matchesSearch(row, searchTerm)), [events.data, searchTerm])
   const info = pageInfo[page]
+  // K2 Workspace: the shell's address and title follow the page (module contract, src/lib/embed.ts).
+  const pageTitle = tr(...info.title)
+  const firstTitle = useRef(pageTitle)
+  useEffect(() => {
+    notifyReady(firstTitle.current)
+    const onHash = () => notifyRoute()
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+  useEffect(() => { notifyRoute(pageTitle) }, [page, statisticsSection, pageTitle])
   const analyticsError = events.error || mapData.error
   const analyticsErrorMessage = analyticsError instanceof Error
     ? analyticsError.message
@@ -369,7 +380,7 @@ export default function App() {
           <div className="top-actions">
             <div className={'data-status' + (source.data?.connected === false ? ' data-status--bad' : '')} role="status" title={source.data?.connected === false ? source.data.message : undefined}><span className={source.data?.connected === false ? 'online-dot offline' : 'online-dot'} /><span className="data-status__text">{busy ? tr('Оновлення…', 'Updating…') : (source.data?.connected === false ? tr('Джерело недоступне', 'Source unavailable') : tr('Дані актуальні', 'Up to date'))}</span><span className="demo-chip">{uiConfig.source_labels[source.data?.source || ''] || source.data?.source || '—'}</span></div>
           <LanguageSwitcher />
-            <PwaInstallButton />
+            {!isEmbedded() && <PwaInstallButton />}
             <label className="search"><Search size={17} /><input type="search" aria-label={tr('Пошук у поточній вибірці', 'Search current selection')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder={tr('Пошук у поточній вибірці...', 'Search current selection...')} />{searchTerm && <button type="button" title={tr('Очистити', 'Clear')} aria-label={tr('Очистити пошук', 'Clear search')} onClick={() => setSearchTerm('')}><X size={14} /></button>}</label>
             <button className="icon-button" title={tr('Оновити дані', 'Refresh data')} aria-label={tr('Оновити дані', 'Refresh data')} onClick={refresh}><RefreshCcw className={busy ? 'spin' : ''} size={18} /></button>
             <AccountProfile onSettings={() => navigate('personal')} onLogout={async () => { clearPreview(); await auth.logout() }} />
@@ -418,7 +429,7 @@ function AccountProfile({ onSettings, onLogout }: { onSettings: () => void; onLo
   return <div className="account-profile-wrap" ref={ref}><button className="account-profile-button account-profile" type="button" aria-label={tr('Меню облікового запису', 'Account menu')} aria-expanded={open} onClick={() => setOpen(!open)}><span className="account-avatar">{initials}</span><span className="account-profile-name"><strong>{name}</strong><small>{auth.user?.role === 'administrator' ? tr('Адміністратор', 'Administrator') : tr('Особистий дашборд', 'Personal dashboard')}</small></span><ChevronDown size={15} /></button>{open && <div className="account-profile-menu"><small>{auth.user?.username || tr('Доступ ще не налаштовано', 'Account access has not been configured')}</small><button type="button" onClick={() => { setOpen(false); onSettings() }}><SlidersHorizontal size={15} />{tr('Мій дашборд', 'My dashboard')}</button>{auth.user && provider.data && provider.data.provider !== 'k2auth' && (provider.data.provider === 'keycloak'
   // Keycloak asks for the current password, then the new one, and returns here.
   ? <a href={keycloakPageUrl({ action: 'password' })}><KeyRound size={15} />{tr('Змінити пароль', 'Change password')}</a>
-  : <button type="button" onClick={() => { setOpen(false); setChangingPassword(true) }}><KeyRound size={15} />{tr('Змінити пароль', 'Change password')}</button>)}{auth.user && <button type="button" disabled={busy} onClick={() => { setBusy(true); setError(''); void onLogout().catch(reason => setError(reason instanceof Error ? reason.message : tr('Не вдалося вийти.', 'Could not sign out.'))).finally(() => setBusy(false)) }}><LogOut size={15} />{busy ? tr('Вихід…', 'Signing out…') : tr('Вийти', 'Sign out')}</button>}{error && <small className="account-error" role="alert">{error}</small>}</div>}{changingPassword && <ChangePasswordDialog onClose={() => setChangingPassword(false)} />}</div>
+  : <button type="button" onClick={() => { setOpen(false); setChangingPassword(true) }}><KeyRound size={15} />{tr('Змінити пароль', 'Change password')}</button>)}{auth.user && !isEmbedded() && <button type="button" disabled={busy} onClick={() => { setBusy(true); setError(''); void onLogout().catch(reason => setError(reason instanceof Error ? reason.message : tr('Не вдалося вийти.', 'Could not sign out.'))).finally(() => setBusy(false)) }}><LogOut size={15} />{busy ? tr('Вихід…', 'Signing out…') : tr('Вийти', 'Sign out')}</button>}{error && <small className="account-error" role="alert">{error}</small>}</div>}{changingPassword && <ChangePasswordDialog onClose={() => setChangingPassword(false)} />}</div>
 }
 
 function MapPage({ filters, setFilters, options, rows, geojson }: { filters: FilterState; setFilters: (f: FilterState) => void; options?: FilterOptions; rows: EventRow[]; geojson?: GeoFeatureCollection }) {
